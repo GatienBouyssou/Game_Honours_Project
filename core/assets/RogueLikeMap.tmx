@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.3.1" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="6">
+ <editorsettings>
+  <export target="../../../../../../Documents/honors/TIle_Grphics/Tiled/RogueLikeMap.json" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="RogueLike.tsx"/>
+ <layer id="1" name="ground" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eAHt3DERAAAMAjEmbNW/q5rodcqAgb/MNElNAwYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGzg2MpudNfSb5jWKAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhj4MLD3zeqa
+  </data>
+ </layer>
+ <layer id="12" name="Roads" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eAHt2VGK1EAUBdBAr1PpVanjalyD/uvX6DasCz5pmiQzgXkVG0+gCJ2Eqp5zp+ql6GV5vOPTZVme7trn8dlxjkDy+DDa+z/nZCOPc7LIqMkjWaS9G00e52VReSSDzBF5nJtF5ZEsKhPz49xMqp4nk7Svo30bzXGOQOWR+qGOn5PB/ajJJLVDHvcy53yWxznuW6MmD+vVls7862rIfPO9EWu9yvuVebInNederVfZe3xU1+eg74xS8yNzw35wB2rSreSRtSpzI2fvvZPgV4aptSpZZA+ifqwgTbxUa1XWqWRhXzgRf2Wo5FHrVNaq5GLNWoGadKnWq9ssrFmT8FeGqflRc6TqiJq+gjXhUtWPzI/6Pco77wT4jSGSR7JIq3qe30DMjw2w5stVP27fr67yaFbf7j55VBZVO3I2P7bNOu8kj6rl9a5rD9Ipvt938qh9eWpIZWN+7Lt13a36kRzSUtO9X3Vpv9xv1Y96183ZevWyW9cTlUfmRFrlYr3qEt/vt9arrFO3+xB57Lu5S4AAAQIECBAgQIAAgUcX+HVZrq9tj/63/uvf/3nsyX8eaCM3R6PAWh4/hnm126xy7ftl+dL4df77rofvX/vKYO8sj95/GXn0+h7tXR5HxXqfl0ev79He5XFUrPd5efT6Hu1dHkfFep+XR6/v0d7lcVSs//mRyfW1rf/bGIEAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQJvI/Abp54DHw==
+  </data>
+ </layer>
+ <layer id="2" name="Collision_layer" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eAHt29uN1EAQhWFzCQQIgFsYPEEG+0waPEEUGwEQwmQDZEGVVkdul9ye0tg707X6R2q17a7ucX9n18NKzDTxQgABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEDhC4P2LafpwYHtra43W3tk9VXhZDndfH/xOZnhIszVPIzX7eTv5Hq2/Hz0Tz8NyGP4+9zraHu9sr8Pvkzz2Jn3sfPI41nPvauSxV/DY+eRxrOfe1chjr+Cx86+Vx/eXufvO1uVWm6v499Vs4Uefk3lk65arnz8jj6XRj2Qe2brl6ufPyKNvFJ9J8bw/8/IR8ujbfQm/K/G8P/PyEfLo28VnUjzvz7x8hDy27X7a8C9rv7fLDhsljz6lf178seG/1v5Z4/NjtrrW3x/zO06Tf168ejZNr629scbnx6xzizzi50U8n+/uuCOeV0vL7DMpW7dc/fzZU8jj0/Pz+8xWZP/uztZl31d1VfNoM/gW8mjHtM9sn30mZeuy76u6annIOmag/XivMdW2Y6MfV8tD1nKVuXpd9z7WtmOjHlfLo3X0DGTu/VomXt+73q41ynHVPNosZN7LRJmNYr51HxXziFn4/pSF+q09jzxWLY+1LOSrLNTretuP/uyqlodbx1drrCzUx9q1+bHmlufV8mjt5RbtdT66ve6/7avlIeOYizLQ3lTn57FWNSP21fKQbest17VrPqbrmqv6EftqeVxiqxw0d8QcdE/V8mhtday99HrlkK3vrXON69XykK3btMdbVsohW7+11mOPVctDtq3L2rV2XDmcq2vn3Oq4Wh6ybb10reet66pr5452XC0P2a45urePx6YctuaurXeLa9XykLlbybftfTw2uSoXnY/YV8vDDeXa60d0zt5TlTzsO6f+/Vr/Xu30lJvt8f5jge9z+s+X/Z+fob6f/Bj34995zv4uUYcAAggggAACCCCAAAIIIIAAAggggAACCCCAAAIIIIAAAggggAACCCCAAAIIIIAAAggggAACCCCAQEWB/xANK4w=
+  </data>
+ </layer>
+</map>
