@@ -4,9 +4,9 @@
 
 package com.honours.game;
 
-import com.honours.game.screens.TitleScreen;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.honours.game.screens.TitleScreen;
 
 public class HonoursGame extends Game 
 {

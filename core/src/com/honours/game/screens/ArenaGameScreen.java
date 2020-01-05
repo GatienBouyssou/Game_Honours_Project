@@ -9,24 +9,23 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.honours.game.HonoursGame;
+import com.honours.game.sprites.Player;
 
 public class ArenaGameScreen extends ScreenAdapter  
 {
-    private HonoursGame game;
+    public static final int MOVEMENT_SPEED = 10;
+	private HonoursGame game;
 	private Stage stage;
 	private FitViewport viewport;
 	
@@ -34,38 +33,52 @@ public class ArenaGameScreen extends ScreenAdapter
 	
     private TmxMapLoader maploader;
     private TiledMap map;
-    private OrthogonalTiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer tiledMapRenderer;
+    
+    private World world;
+    private Box2DDebugRenderer boxRenderer;
+    
+    private Player player;
     
     
     public ArenaGameScreen(final HonoursGame game) {
         this.game = game;
         
         // Map rendering 
+        float width = Gdx.graphics.getWidth();
+        float height = Gdx.graphics.getHeight();
+
         camera = new OrthographicCamera();
+        camera.setToOrtho(false,width,height);
+        camera.update();
+
         
-        viewport = new FitViewport(HonoursGame.WINDOW_WIDTH, HonoursGame.WINDOW_HEIGHT, camera);
+        viewport = new FitViewport(width, height, camera);
         maploader = new TmxMapLoader();
         map = maploader.load("RogueLikeMap.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map);
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(map, 3);
         
         camera.position.set(viewport.getWorldWidth()/ 2, viewport.getWorldHeight() / 2, 0);
         // label interface
         
-        stage = new Stage(viewport, game.getBatch());
+//        stage = new Stage(viewport, game.getBatch());
+//        
+//        Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+//        
+//        Table table = new Table();
+//        
+//        table.center();
+//        table.setFillParent(true);
+//        
+//        Label howToStartTheGameLabel = new Label("Press enter to end the game", font);
+//        table.add(howToStartTheGameLabel);
+//        stage.addActor(table);
         
-        Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
         
-        Table table = new Table();
-        
-        table.center();
-        table.setFillParent(true);
-        
-        Label howToStartTheGameLabel = new Label("Press enter to end the game", font);
-        table.add(howToStartTheGameLabel);
-        
-        
-        
-        stage.addActor(table);
+        world = new World(new Vector2(0,0), true);
+        boxRenderer = new Box2DDebugRenderer();
+    
+        player = new Player(world);
     }
     
     public void show() {
@@ -82,19 +95,24 @@ public class ArenaGameScreen extends ScreenAdapter
     
     public void update(float deltaTime) {
     	handleInput(deltaTime);
+    	world.step(1/60f, 6, 2);
+    	
+    	camera.position.x = player.body.getPosition().x;
+    	camera.position.y = player.body.getPosition().y;
+
     	camera.update();
-    	renderer.setView(camera);
+    	tiledMapRenderer.setView(camera);
     }
     
     private void handleInput(float deltaTime) {
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-			camera.position.x -= 100 * deltaTime;
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-			camera.position.x += 100 * deltaTime;
-		if(Gdx.input.isKeyPressed(Input.Keys.UP))
-			camera.position.y += 100 * deltaTime;
-		if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-			camera.position.y -= 100 * deltaTime;
+    	if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.body.getLinearVelocity().x >= -100)
+			player.body.applyLinearImpulse(new Vector2(-MOVEMENT_SPEED, 0), player.body.getWorldCenter(), true);
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.body.getLinearVelocity().x <= 100)
+			player.body.applyLinearImpulse(new Vector2(MOVEMENT_SPEED, 0), player.body.getWorldCenter(), true);
+		if(Gdx.input.isKeyPressed(Input.Keys.UP) && player.body.getLinearVelocity().y <= 100)
+			player.body.applyLinearImpulse(new Vector2(0, MOVEMENT_SPEED), player.body.getWorldCenter(), true);
+		if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && player.body.getLinearVelocity().y >= -100)
+			player.body.applyLinearImpulse(new Vector2(0, -MOVEMENT_SPEED), player.body.getWorldCenter(), true);
 
 	}
 
@@ -104,7 +122,9 @@ public class ArenaGameScreen extends ScreenAdapter
 		Gdx.gl.glClearColor(1,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        renderer.render();
+        tiledMapRenderer.render();
+        
+        boxRenderer.render(world, camera.combined);
         
     }
     
