@@ -4,22 +4,45 @@
 
 package com.honours.game.screens;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.honours.game.HonoursGame;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.honours.game.HonoursGame;
 
 public class EndScreen extends ScreenAdapter
 {
     private HonoursGame game;
+	private FitViewport viewport;
+	private Stage stage;
+	
+	
     
     public EndScreen(final HonoursGame game) {
         this.game = game;
+        
+        viewport = new FitViewport(HonoursGame.WINDOW_WIDTH, HonoursGame.WINDOW_HEIGHT, new OrthographicCamera());
+        stage = new Stage(viewport, game.getBatch());
+        
+        Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+        
+        Table table = new Table();
+        
+        table.center();
+        table.setFillParent(true);
+        
+        Label howToStartTheGameLabel = new Label("Press enter to start the game", font);
+        table.add(howToStartTheGameLabel);
+        
+        stage.addActor(table);
     }
     
     public void show() {
@@ -27,8 +50,7 @@ public class EndScreen extends ScreenAdapter
         	@Override
         	public boolean keyDown(final int keyCode) {
                 if (keyCode == Input.Keys.ENTER) {
-                	//System.exit(0);
-                	System.out.println("YO");
+                	game.setScreen(new TitleScreen(game));
                 }
                 return true;
             }
@@ -38,12 +60,8 @@ public class EndScreen extends ScreenAdapter
     public void render(final float delta) {
         Gdx.gl.glClearColor(0.25f, 0.0f, 0.0f, 1.0f);
         Gdx.gl.glClear(16384);
-        final SpriteBatch batch = this.game.getBatch();
-        final BitmapFont font = this.game.getFont();
-        batch.begin();
-        font.draw((Batch)batch, (CharSequence)"You win!", Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.75f);
-        font.draw((Batch)batch, (CharSequence)"Press enter to restart.", Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.25f);
-        batch.end();
+        stage.draw();
+  
     }
     
     public void hide() {
