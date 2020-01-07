@@ -11,6 +11,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -21,12 +23,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.honours.game.HonoursGame;
 import com.honours.game.sprites.Player;
+import com.honours.game.tools.UnitConverter;
+import com.honours.game.world.Box2DWorldCreator;
 
 public class ArenaGameScreen extends ScreenAdapter  
 {
     public static final int MOVEMENT_SPEED = 10;
 	private HonoursGame game;
-	private Stage stage;
 	private FitViewport viewport;
 	
 	private OrthographicCamera camera;
@@ -45,8 +48,8 @@ public class ArenaGameScreen extends ScreenAdapter
         this.game = game;
         
         // Map rendering 
-        float width = Gdx.graphics.getWidth();
-        float height = Gdx.graphics.getHeight();
+        float width = UnitConverter.toPPM(Gdx.graphics.getWidth());
+        float height = UnitConverter.toPPM(Gdx.graphics.getHeight());
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false,width,height);
@@ -56,29 +59,14 @@ public class ArenaGameScreen extends ScreenAdapter
         viewport = new FitViewport(width, height, camera);
         maploader = new TmxMapLoader();
         map = maploader.load("RogueLikeMap.tmx");
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(map, 3);
-        
-        camera.position.set(viewport.getWorldWidth()/ 2, viewport.getWorldHeight() / 2, 0);
-        // label interface
-        
-//        stage = new Stage(viewport, game.getBatch());
-//        
-//        Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-//        
-//        Table table = new Table();
-//        
-//        table.center();
-//        table.setFillParent(true);
-//        
-//        Label howToStartTheGameLabel = new Label("Press enter to end the game", font);
-//        table.add(howToStartTheGameLabel);
-//        stage.addActor(table);
-        
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(map, UnitConverter.toPPM(1));
         
         world = new World(new Vector2(0,0), true);
         boxRenderer = new Box2DDebugRenderer();
     
-        player = new Player(world);
+        player = new Player(world, UnitConverter.toPPM(32), UnitConverter.toPPM(32));
+        
+        new Box2DWorldCreator(this);
     }
     
     public void show() {
@@ -99,20 +87,22 @@ public class ArenaGameScreen extends ScreenAdapter
     	
     	camera.position.x = player.body.getPosition().x;
     	camera.position.y = player.body.getPosition().y;
-
+    	    	
     	camera.update();
     	tiledMapRenderer.setView(camera);
+    	
     }
     
     private void handleInput(float deltaTime) {
-    	if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.body.getLinearVelocity().x >= -100)
+    	if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.body.getLinearVelocity().x >= -1)
 			player.body.applyLinearImpulse(new Vector2(-MOVEMENT_SPEED, 0), player.body.getWorldCenter(), true);
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.body.getLinearVelocity().x <= 100)
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.body.getLinearVelocity().x <= 1)
 			player.body.applyLinearImpulse(new Vector2(MOVEMENT_SPEED, 0), player.body.getWorldCenter(), true);
-		if(Gdx.input.isKeyPressed(Input.Keys.UP) && player.body.getLinearVelocity().y <= 100)
+		if(Gdx.input.isKeyPressed(Input.Keys.UP) && player.body.getLinearVelocity().y <= 1)
 			player.body.applyLinearImpulse(new Vector2(0, MOVEMENT_SPEED), player.body.getWorldCenter(), true);
-		if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && player.body.getLinearVelocity().y >= -100)
+		if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && player.body.getLinearVelocity().y >= -1)
 			player.body.applyLinearImpulse(new Vector2(0, -MOVEMENT_SPEED), player.body.getWorldCenter(), true);
+
 
 	}
 
@@ -124,13 +114,24 @@ public class ArenaGameScreen extends ScreenAdapter
 
         tiledMapRenderer.render();
         
-        boxRenderer.render(world, camera.combined);
+//        game.getBatch().begin();
+//        player.draw(game.getBatch());
+//        game.getBatch().end();
         
+        boxRenderer.render(world, camera.combined);
     }
     
     public void hide() {
         Gdx.input.setInputProcessor((InputProcessor)null);
     }
+
+	public World getWorld() {
+		return world;
+	}
+
+	public TiledMap getMap() {
+		return map;
+	}
 
 	
 }
