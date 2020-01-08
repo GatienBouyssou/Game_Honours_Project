@@ -1,9 +1,14 @@
 package com.honours.game.world;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -15,31 +20,38 @@ import com.honours.game.tools.UnitConverter;
 public class Box2DWorldCreator {
 	
 	
+	private static final String SPAWNS = "spawns";
 	private static final String COLLISIONS_FOR_WALLS = "collisionsForWalls";
 	private static final String COLLISIONS_FOR_TREES = "collisionsForTrees";
+	
+	private List<Vector2> listOfSpawns;
 
 	public Box2DWorldCreator(ArenaGameScreen gameScreen) {
 		World world = gameScreen.getWorld();
 		TiledMap map = gameScreen.getMap();
+		listOfSpawns = new ArrayList<Vector2>();
 		
 		BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fdef = new FixtureDef();        
         
-        for(MapObject object : map.getLayers().get(COLLISIONS_FOR_TREES).getObjects()){
-            polygonToBody(world, bdef, shape, fdef, object);
+        for(MapObject trees : map.getLayers().get(COLLISIONS_FOR_TREES).getObjects()){
+            polygonToBox2DBody(world, bdef, shape, fdef, trees);
         }
         
         
-        for(MapObject object : map.getLayers().get(COLLISIONS_FOR_WALLS).getObjects()){
-            polygonToBody(world, bdef, shape, fdef, object);
+        for(MapObject walls : map.getLayers().get(COLLISIONS_FOR_WALLS).getObjects()){
+            polygonToBox2DBody(world, bdef, shape, fdef, walls);
         }
         
+        for(MapObject spawns : map.getLayers().get(SPAWNS).getObjects()){
+            listOfSpawns.add(getPolygonPosition(spawns));
+        }
 	}
 
-	private void polygonToBody(World world, BodyDef bdef, PolygonShape shape, FixtureDef fdef, MapObject object) {
+	private void polygonToBox2DBody(World world, BodyDef bdef, PolygonShape shape, FixtureDef fdef, MapObject polygonObject) {
 		Body body;
-		Polygon colZoneForTrees = ((PolygonMapObject) object).getPolygon();
+		Polygon colZoneForTrees = ((PolygonMapObject) polygonObject).getPolygon();
 		
 		bdef.type = BodyDef.BodyType.StaticBody;
 		bdef.position.set(UnitConverter.toPPM(colZoneForTrees.getX()), 
@@ -53,5 +65,19 @@ public class Box2DWorldCreator {
 		shape.set(verticesZone);
 		fdef.shape = shape;
 		body.createFixture(fdef);
+	}
+	
+	private Vector2 getPolygonPosition(MapObject object) {
+		Polygon colZoneForTrees = ((PolygonMapObject) object).getPolygon();
+		return new Vector2(UnitConverter.toPPM(colZoneForTrees.getX()), 
+				UnitConverter.toPPM(colZoneForTrees.getY()));
+	}
+
+	public List<Vector2> getListOfSpawns() {
+		return listOfSpawns;
+	}
+	
+	public Vector2 getSpawn(int index) {
+		return listOfSpawns.get(index);
 	}
 }

@@ -28,7 +28,6 @@ import com.honours.game.world.Box2DWorldCreator;
 
 public class ArenaGameScreen extends ScreenAdapter  
 {
-    public static final int MOVEMENT_SPEED = 10;
 	private HonoursGame game;
 	private FitViewport viewport;
 	
@@ -38,6 +37,7 @@ public class ArenaGameScreen extends ScreenAdapter
     private TiledMap map;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
     
+    private Box2DWorldCreator worldCreator;
     private World world;
     private Box2DDebugRenderer boxRenderer;
     
@@ -63,48 +63,28 @@ public class ArenaGameScreen extends ScreenAdapter
         
         world = new World(new Vector2(0,0), true);
         boxRenderer = new Box2DDebugRenderer();
-    
-        player = new Player(world, UnitConverter.toPPM(32), UnitConverter.toPPM(32));
         
-        new Box2DWorldCreator(this);
+       
+        worldCreator = new Box2DWorldCreator(this);
     }
     
     public void show() {
-        Gdx.input.setInputProcessor(new InputAdapter() {
-        	@Override
-        	public boolean keyDown(final int keyCode) {
-                if (keyCode == Input.Keys.ENTER) {
-                	game.setScreen(new EndScreen(game));
-                }
-                return true;
-            }
-        });
+    	 Texture texture = new Texture(Gdx.files.local("icon.png"));
+         player = new Player(this, worldCreator.getSpawn(0), texture);
+         Gdx.input.setInputProcessor(player);
     }
     
     public void update(float deltaTime) {
-    	handleInput(deltaTime);
     	world.step(1/60f, 6, 2);
     	
-    	camera.position.x = player.body.getPosition().x;
-    	camera.position.y = player.body.getPosition().y;
+    	camera.position.x = player.body.getPosition().x ;
+    	camera.position.y = player.body.getPosition().y ;
     	    	
     	camera.update();
     	tiledMapRenderer.setView(camera);
     	
     }
     
-    private void handleInput(float deltaTime) {
-    	if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.body.getLinearVelocity().x >= -1)
-			player.body.applyLinearImpulse(new Vector2(-MOVEMENT_SPEED, 0), player.body.getWorldCenter(), true);
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.body.getLinearVelocity().x <= 1)
-			player.body.applyLinearImpulse(new Vector2(MOVEMENT_SPEED, 0), player.body.getWorldCenter(), true);
-		if(Gdx.input.isKeyPressed(Input.Keys.UP) && player.body.getLinearVelocity().y <= 1)
-			player.body.applyLinearImpulse(new Vector2(0, MOVEMENT_SPEED), player.body.getWorldCenter(), true);
-		if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && player.body.getLinearVelocity().y >= -1)
-			player.body.applyLinearImpulse(new Vector2(0, -MOVEMENT_SPEED), player.body.getWorldCenter(), true);
-
-
-	}
 
 	public void render(final float delta) {
         update(delta);
@@ -114,9 +94,9 @@ public class ArenaGameScreen extends ScreenAdapter
 
         tiledMapRenderer.render();
         
-//        game.getBatch().begin();
-//        player.draw(game.getBatch());
-//        game.getBatch().end();
+        game.getBatch().begin();
+        player.draw(game.getBatch());
+        game.getBatch().end();
         
         boxRenderer.render(world, camera.combined);
     }
@@ -131,6 +111,10 @@ public class ArenaGameScreen extends ScreenAdapter
 
 	public TiledMap getMap() {
 		return map;
+	}
+
+	public HonoursGame getGame() {
+		return game;
 	}
 
 	
