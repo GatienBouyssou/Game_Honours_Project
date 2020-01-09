@@ -1,8 +1,6 @@
 package com.honours.game.sprites;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -12,25 +10,24 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
-import com.honours.game.HonoursGame;
 import com.honours.game.screens.ArenaGameScreen;
-import com.honours.game.screens.EndScreen;
 import com.honours.game.tools.UnitConverter;
 
-public class Player extends Sprite implements InputProcessor{
-    public static final int MOVEMENT_SPEED = 10;
+public class Player extends Sprite {
+	public static final int MOVEMENT_SPEED = 1;
 
 	public static int SIZE_CHARACTER = 32;
-	public World world;
 	public Body body;
-	private HonoursGame game;
-
+	private ArenaGameScreen screen;
+	
+	private boolean wayPointNotReached = false;
+	private Vector2 destination;
+	private Vector2 velocity = new Vector2();
+	
 	public Player(ArenaGameScreen screen, Vector2 startingPosition, Texture texture) {
 		super(texture);
 		SIZE_CHARACTER = texture.getWidth();
-		this.world = screen.getWorld();
-		this.game = screen.getGame();
+		this.screen = screen;
 		create(startingPosition);
 		setBounds(Gdx.graphics.getWidth()/2,
 				Gdx.graphics.getHeight()/2, SIZE_CHARACTER, SIZE_CHARACTER);
@@ -38,12 +35,11 @@ public class Player extends Sprite implements InputProcessor{
 	}
 
 	private void create(Vector2 startingPosition) {
-		
 		BodyDef bodyDef = new BodyDef();
-		bodyDef.position.set(startingPosition.x, startingPosition.y);
-
+		bodyDef.position.set(1, 1);
 		bodyDef.type = BodyType.DynamicBody;
-		body = world.createBody(bodyDef);
+
+		this.body = screen.getWorld().createBody(bodyDef);
 		
 		
 		
@@ -52,13 +48,10 @@ public class Player extends Sprite implements InputProcessor{
 		
 		FixtureDef def = new FixtureDef();
 		
-		
-		
 		def.shape = shape;
 		
-		body.createFixture(def).setUserData(this);
+		this.body.createFixture(def).setUserData(this);;
 		shape.dispose();
-
 	}
 	
 	@Override
@@ -68,72 +61,39 @@ public class Player extends Sprite implements InputProcessor{
 		
 	}
     private void update(float deltaTime) {
+    	if (wayPointNotReached) {
+    		float bodyX = body.getPosition().x;
+    		float bodyY = body.getPosition().y;
+    		
+    		float angle = (float) Math.atan2(destination.y - bodyY, destination.x - bodyX);
+    		velocity.set((float) Math.cos(angle) * MOVEMENT_SPEED, (float) Math.sin(angle) * MOVEMENT_SPEED);
+
+    		body.setTransform(new Vector2(bodyX + velocity.x * deltaTime, bodyY + velocity.y * deltaTime), body.getAngle());
+//    		setPosition();
+//    		setRotation(angle * MathUtils.radiansToDegrees);
+    		
+    		if(iswayPointReached()) {
+    			body.setTransform(new Vector2(destination.x, destination.y), body.getAngle());
+    			wayPointNotReached = false;
+    		}
+		}	
+	}
+
+	public void moveTo(int screenX, int screenY) {
 		
+		this.destination = getWorldCoordinates(screenX, screenY);	
+		this.wayPointNotReached = true;
 	}
 
-
-	@Override
-	public boolean keyDown(int keycode) {
-		if (keycode == Input.Keys.ENTER) 
-			game.setScreen(new EndScreen(game));
-		if(keycode == Input.Keys.LEFT && this.body.getLinearVelocity().x >= -1)
-			this.body.applyLinearImpulse(new Vector2(-MOVEMENT_SPEED, 0), this.body.getWorldCenter(), true);
-		if(keycode == Input.Keys.RIGHT && this.body.getLinearVelocity().x <= 1)
-			this.body.applyLinearImpulse(new Vector2(MOVEMENT_SPEED, 0), this.body.getWorldCenter(), true);
-		if(keycode == Input.Keys.UP && this.body.getLinearVelocity().y <= 1)
-			this.body.applyLinearImpulse(new Vector2(0, MOVEMENT_SPEED), this.body.getWorldCenter(), true);
-		if(keycode == Input.Keys.DOWN && this.body.getLinearVelocity().y >= -1)
-			this.body.applyLinearImpulse(new Vector2(0, -MOVEMENT_SPEED), this.body.getWorldCenter(), true);
-
-		return false;
+	private Vector2 getWorldCoordinates(int screenX, int screenY) {
+		Vector2 screenVect = new Vector2((screenX - getX())/UnitConverter.PIXEL_PER_METER, (screenY - getY())/UnitConverter.PIXEL_PER_METER);
+		screenVect.x = body.getPosition().x + screenVect.x;
+		screenVect.y = body.getPosition().y - screenVect.y;
+		return screenVect;
 	}
 
-	@Override
-	public boolean keyUp(int keycode) {
-		if(keycode == Input.Keys.LEFT)
-			this.body.applyLinearImpulse(new Vector2(MOVEMENT_SPEED, 0), this.body.getWorldCenter(), true);
-		if(keycode == Input.Keys.RIGHT)
-			this.body.applyLinearImpulse(new Vector2(-MOVEMENT_SPEED, 0), this.body.getWorldCenter(), true);
-		if(keycode == Input.Keys.UP)
-			this.body.applyLinearImpulse(new Vector2(0, -MOVEMENT_SPEED), this.body.getWorldCenter(), true);
-		if(keycode == Input.Keys.DOWN)
-			this.body.applyLinearImpulse(new Vector2(0, MOVEMENT_SPEED), this.body.getWorldCenter(), true);
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		System.out.println(screenX + " " + screenY);
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean iswayPointReached() {
+		return Math.abs(destination.x - body.getPosition().x)<= MOVEMENT_SPEED * Gdx.graphics.getDeltaTime() && Math.abs(destination.y - body.getPosition().y) <= MOVEMENT_SPEED * Gdx.graphics.getDeltaTime();
 	}
 
 }

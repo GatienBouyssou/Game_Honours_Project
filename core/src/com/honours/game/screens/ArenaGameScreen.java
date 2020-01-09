@@ -26,7 +26,7 @@ import com.honours.game.sprites.Player;
 import com.honours.game.tools.UnitConverter;
 import com.honours.game.world.Box2DWorldCreator;
 
-public class ArenaGameScreen extends ScreenAdapter  
+public class ArenaGameScreen extends ScreenAdapter implements InputProcessor
 {
 	private HonoursGame game;
 	private FitViewport viewport;
@@ -64,14 +64,13 @@ public class ArenaGameScreen extends ScreenAdapter
         world = new World(new Vector2(0,0), true);
         boxRenderer = new Box2DDebugRenderer();
         
-       
         worldCreator = new Box2DWorldCreator(this);
     }
     
     public void show() {
     	 Texture texture = new Texture(Gdx.files.local("icon.png"));
          player = new Player(this, worldCreator.getSpawn(0), texture);
-         Gdx.input.setInputProcessor(player);
+         Gdx.input.setInputProcessor(this);
     }
     
     public void update(float deltaTime) {
@@ -84,7 +83,6 @@ public class ArenaGameScreen extends ScreenAdapter
     	tiledMapRenderer.setView(camera);
     	
     }
-    
 
 	public void render(final float delta) {
         update(delta);
@@ -115,6 +113,58 @@ public class ArenaGameScreen extends ScreenAdapter
 
 	public HonoursGame getGame() {
 		return game;
+	}
+
+	public OrthographicCamera getCamera() {
+		return camera;
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if (button == Input.Buttons.RIGHT) {
+			player.moveTo(screenX, screenY);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	
