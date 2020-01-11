@@ -10,41 +10,42 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.honours.game.screens.ArenaGameScreen;
 import com.honours.game.tools.UnitConverter;
 
 public class Player extends Sprite {
 	public static final int MOVEMENT_SPEED = 1;
 
-	public static int SIZE_CHARACTER = 32;
+	public static float SIZE_CHARACTER;
 	public Body body;
-	private ArenaGameScreen screen;
+	private World world; 
 	
 	private boolean wayPointNotReached = false;
 	private Vector2 destination;
 	private Vector2 velocity = new Vector2();
+
+	public static float BOX_UNIT;
 	
 	public Player(ArenaGameScreen screen, Vector2 startingPosition, Texture texture) {
 		super(texture);
-		SIZE_CHARACTER = texture.getWidth();
-		this.screen = screen;
+		SIZE_CHARACTER = UnitConverter.toPPM(texture.getWidth()/2);
+		BOX_UNIT = SIZE_CHARACTER/2;
+		this.world = screen.getWorld();
 		create(startingPosition);
-		setBounds(Gdx.graphics.getWidth()/2,
-				Gdx.graphics.getHeight()/2, SIZE_CHARACTER, SIZE_CHARACTER);
-        setRegion(texture);
+		setPosition((Gdx.graphics.getWidth() + texture.getWidth())/2, (Gdx.graphics.getHeight() - texture.getHeight())/2);
+		
 	}
 
 	private void create(Vector2 startingPosition) {
 		BodyDef bodyDef = new BodyDef();
-		bodyDef.position.set(1, 1);
+		bodyDef.position.set(startingPosition.x,startingPosition.y);
 		bodyDef.type = BodyType.DynamicBody;
 
-		this.body = screen.getWorld().createBody(bodyDef);
-		
-		
+		this.body = world.createBody(bodyDef);
 		
 		CircleShape shape = new CircleShape();
-		shape.setRadius(UnitConverter.toPPM(SIZE_CHARACTER/2));
+		shape.setRadius(SIZE_CHARACTER);
 		
 		FixtureDef def = new FixtureDef();
 		
@@ -60,29 +61,29 @@ public class Player extends Sprite {
 		super.draw(batch);
 		
 	}
-    private void update(float deltaTime) {
-    	if (wayPointNotReached) {
-    		float bodyX = body.getPosition().x;
-    		float bodyY = body.getPosition().y;
-    		
-    		float angle = (float) Math.atan2(destination.y - bodyY, destination.x - bodyX);
-    		velocity.set((float) Math.cos(angle) * MOVEMENT_SPEED, (float) Math.sin(angle) * MOVEMENT_SPEED);
 
-    		body.setTransform(new Vector2(bodyX + velocity.x * deltaTime, bodyY + velocity.y * deltaTime), body.getAngle());
-//    		setPosition();
-//    		setRotation(angle * MathUtils.radiansToDegrees);
-    		
-    		if(iswayPointReached()) {
-    			body.setTransform(new Vector2(destination.x, destination.y), body.getAngle());
-    			wayPointNotReached = false;
-    		}
+	
+	
+    private void update(float deltaTime) {
+    	if (wayPointNotReached && iswayPointReached()) {
+    		body.setLinearVelocity( new Vector2(0, 0) );		
 		}	
 	}
+    
+    public void getVelocity() {
+		float bodyX = body.getPosition().x;
+		float bodyY = body.getPosition().y;
+		
+		float angle = (float) Math.atan2(destination.y - bodyY, destination.x - bodyX);
+		velocity.set((float) Math.cos(angle) * MOVEMENT_SPEED, (float) Math.sin(angle) * MOVEMENT_SPEED);		
+    }
 
 	public void moveTo(int screenX, int screenY) {
-		
-		this.destination = getWorldCoordinates(screenX, screenY);	
-		this.wayPointNotReached = true;
+		this.destination = getWorldCoordinates(screenX, screenY);
+		wayPointNotReached = true;
+		getVelocity();
+		velocity.nor();
+		body.setLinearVelocity(velocity);
 	}
 
 	private Vector2 getWorldCoordinates(int screenX, int screenY) {

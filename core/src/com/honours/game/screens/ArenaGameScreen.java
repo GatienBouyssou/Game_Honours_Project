@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.honours.game.HonoursGame;
 import com.honours.game.sprites.Player;
+import com.honours.game.tools.PlayerContactListener;
 import com.honours.game.tools.UnitConverter;
 import com.honours.game.world.Box2DWorldCreator;
 
@@ -62,6 +63,7 @@ public class ArenaGameScreen extends ScreenAdapter implements InputProcessor
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map, UnitConverter.toPPM(1));
         
         world = new World(new Vector2(0,0), true);
+        world.setContactListener(new PlayerContactListener());
         boxRenderer = new Box2DDebugRenderer();
         
         worldCreator = new Box2DWorldCreator(this);
@@ -76,8 +78,8 @@ public class ArenaGameScreen extends ScreenAdapter implements InputProcessor
     public void update(float deltaTime) {
     	world.step(1/60f, 6, 2);
     	
-    	camera.position.x = player.body.getPosition().x ;
-    	camera.position.y = player.body.getPosition().y ;
+    	camera.position.x = player.body.getPosition().x - Player.BOX_UNIT;
+    	camera.position.y = player.body.getPosition().y  + Player.BOX_UNIT;
     	    	
     	camera.update();
     	tiledMapRenderer.setView(camera);
