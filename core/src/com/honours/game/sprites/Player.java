@@ -18,7 +18,7 @@ public class Player extends Sprite {
 	public static final int MOVEMENT_SPEED = 1;
 
 	public static float SIZE_CHARACTER;
-	public Body body;
+	private Body body;
 	private World world; 
 	
 	private boolean wayPointNotReached = false;
@@ -32,9 +32,7 @@ public class Player extends Sprite {
 		SIZE_CHARACTER = UnitConverter.toPPM(texture.getWidth()/2);
 		BOX_UNIT = SIZE_CHARACTER/2;
 		this.world = screen.getWorld();
-		create(startingPosition);
-		setPosition((Gdx.graphics.getWidth() + texture.getWidth())/2, (Gdx.graphics.getHeight() - texture.getHeight())/2);
-		
+		create(startingPosition);		
 	}
 
 	private void create(Vector2 startingPosition) {
@@ -77,24 +75,24 @@ public class Player extends Sprite {
 		float angle = (float) Math.atan2(destination.y - bodyY, destination.x - bodyX);
 		velocity.set((float) Math.cos(angle) * MOVEMENT_SPEED, (float) Math.sin(angle) * MOVEMENT_SPEED);		
     }
-
-	public void moveTo(int screenX, int screenY) {
-		this.destination = getWorldCoordinates(screenX, screenY);
+	public void moveTo(float x, float y) {
+		this.destination = new Vector2(x, y);
 		wayPointNotReached = true;
 		getVelocity();
 		velocity.nor();
 		body.setLinearVelocity(velocity);
 	}
 
-	private Vector2 getWorldCoordinates(int screenX, int screenY) {
-		Vector2 screenVect = new Vector2((screenX - getX())/UnitConverter.PIXEL_PER_METER, (screenY - getY())/UnitConverter.PIXEL_PER_METER);
-		screenVect.x = body.getPosition().x + screenVect.x;
-		screenVect.y = body.getPosition().y - screenVect.y;
-		return screenVect;
-	}
-
 	public boolean iswayPointReached() {
 		return Math.abs(destination.x - body.getPosition().x)<= MOVEMENT_SPEED * Gdx.graphics.getDeltaTime() && Math.abs(destination.y - body.getPosition().y) <= MOVEMENT_SPEED * Gdx.graphics.getDeltaTime();
 	}
 
+	public Vector2 getBodyPosition() {
+		return body.getPosition();
+	}
+
+	
+	public Body getBody() {
+		return body;
+	}
 }

@@ -27,7 +27,7 @@ public class TitleScreen extends ScreenAdapter
     public TitleScreen(final HonoursGame game) {
         this.game = game;
         
-        viewport = new FitViewport(HonoursGame.WINDOW_WIDTH, HonoursGame.WINDOW_HEIGHT, new OrthographicCamera());
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         stage = new Stage(viewport, game.getBatch());
         
         Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);

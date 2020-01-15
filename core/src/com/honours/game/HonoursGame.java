@@ -11,8 +11,8 @@ import com.honours.game.screens.TitleScreen;
 public class HonoursGame extends Game 
 {
     private SpriteBatch batch;
-    public static final int WINDOW_WIDTH = 1800;
-    public static final int WINDOW_HEIGHT = 1000;
+    public static final int VIRTUAL_WIDTH = 16;
+    public static final int VIRTUAL_HEIGHT = 16;
     
     
     public void create() {
