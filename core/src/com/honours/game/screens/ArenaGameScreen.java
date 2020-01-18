@@ -4,6 +4,8 @@
 
 package com.honours.game.screens;
 
+import java.util.Arrays;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -23,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.honours.game.HonoursGame;
+import com.honours.game.scenes.ArenaInformations;
 import com.honours.game.sprites.Player;
 import com.honours.game.tools.PlayerContactListener;
 import com.honours.game.tools.UnitConverter;
@@ -33,10 +36,14 @@ import box2dLight.RayHandler;
 
 public class ArenaGameScreen extends ScreenAdapter implements InputProcessor
 {
+	public static float VIRTUAL_WIDTH;
+	public static float VIRTUAL_HEIGHT;
+	
 	private HonoursGame game;
 	private Viewport viewport;
 	
 	private OrthographicCamera camera;
+	private ArenaInformations arenaInf;
 	
     private TiledMap map;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
@@ -47,31 +54,36 @@ public class ArenaGameScreen extends ScreenAdapter implements InputProcessor
     
     private Player player;
 	private RayHandler rayHandler;
-    PointLight playerSight;
+    private PointLight playerSight;
+    
+    private float gameTime = 0;
     
     public ArenaGameScreen(final HonoursGame game) {
         this.game = game;
         
+        //loading the map
         TmxMapLoader maploader = new TmxMapLoader();
         map = maploader.load("RogueLikeMap.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map, UnitConverter.toPPM(1));
 
+        //setting width / height of viewport
         TiledMapTileLayer layer=(TiledMapTileLayer)map.getLayers().get(0);
-
-        float width=layer.getTileWidth()*layer.getWidth();   // 16*100
-        float height=layer.getTileHeight()*layer.getHeight();  // 16*100
-
+        VIRTUAL_WIDTH = layer.getTileWidth()*layer.getWidth();
+        VIRTUAL_HEIGHT = layer.getTileHeight()*layer.getHeight();
         
         //Map rendering
-        camera = new OrthographicCamera(width,height);
+        camera = new OrthographicCamera(VIRTUAL_WIDTH,VIRTUAL_HEIGHT);
         
-        viewport = new FillViewport(UnitConverter.toPPM(width),
-        		UnitConverter.toPPM(height), camera);
+        viewport = new FillViewport(UnitConverter.toPPM(VIRTUAL_WIDTH),
+        		UnitConverter.toPPM(VIRTUAL_HEIGHT), camera);
 
         
         camera.setToOrtho(false, viewport.getWorldWidth(), viewport.getWorldHeight());
         camera.update();
         
+
+        
+        // creating the world
         world = new World(new Vector2(0,0), true);
         world.setContactListener(new PlayerContactListener());
         
@@ -92,18 +104,18 @@ public class ArenaGameScreen extends ScreenAdapter implements InputProcessor
          player = new Player(this, worldCreator.getSpawn(0), texture);
          Gdx.input.setInputProcessor(this);
          Vector2 bodyPos = player.getBody().getPosition();
- 		 playerSight = new PointLight(rayHandler, 50,Color.GREEN, 10, bodyPos.x, bodyPos.y);
+ 		 
+         playerSight = new PointLight(rayHandler, 50,Color.BLACK, 10, bodyPos.x, bodyPos.y);
+ 		 playerSight.attachToBody(player.getBody());
+         
+ 		 arenaInf = new ArenaInformations(game.getBatch(), Arrays.asList("A","Z","E","R"), Arrays.asList(player), gameTime);
     }
     
     public void update(float deltaTime) {
     	world.step(1/60f, 6, 2);
-    	
-    	Vector2 bodyPosition = player.getBodyPosition();
-		Vector3 bodyPosInScreen = camera.project(new Vector3(bodyPosition.x, bodyPosition.y, 0));
-    	player.setPosition(bodyPosInScreen.x, bodyPosInScreen.y);
-    	playerSight.setPosition(bodyPosition);
-    	
-    	
+        
+    	this.gameTime += deltaTime;
+    	arenaInf.updateTime(gameTime);
     	tiledMapRenderer.setView(camera);
     }
 
@@ -114,7 +126,7 @@ public class ArenaGameScreen extends ScreenAdapter implements InputProcessor
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         tiledMapRenderer.render();
-        
+        game.getBatch().setProjectionMatrix(camera.combined);
         game.getBatch().begin();
         player.draw(game.getBatch());
         game.getBatch().end();
@@ -123,6 +135,9 @@ public class ArenaGameScreen extends ScreenAdapter implements InputProcessor
         
         rayHandler.setCombinedMatrix(camera.combined,0,0,viewport.getWorldWidth(),viewport.getWorldHeight());
         rayHandler.updateAndRender();
+        
+        game.getBatch().setProjectionMatrix(arenaInf.getStage().getCamera().combined);
+        arenaInf.getStage().draw();
     }
     
     public void hide() {
@@ -165,7 +180,7 @@ public class ArenaGameScreen extends ScreenAdapter implements InputProcessor
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (button == Input.Buttons.LEFT) {
+		if (button == Input.Buttons.RIGHT) {
 			Vector3 destInWorld = camera.unproject(new Vector3(screenX, screenY, 0));
 			player.moveTo(destInWorld.x, destInWorld.y);
 		}

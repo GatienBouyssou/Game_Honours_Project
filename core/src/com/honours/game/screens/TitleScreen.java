@@ -4,6 +4,9 @@
 
 package com.honours.game.screens;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
@@ -12,17 +15,32 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.honours.game.HonoursGame;
+import com.honours.game.scenes.ui.LabelCreator;
+import com.honours.game.scenes.ui.TableCreator;
 
 public class TitleScreen extends ScreenAdapter
 {
     private HonoursGame game;
 	private FitViewport viewport;
 	private Stage stage;
+	
+//	private Label startTheGame;
+//	private Label settings;
     
     public TitleScreen(final HonoursGame game) {
         this.game = game;
@@ -30,29 +48,36 @@ public class TitleScreen extends ScreenAdapter
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         stage = new Stage(viewport, game.getBatch());
         
-        Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+    	TableCreator tableCreator = new TableCreator(Align.right, true);
+        Label startTheGame = LabelCreator.createLabel("Start the game !", Color.ROYAL); 
+        startTheGame.addListener(new ClickListener() {
+            @Override 
+            public void clicked(InputEvent event, float x, float y){
+            	game.setScreen(new ArenaGameScreen(game));
+            }
+        });
+        tableCreator.createRowWithCell(Arrays.asList(startTheGame));
+      
+        tableCreator.createRow(Arrays.asList(""));
         
-        Table table = new Table();
+        Label settings = LabelCreator.createLabel("Settings", Color.ROYAL);
+        settings.addListener(new ClickListener() {
+            @Override 
+            public void clicked(InputEvent event, float x, float y){
+            	game.setScreen(new ArenaGameScreen(game));
+            }
+        });
+        tableCreator.createRowWithCell(Arrays.asList(settings));
+
+        stage.addActor(tableCreator.getTable());
         
-        table.center();
-        table.setFillParent(true);
         
-        Label howToStartTheGameLabel = new Label("Press enter to start the game", font);
-        table.add(howToStartTheGameLabel);
-        
-        stage.addActor(table);
+        Gdx.input.setInputProcessor(stage);
     }
     
     public void show() {
-    	Gdx.input.setInputProcessor(new InputAdapter() {
-        	@Override
-        	public boolean keyDown(final int keyCode) {
-                if (keyCode == Input.Keys.ENTER) {
-                	game.setScreen(new ArenaGameScreen(game));
-                }
-                return true;
-            }
-        });
+
+
     }
     
     public void render(final float delta) {

@@ -16,6 +16,9 @@ import com.honours.game.tools.UnitConverter;
 
 public class Player extends Sprite {
 	public static final int MOVEMENT_SPEED = 1;
+	
+	private int healthPoints = 100;
+	private int amountOfMana = 100;
 
 	public static float SIZE_CHARACTER;
 	private Body body;
@@ -32,7 +35,11 @@ public class Player extends Sprite {
 		SIZE_CHARACTER = UnitConverter.toPPM(texture.getWidth()/2);
 		BOX_UNIT = SIZE_CHARACTER/2;
 		this.world = screen.getWorld();
-		create(startingPosition);		
+		create(startingPosition);	
+		float widthSprite = UnitConverter.toPPM(texture.getWidth());
+		float heightSprite = UnitConverter.toPPM(texture.getHeight());
+		setBounds(startingPosition.x - widthSprite/2, startingPosition.y-heightSprite/2, widthSprite, heightSprite);
+		setRegion(texture);
 	}
 
 	private void create(Vector2 startingPosition) {
@@ -63,9 +70,12 @@ public class Player extends Sprite {
 	
 	
     private void update(float deltaTime) {
-    	if (wayPointNotReached && iswayPointReached()) {
-    		body.setLinearVelocity( new Vector2(0, 0) );		
-		}	
+    	if (wayPointNotReached) {
+    		setPosition(body.getPosition().x - getWidth()/2, body.getPosition().y-getHeight()/2);
+    		if (iswayPointReached()) {
+    			body.setLinearVelocity( new Vector2(0, 0) );		
+    		}
+		}
 	}
     
     public void getVelocity() {
@@ -95,4 +105,22 @@ public class Player extends Sprite {
 	public Body getBody() {
 		return body;
 	}
+
+	public int getHealthPoints() {
+		return healthPoints;
+	}
+
+	public void setHealthPoints(int healthPoints) {
+		this.healthPoints = healthPoints;
+	}
+
+	public int getAmountOfMana() {
+		return amountOfMana;
+	}
+
+	public void setAmountOfMana(int amountOfMana) {
+		this.amountOfMana = amountOfMana;
+	}
+	
+	
 }

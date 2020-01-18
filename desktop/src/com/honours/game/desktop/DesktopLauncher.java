@@ -10,8 +10,8 @@ public class DesktopLauncher {
         config.resizable = false;
         config.pauseWhenMinimized = true;
         config.title = "Game of the year";
-        config.width = LwjglApplicationConfiguration.getDesktopDisplayMode().width - 200;
-        config.height = LwjglApplicationConfiguration.getDesktopDisplayMode().height - 100;
+        config.width = 1800;
+        config.height = 1000;
         new LwjglApplication(new HonoursGame(), config);
 	}
 }
