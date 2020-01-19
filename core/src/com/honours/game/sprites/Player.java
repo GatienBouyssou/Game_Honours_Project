@@ -11,11 +11,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.honours.game.screens.ArenaGameScreen;
 import com.honours.game.tools.UnitConverter;
 
 public class Player extends Sprite {
-	public static final int MOVEMENT_SPEED = 1;
+	public static final int MOVEMENT_SPEED = 3;
 	
 	private int healthPoints = 100;
 	private int amountOfMana = 100;
@@ -30,11 +29,11 @@ public class Player extends Sprite {
 
 	public static float BOX_UNIT;
 	
-	public Player(ArenaGameScreen screen, Vector2 startingPosition, Texture texture) {
+	public Player(World world, Vector2 startingPosition, Texture texture) {
 		super(texture);
 		SIZE_CHARACTER = UnitConverter.toPPM(texture.getWidth()/2);
 		BOX_UNIT = SIZE_CHARACTER/2;
-		this.world = screen.getWorld();
+		this.world = world;
 		create(startingPosition);	
 		float widthSprite = UnitConverter.toPPM(texture.getWidth());
 		float heightSprite = UnitConverter.toPPM(texture.getHeight());

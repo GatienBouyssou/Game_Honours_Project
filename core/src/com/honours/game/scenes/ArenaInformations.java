@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -30,7 +31,7 @@ public class ArenaInformations implements Disposable {
 	
 
 
-	public ArenaInformations(SpriteBatch batch, List<String> listOfKeyForSpells, List<Player> players, double gameTime) {
+	public ArenaInformations(SpriteBatch batch, List<Integer> listOfKeyForSpells, List<Player> players, double gameTime) {
 		
 			
 		Viewport viewport = new FillViewport(ArenaGameScreen.VIRTUAL_WIDTH, ArenaGameScreen.VIRTUAL_HEIGHT); 
@@ -41,8 +42,8 @@ public class ArenaInformations implements Disposable {
 			listLabelManaPoints.add(LabelCreator.createLabel(String.valueOf(player.getAmountOfMana()), Color.BLUE));
 		}
 		
-		for (String keyForSpell : listOfKeyForSpells) {
-			listKeyForSpells.add(LabelCreator.createLabel(keyForSpell));
+		for (int keyForSpell : listOfKeyForSpells) {
+			listKeyForSpells.add(LabelCreator.createLabel(Input.Keys.toString(keyForSpell)));
 		}
 		
 		labelForGameTime = LabelCreator.createLabel(String.valueOf(gameTime));
@@ -69,7 +70,7 @@ public class ArenaInformations implements Disposable {
 
 	@Override
 	public void dispose() {
-		
+		stage.dispose();
 	}
 
 	public Stage getStage() {

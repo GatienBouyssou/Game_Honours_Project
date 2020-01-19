@@ -4,28 +4,16 @@
 
 package com.honours.game.screens;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -33,9 +21,8 @@ import com.honours.game.HonoursGame;
 import com.honours.game.scenes.ui.LabelCreator;
 import com.honours.game.scenes.ui.TableCreator;
 
-public class TitleScreen extends ScreenAdapter
+public class TitleScreen extends ScreenAdapter 
 {
-    private HonoursGame game;
 	private FitViewport viewport;
 	private Stage stage;
 	
@@ -43,7 +30,6 @@ public class TitleScreen extends ScreenAdapter
 //	private Label settings;
     
     public TitleScreen(final HonoursGame game) {
-        this.game = game;
         
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         stage = new Stage(viewport, game.getBatch());
@@ -64,19 +50,17 @@ public class TitleScreen extends ScreenAdapter
         settings.addListener(new ClickListener() {
             @Override 
             public void clicked(InputEvent event, float x, float y){
-            	game.setScreen(new ArenaGameScreen(game));
+            	game.setScreen(new SettingsScreen(game));
             }
         });
         tableCreator.createRowWithCell(Arrays.asList(settings));
 
         stage.addActor(tableCreator.getTable());
-        
-        
-        Gdx.input.setInputProcessor(stage);
+           
     }
     
     public void show() {
-
+    	Gdx.input.setInputProcessor(stage);
 
     }
     

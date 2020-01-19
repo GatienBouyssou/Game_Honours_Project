@@ -26,9 +26,7 @@ public class Box2DWorldCreator {
 	
 	private List<Vector2> listOfSpawns;
 
-	public Box2DWorldCreator(ArenaGameScreen gameScreen) {
-		World world = gameScreen.getWorld();
-		TiledMap map = gameScreen.getMap();
+	public Box2DWorldCreator(World world, TiledMap map) {
 		listOfSpawns = new ArrayList<Vector2>();
 		
 		BodyDef bdef = new BodyDef();
