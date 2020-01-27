@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.honours.game.HonoursGame;
 import com.honours.game.screens.ArenaGameScreen;
 import com.honours.game.tools.UnitConverter;
 
@@ -61,6 +62,7 @@ public class Box2DWorldCreator {
 			verticesZone[i] = UnitConverter.toPPM(verticesZone[i]);
 		}
 		shape.set(verticesZone);
+		fdef.filter.categoryBits = HonoursGame.WORLD_BIT;
 		fdef.shape = shape;
 		body.createFixture(fdef);
 	}

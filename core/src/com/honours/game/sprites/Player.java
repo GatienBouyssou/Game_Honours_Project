@@ -1,5 +1,7 @@
 package com.honours.game.sprites;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -11,13 +13,15 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.honours.game.HonoursGame;
+import com.honours.game.sprites.spells.Spell;
 import com.honours.game.tools.UnitConverter;
 
 public class Player extends Sprite {
 	public static final int MOVEMENT_SPEED = 3;
 	
-	private int healthPoints = 100;
-	private int amountOfMana = 100;
+	private float healthPoints = 100;
+	private float amountOfMana = 100;
 
 	public static float SIZE_CHARACTER;
 	private Body body;
@@ -26,14 +30,18 @@ public class Player extends Sprite {
 	private boolean wayPointNotReached = false;
 	private Vector2 destination;
 	private Vector2 velocity = new Vector2();
+	
+	private List<Spell> listOfSpells;
 
 	public static float BOX_UNIT;
-	
-	public Player(World world, Vector2 startingPosition, Texture texture) {
+		
+	public Player(World world, Vector2 startingPosition, Texture texture, List<Spell> listOfSpells) {
 		super(texture);
 		SIZE_CHARACTER = UnitConverter.toPPM(texture.getWidth()/2);
 		BOX_UNIT = SIZE_CHARACTER/2;
 		this.world = world;
+		this.listOfSpells = listOfSpells;
+		
 		create(startingPosition);	
 		float widthSprite = UnitConverter.toPPM(texture.getWidth());
 		float heightSprite = UnitConverter.toPPM(texture.getHeight());
@@ -53,6 +61,8 @@ public class Player extends Sprite {
 		
 		FixtureDef def = new FixtureDef();
 		
+		def.filter.categoryBits = HonoursGame.PLAYER_BIT;
+		def.filter.maskBits = HonoursGame.WORLD_BIT | HonoursGame.SPELL_BIT;
 		def.shape = shape;
 		
 		this.body.createFixture(def).setUserData(this);;
@@ -61,13 +71,15 @@ public class Player extends Sprite {
 	
 	@Override
 	public void draw(Batch batch) {
-		update(Gdx.graphics.getDeltaTime());
-		super.draw(batch);
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		update(deltaTime);
+		for (Spell spell : listOfSpells) {
+			spell.updateAndDraw(batch, body.getPosition(), deltaTime);
+		}
+//		super.draw(batch);
 		
 	}
 
-	
-	
     private void update(float deltaTime) {
     	if (wayPointNotReached) {
     		setPosition(body.getPosition().x - getWidth()/2, body.getPosition().y-getHeight()/2);
@@ -77,13 +89,14 @@ public class Player extends Sprite {
 		}
 	}
     
-    public void getVelocity() {
+    private void getVelocity() {
 		float bodyX = body.getPosition().x;
 		float bodyY = body.getPosition().y;
 		
 		float angle = (float) Math.atan2(destination.y - bodyY, destination.x - bodyX);
 		velocity.set((float) Math.cos(angle) * MOVEMENT_SPEED, (float) Math.sin(angle) * MOVEMENT_SPEED);		
     }
+    
 	public void moveTo(float x, float y) {
 		this.destination = new Vector2(x, y);
 		wayPointNotReached = true;
@@ -95,31 +108,39 @@ public class Player extends Sprite {
 	public boolean iswayPointReached() {
 		return Math.abs(destination.x - body.getPosition().x)<= MOVEMENT_SPEED * Gdx.graphics.getDeltaTime() && Math.abs(destination.y - body.getPosition().y) <= MOVEMENT_SPEED * Gdx.graphics.getDeltaTime();
 	}
+	
+	public void castSpell(int spellIndex, Vector2 destination) {
+		listOfSpells.get(spellIndex).castSpell(this, world, destination);
+		
+	}
 
 	public Vector2 getBodyPosition() {
 		return body.getPosition();
 	}
-
 	
 	public Body getBody() {
 		return body;
 	}
 
-	public int getHealthPoints() {
+	public float getHealthPoints() {
 		return healthPoints;
 	}
 
-	public void setHealthPoints(int healthPoints) {
+	public void setHealthPoints(float healthPoints) {
 		this.healthPoints = healthPoints;
 	}
 
-	public int getAmountOfMana() {
+	public float getAmountOfMana() {
 		return amountOfMana;
 	}
 
-	public void setAmountOfMana(int amountOfMana) {
-		this.amountOfMana = amountOfMana;
+	public void setAmountOfMana(float f) {
+		this.amountOfMana = f;
 	}
 	
+
+	public void setListOfSpells(List<Spell> listOfSpells) {
+		this.listOfSpells = listOfSpells;
+	}	
 	
 }

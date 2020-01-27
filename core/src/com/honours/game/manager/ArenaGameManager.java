@@ -10,14 +10,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.honours.game.HonoursGame;
 import com.honours.game.scenes.ArenaInformations;
 import com.honours.game.screens.ArenaGameScreen;
 import com.honours.game.sprites.Player;
+import com.honours.game.sprites.spells.Spell;
 import com.honours.game.tools.PlayerContactListener;
 import com.honours.game.world.Box2DWorldCreator;
 
@@ -25,6 +28,11 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 public class ArenaGameManager implements InputProcessor {
+	public static final int AUTO_ATTACK_INDEX = 0;
+	public static final int SPELL_1_INDEX = 1;
+	public static final int SPELL_2_INDEX = 2;
+	public static final int SPELL_3_INDEX = 3;
+	public static final int SPELL_4_INDEX = 4;
 	
 	private World world;
 	private Box2DDebugRenderer boxRenderer;
@@ -38,12 +46,12 @@ public class ArenaGameManager implements InputProcessor {
 	
 	private ArenaInformations arenaInf;
 	public static List<Integer> keyForSpells = Arrays.asList(Input.Keys.A,Input.Keys.Z,Input.Keys.E,Input.Keys.R);
-	
+		
 	private float gameTime = 0;
 	
 	public ArenaGameManager(ArenaGameScreen screen) {
 		this.camera = screen.getCamera();
-		
+			
         // creating the world
         world = new World(new Vector2(0,0), true);
         world.setContactListener(new PlayerContactListener());
@@ -57,20 +65,21 @@ public class ArenaGameManager implements InputProcessor {
     	rayHandler.setAmbientLight(.5f);
     	
     	Texture texture = new Texture(Gdx.files.local("icon.png"));
-        player = new Player(world, worldCreator.getSpawn(0), texture);
+		HonoursGame game = screen.getGame();
+		player = new Player(world, worldCreator.getSpawn(0), texture, 
+				game.getListOfSpellsAvailable());
         
         Vector2 bodyPos = player.getBody().getPosition();
 		 
         playerSight = new PointLight(rayHandler, 50,Color.BLACK, 10, bodyPos.x, bodyPos.y);
 		playerSight.attachToBody(player.getBody());
         
-		arenaInf = new ArenaInformations(screen.getGame().getBatch(), keyForSpells, Arrays.asList(player), gameTime);
-    	
+		arenaInf = new ArenaInformations(game.getBatch(), keyForSpells, Arrays.asList(player), gameTime);
+		texture = new Texture(Gdx.files.internal("spell1OrWathever.png"));
 	}
 
 	public void update(float deltaTime) {
 		world.step(1/60f, 6, 2);
-        
     	this.gameTime += deltaTime;
     	arenaInf.updateTime(gameTime);
 	}
@@ -91,7 +100,13 @@ public class ArenaGameManager implements InputProcessor {
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		return false;
+		
+		if (keycode == Input.Keys.SPACE) {
+			Vector3 destInWorld = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+			player.castSpell(AUTO_ATTACK_INDEX, new Vector2(destInWorld.x, destInWorld.y));
+		}
+			
+		return true;
 	}
 
 	@Override

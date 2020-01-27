@@ -103,6 +103,8 @@ public class ArenaGameScreen extends ScreenAdapter
 	@Override
 	public void dispose() {
 		arenaGameManager.dispose();
+		map.dispose();
+		tiledMapRenderer.dispose();
 	}
 
 	

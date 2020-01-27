@@ -12,10 +12,8 @@ import com.honours.game.scenes.SettingsScene;
 public class SettingsScreen extends ScreenAdapter {
 	
 	private SettingsScene settingsScene;
-	private FitViewport viewport;
 	
 	public SettingsScreen(HonoursGame game) {
-		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
 		settingsScene = new SettingsScene(game.getBatch(), game);
 		
 
