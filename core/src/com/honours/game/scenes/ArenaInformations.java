@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.w3c.dom.ls.LSInput;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.honours.game.manager.ArenaGameManager;
 import com.honours.game.scenes.ui.LabelCreator;
 import com.honours.game.scenes.ui.TableCreator;
 import com.honours.game.screens.ArenaGameScreen;
@@ -31,22 +34,22 @@ public class ArenaInformations implements Disposable {
 	
 
 
-	public ArenaInformations(SpriteBatch batch, List<Integer> listOfKeyForSpells, List<Player> players, double gameTime) {
+	public ArenaInformations(SpriteBatch batch, List<Player> players, float gameTime) {
 		
 			
 		Viewport viewport = new FillViewport(ArenaGameScreen.VIRTUAL_WIDTH, ArenaGameScreen.VIRTUAL_HEIGHT); 
 		stage = new Stage(viewport, batch);
 		
 		for (Player player : players) {
-			listLabelLifePoints.add(LabelCreator.createLabel(String.valueOf(player.getHealthPoints()), Color.RED));
-			listLabelManaPoints.add(LabelCreator.createLabel(String.valueOf(player.getAmountOfMana()), Color.BLUE));
+			listLabelLifePoints.add(LabelCreator.createLabel(formatFloat(player.getHealthPoints()), Color.RED));
+			listLabelManaPoints.add(LabelCreator.createLabel(formatFloat(player.getAmountOfMana()), Color.BLUE));
 		}
 		
-		for (int keyForSpell : listOfKeyForSpells) {
-			listKeyForSpells.add(LabelCreator.createLabel(Input.Keys.toString(keyForSpell)));
+		for (int keyForSpell : ArenaGameManager.keyForSpells) {
+			listKeyForSpells.add(LabelCreator.createLabel(keyToString(keyForSpell)));
 		}
 		
-		labelForGameTime = LabelCreator.createLabel(String.valueOf(gameTime));
+		labelForGameTime = LabelCreator.createLabel(formatFloat(gameTime));
 		
 		TableCreator tableCreator = new TableCreator(Align.top, true);
 		tableCreator.createRowWithCell(Arrays.asList(labelForGameTime));
@@ -63,8 +66,8 @@ public class ArenaInformations implements Disposable {
 		stage.addActor(tableCreator.getTable());
 	}
 
-	public void updateTime(double gameTime) {
-		this.labelForGameTime.setText(String.format("%.1f",gameTime));;
+	public void updateTime(float gameTime) {
+		this.labelForGameTime.setText(formatFloat(gameTime));;
 	}
 
 
@@ -76,6 +79,32 @@ public class ArenaInformations implements Disposable {
 	public Stage getStage() {
 		return stage;
 	}
+
+	public void update(float gameTime, List<Player> players) {
+		updateTime(gameTime);
+		Player currentPlayer;
+		for (int i = 0; i < players.size(); i++) {
+			currentPlayer = players.get(i);
+			listLabelLifePoints.get(i).setText(String.valueOf(currentPlayer.getHealthPoints()));
+			listLabelManaPoints.get(i).setText(String.valueOf(currentPlayer.getAmountOfMana()));
+		}
+		currentPlayer = players.get(0);
+		for (int i = 0; i < 1; i++) {
+			float couldown = currentPlayer.getSpellCouldown(i);
+			if (couldown == 0) {
+				listKeyForSpells.get(i).setText(keyToString(ArenaGameManager.keyForSpells.get(i)));
+			} else {
+				listKeyForSpells.get(i).setText(formatFloat(couldown));
+			}	
+		}
+	}
 	
+	private String keyToString(int keyCode) {
+		return Input.Keys.toString(keyCode);
+	}
+	
+	private String formatFloat(float f) {
+		return String.format("%.1f",f);
+	}
 	
 }

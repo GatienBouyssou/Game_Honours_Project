@@ -3,19 +3,25 @@ package com.honours.game.sprites;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.honours.game.HonoursGame;
 import com.honours.game.sprites.spells.Spell;
 import com.honours.game.tools.UnitConverter;
+
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 public class Player extends Sprite {
 	public static final int MOVEMENT_SPEED = 3;
@@ -33,9 +39,11 @@ public class Player extends Sprite {
 	
 	private List<Spell> listOfSpells;
 
+	private PointLight playerSight;
+
 	public static float BOX_UNIT;
 		
-	public Player(World world, Vector2 startingPosition, Texture texture, List<Spell> listOfSpells) {
+	public Player(World world, Vector2 startingPosition, Texture texture, List<Spell> listOfSpells, RayHandler rayHandler) {
 		super(texture);
 		SIZE_CHARACTER = UnitConverter.toPPM(texture.getWidth()/2);
 		BOX_UNIT = SIZE_CHARACTER/2;
@@ -47,6 +55,15 @@ public class Player extends Sprite {
 		float heightSprite = UnitConverter.toPPM(texture.getHeight());
 		setBounds(startingPosition.x - widthSprite/2, startingPosition.y-heightSprite/2, widthSprite, heightSprite);
 		setRegion(texture);
+		
+		Vector2 bodyPos = body.getPosition();
+		 
+        playerSight = new PointLight(rayHandler, 100,Color.BLACK, 15, bodyPos.x, bodyPos.y);
+		playerSight.attachToBody(body);	
+		Filter filter = new Filter();
+		filter.categoryBits = HonoursGame.LIGHT_BIT;
+		playerSight.setContactFilter(filter);
+		
 	}
 
 	private void create(Vector2 startingPosition) {
@@ -69,18 +86,29 @@ public class Player extends Sprite {
 		shape.dispose();
 	}
 	
+	public void drawPlayerAndSpellsIfInLight(SpriteBatch batch, RayHandler rayHandlerHuman) {
+		if(rayHandlerHuman.pointAtLight(getBodyPosition().x, getBodyPosition().y)) {
+			super.draw(batch);
+		}
+		for (Spell spell : listOfSpells) {
+			if(rayHandlerHuman.pointAtLight(spell.getX(), spell.getY())) {
+				spell.draw(batch);
+			}
+		}
+	}
+	
 	@Override
 	public void draw(Batch batch) {
-		float deltaTime = Gdx.graphics.getDeltaTime();
-		update(deltaTime);
+		super.draw(batch);
 		for (Spell spell : listOfSpells) {
-			spell.updateAndDraw(batch, body.getPosition(), deltaTime);
+			spell.draw(batch);
 		}
-//		super.draw(batch);
-		
 	}
 
-    private void update(float deltaTime) {
+    public void update(float deltaTime) { 
+		for (Spell spell : listOfSpells) {
+			spell.update(deltaTime);
+		}
     	if (wayPointNotReached) {
     		setPosition(body.getPosition().x - getWidth()/2, body.getPosition().y-getHeight()/2);
     		if (iswayPointReached()) {
@@ -141,6 +169,12 @@ public class Player extends Sprite {
 
 	public void setListOfSpells(List<Spell> listOfSpells) {
 		this.listOfSpells = listOfSpells;
-	}	
+	}
+
+	public float getSpellCouldown(int i) {
+		return listOfSpells.get(i).getTimeRemainingForSpell();
+	}
+
+		
 	
 }

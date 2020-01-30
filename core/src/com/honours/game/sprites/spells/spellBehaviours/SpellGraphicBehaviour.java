@@ -1,8 +1,6 @@
 package com.honours.game.sprites.spells.spellBehaviours;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -22,6 +20,7 @@ public abstract class SpellGraphicBehaviour  {
 	protected static final float MOVEMENT_SPEED = 1;
 
 	protected Body body;
+	protected World world;
 	
 	protected float stateTime;
 	protected Array<TextureRegion> frames;
@@ -34,6 +33,7 @@ public abstract class SpellGraphicBehaviour  {
 	protected float widthSprite;
 	protected float heightSprite;
 	
+	
 	public SpellGraphicBehaviour() {
 		frames = new Array<TextureRegion>();
 		stateTime = 0;
@@ -41,6 +41,7 @@ public abstract class SpellGraphicBehaviour  {
 	}
 	
 	public void createSpell(Player player, World world, Vector2 destination) {
+		this.world = world;
 		widthSprite = UnitConverter.toPPM(frames.get(0).getRegionWidth());
 		heightSprite = UnitConverter.toPPM(frames.get(0).getRegionHeight());
 		createBody(world, player.getBodyPosition(), widthSprite/2);
@@ -50,6 +51,7 @@ public abstract class SpellGraphicBehaviour  {
 	}
 	
 	protected void createBody(World world, Vector2 position, float radius) {
+		this.world = world;
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(position);
 		bodyDef.type = BodyType.DynamicBody;
@@ -62,12 +64,13 @@ public abstract class SpellGraphicBehaviour  {
 		def.filter.categoryBits = HonoursGame.SPELL_BIT;
 		def.filter.maskBits = HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT;
 		def.shape = shape;
+		def.isSensor = true;
 		
 		this.body.createFixture(def);
 		shape.dispose();
 	}
 		
-	public abstract void update(Vector2 playerPosition, float deltaTime);
+	public abstract void update(float deltaTime);
 
 	public Spell getSpell() {
 		return spell;

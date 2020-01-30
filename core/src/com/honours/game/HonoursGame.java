@@ -19,6 +19,7 @@ public class HonoursGame extends Game
     public final static short WORLD_BIT = 1;
     public final static short PLAYER_BIT = 2;
     public final static short SPELL_BIT = 4;
+    public final static short LIGHT_BIT = 8;
 
     public static final int VIRTUAL_WIDTH = 16;
     public static final int VIRTUAL_HEIGHT = 16;

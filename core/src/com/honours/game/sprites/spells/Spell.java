@@ -55,43 +55,54 @@ public class Spell extends Sprite {
 			player.setAmountOfMana(player.getAmountOfMana() - manaCost);
 			isCasted = true;
 			canBeCasted = false;
+			couldownTimer = couldown;
 		}
 	}
 	
 	private boolean playerCanCastSpell(Player player, Vector2 destination) {
-		if (manaCost > player.getAmountOfMana()) {
+		if (!canBeCasted) {
 			return false;
-		} else if (!playerIsInRange(player.getBodyPosition(), destination)) {
-			return false;	
-		} else if (!canBeCasted) {
+		} else if (manaCost > player.getAmountOfMana()) {
 			return false;
 		}
 		return true;
 	}
 
-	private boolean playerIsInRange(Vector2 bodyPosition, Vector2 destination) {
+	public boolean playerIsInRange(Vector2 bodyPosition, Vector2 destination) {
 		if(bodyPosition.dst(destination) > range) {
 			return false;
 		}
 		return true;
 	}
 
+	@Override
+	public void draw(Batch batch) {
+		if(isCasted)
+			super.draw(batch);
+	}
 	
-	public void updateAndDraw(Batch batch, Vector2 playerPosition, float deltaTime) {
+	public void update(float deltaTime) {
 
 		if (isCasted) {
-			spellBehaviour.update(playerPosition, deltaTime);
-			super.draw(batch);
+			spellBehaviour.update(deltaTime);
 		}
 		if (!canBeCasted) {
-			couldownTimer += deltaTime;
-			if (couldown < couldownTimer) {
+			couldownTimer -= deltaTime;
+			if (couldownTimer <= 0) {
 				couldownTimer = 0;
 				canBeCasted = true;
 			}
 		}
 	}
-
+	
+	public void applyEffectToPlayer(Player player) {
+		effect.applyEffectToPlayer(player);
+	}
+	
+	public void isCasted(boolean isCasted) {
+		this.isCasted = isCasted;
+	}
+	
 	public float getRange() {
 		return range;
 	}
@@ -126,7 +137,7 @@ public class Spell extends Sprite {
 	}
 
 	public float getTimeRemainingForSpell() {
-		return couldown - couldownTimer;
+		return couldownTimer;
 	}
 
 }

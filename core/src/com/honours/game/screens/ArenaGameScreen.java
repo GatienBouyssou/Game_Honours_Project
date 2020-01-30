@@ -78,7 +78,7 @@ public class ArenaGameScreen extends ScreenAdapter
 
         tiledMapRenderer.render();
         
-        arenaGameManager.render(game.getBatch(), viewport);
+        arenaGameManager.render(game.getBatch());
         
     }
     
@@ -100,6 +100,10 @@ public class ArenaGameScreen extends ScreenAdapter
 		return camera;
 	}
 	
+	public Viewport getViewport() {
+		return viewport;
+	}
+
 	@Override
 	public void dispose() {
 		arenaGameManager.dispose();
