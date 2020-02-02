@@ -14,6 +14,11 @@ public class LinearSpell extends SpellGraphicBehaviour {
 	
 	@Override
 	public void update(float deltaTime) {
+		if (mustBeDestroyed) {
+			destroyBody();
+			mustBeDestroyed = false;
+			return;
+		}
 		stateTime+=deltaTime;
 		if (iswayPointReached()) {
     		spell.setPosition(body.getPosition().x - widthSprite/2, body.getPosition().y-widthSprite/2);
@@ -24,13 +29,6 @@ public class LinearSpell extends SpellGraphicBehaviour {
 		}
 		spell.setRegion(spellAnimation.getKeyFrame(stateTime, true));
 		spell.setPosition(body.getPosition().x - widthSprite/2, body.getPosition().y-heightSprite/2);	
-	}
-	
-	private void destroyBody() {
-		world.destroyBody(body);
-		body.setLinearVelocity( new Vector2(0, 0) );
-		body = null;
-		spell.isCasted(false);
 	}
 
 	public boolean iswayPointReached() {
@@ -62,7 +60,6 @@ public class LinearSpell extends SpellGraphicBehaviour {
 		spell.setRotation((float) Math.toDegrees(angle));
 		body.setTransform(body.getPosition(), angle);
 		velocity.set((float) Math.cos(angle) * MOVEMENT_SPEED, (float) Math.sin(angle) * MOVEMENT_SPEED);
-		velocity.nor();
 		body.setLinearVelocity(velocity);
 	}
 

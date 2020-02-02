@@ -7,6 +7,8 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.honours.game.HonoursGame;
+import com.honours.game.sprites.Player;
+import com.honours.game.sprites.spells.Spell;
 
 public class PlayerContactListener implements ContactListener{
 
@@ -18,11 +20,16 @@ public class PlayerContactListener implements ContactListener{
 		int categoryBit = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 		switch (categoryBit) {
 			case HonoursGame.WORLD_BIT | HonoursGame.PLAYER_BIT :
-				fixB.getBody().setLinearVelocity(new Vector2(0,0));
+				fixB.getBody().setLinearVelocity(new Vector2(0,0)); 
 				break;
 			
 			case  HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT:
-				System.out.println("Spell touch player");
+				if (fixA.getFilterData().categoryBits == HonoursGame.PLAYER_BIT) {
+					((Spell) fixB.getUserData()).applyEffectToPlayer((Player) fixA.getUserData());
+				} else {
+					((Spell) fixA.getUserData()).applyEffectToPlayer((Player) fixB.getUserData());
+				}
+				
 				break;
 			default:
 				System.out.println("default");

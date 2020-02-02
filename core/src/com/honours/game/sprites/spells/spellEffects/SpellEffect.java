@@ -25,7 +25,7 @@ public class SpellEffect {
 
 
 	public void applyEffectToPlayer(Player player) {
-		
+		player.damagePlayer(damageDealt);
 	}
 
 	public float getDamageDealt() {

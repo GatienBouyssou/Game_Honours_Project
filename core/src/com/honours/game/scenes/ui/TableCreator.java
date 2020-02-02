@@ -5,9 +5,10 @@ import java.util.List;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-public class TableCreator extends Table {
+public class TableCreator {
 	
 	private Table table;
 	
@@ -59,7 +60,7 @@ public class TableCreator extends Table {
 		Table table = new Table();
 		table.align(align);
 		for (Label label : contents) {
-			table.add(label).expandX();
+			table.add(label).colspan(2);
 		}
 		return table;
 	}
@@ -85,7 +86,17 @@ public class TableCreator extends Table {
 		this.table = table;
 	}
 
-	
+	public void addCell(Actor actor) {
+		table.add(actor);
+	}
+
+	public void createCellWithList(List<Label> element) {
+		Stack stack = new Stack();
+		for (Label label : element) {
+			stack.add(label);
+		}
+		table.add(stack).expandX();
+	}
 	
 	
 }

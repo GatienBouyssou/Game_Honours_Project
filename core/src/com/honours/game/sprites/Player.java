@@ -17,6 +17,8 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.honours.game.HonoursGame;
+import com.honours.game.manager.ArenaGameManager;
+import com.honours.game.scenes.ArenaInformations;
 import com.honours.game.sprites.spells.Spell;
 import com.honours.game.tools.UnitConverter;
 
@@ -24,7 +26,7 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 public class Player extends Sprite {
-	public static final int MOVEMENT_SPEED = 3;
+	public static final float MOVEMENT_SPEED = 10;
 	
 	private float healthPoints = 100;
 	private float amountOfMana = 100;
@@ -40,17 +42,24 @@ public class Player extends Sprite {
 	private List<Spell> listOfSpells;
 
 	private PointLight playerSight;
+	
+	private int teamId;
+	private int playerId;
 
-	public static float BOX_UNIT;
+	private boolean isDead = false;
 		
-	public Player(World world, Vector2 startingPosition, Texture texture, List<Spell> listOfSpells, RayHandler rayHandler) {
+	public Player(World world, Vector2 startingPosition, Texture texture, List<Spell> listOfSpells, RayHandler rayHandler, int teamId, int playerId) {
 		super(texture);
+		this.playerId = playerId;
+		this.teamId = teamId;
 		SIZE_CHARACTER = UnitConverter.toPPM(texture.getWidth()/2);
-		BOX_UNIT = SIZE_CHARACTER/2;
 		this.world = world;
 		this.listOfSpells = listOfSpells;
-		
+		for (Spell spell : listOfSpells) {
+			spell.setTeamId(teamId);
+		}
 		create(startingPosition);	
+		
 		float widthSprite = UnitConverter.toPPM(texture.getWidth());
 		float heightSprite = UnitConverter.toPPM(texture.getHeight());
 		setBounds(startingPosition.x - widthSprite/2, startingPosition.y-heightSprite/2, widthSprite, heightSprite);
@@ -106,6 +115,11 @@ public class Player extends Sprite {
 	}
 
     public void update(float deltaTime) { 
+    	if (isDead) {
+    		destroyBody();
+			ArenaGameManager.playerIsDead(teamId, playerId);
+			return;
+		}
 		for (Spell spell : listOfSpells) {
 			spell.update(deltaTime);
 		}
@@ -115,6 +129,14 @@ public class Player extends Sprite {
     			body.setLinearVelocity( new Vector2(0, 0) );		
     		}
 		}
+	}
+    
+    public void destroyBody() {
+    	System.out.println(body);
+		world.destroyBody(body);
+		body.setLinearVelocity(new Vector2(0, 0));
+		body.setUserData(null);
+		body = null; 
 	}
     
     private void getVelocity() {
@@ -129,7 +151,6 @@ public class Player extends Sprite {
 		this.destination = new Vector2(x, y);
 		wayPointNotReached = true;
 		getVelocity();
-		velocity.nor();
 		body.setLinearVelocity(velocity);
 	}
 
@@ -138,8 +159,7 @@ public class Player extends Sprite {
 	}
 	
 	public void castSpell(int spellIndex, Vector2 destination) {
-		listOfSpells.get(spellIndex).castSpell(this, world, destination);
-		
+		listOfSpells.get(spellIndex).castSpell(this, world, destination);		
 	}
 
 	public Vector2 getBodyPosition() {
@@ -154,8 +174,12 @@ public class Player extends Sprite {
 		return healthPoints;
 	}
 
-	public void setHealthPoints(float healthPoints) {
-		this.healthPoints = healthPoints;
+	public void damagePlayer(float damages) {
+		this.healthPoints -= damages;
+		ArenaInformations.updatePlayerHealth(teamId, playerId, healthPoints);
+		if (healthPoints <= 0) {
+			isDead = true;
+		}
 	}
 
 	public float getAmountOfMana() {
@@ -164,6 +188,7 @@ public class Player extends Sprite {
 
 	public void setAmountOfMana(float f) {
 		this.amountOfMana = f;
+		ArenaInformations.updatePlayerMana(teamId, playerId, amountOfMana);
 	}
 	
 
@@ -175,6 +200,16 @@ public class Player extends Sprite {
 		return listOfSpells.get(i).getTimeRemainingForSpell();
 	}
 
+	public int getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(int teamId) {
+		this.teamId = teamId;
+	}
+
+	public int getId() {
+		return playerId;
+	}
 		
-	
 }

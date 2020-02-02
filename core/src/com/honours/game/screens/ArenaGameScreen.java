@@ -79,12 +79,14 @@ public class ArenaGameScreen extends ScreenAdapter
         tiledMapRenderer.render();
         
         arenaGameManager.render(game.getBatch());
-        
+        if (arenaGameManager.isGameOver()) {
+			game.setScreen(new EndScreen(game));
+			dispose();
+        }
     }
     
     public void hide() {
         Gdx.input.setInputProcessor((InputProcessor)null);
-        arenaGameManager.dispose();
     }
 
 
@@ -106,8 +108,8 @@ public class ArenaGameScreen extends ScreenAdapter
 
 	@Override
 	public void dispose() {
-		arenaGameManager.dispose();
 		map.dispose();
+		arenaGameManager.dispose();
 		tiledMapRenderer.dispose();
 	}
 

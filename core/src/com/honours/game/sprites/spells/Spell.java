@@ -29,6 +29,8 @@ public class Spell extends Sprite {
 	private boolean isCasted = false;
 	private float couldownTimer = 0;
 	
+	private int teamId;
+	
 	public Spell() {
 		
 	}
@@ -77,8 +79,9 @@ public class Spell extends Sprite {
 
 	@Override
 	public void draw(Batch batch) {
-		if(isCasted)
+		if(isCasted) {
 			super.draw(batch);
+		}
 	}
 	
 	public void update(float deltaTime) {
@@ -96,7 +99,10 @@ public class Spell extends Sprite {
 	}
 	
 	public void applyEffectToPlayer(Player player) {
+		if (player.getTeamId() != teamId) 
+			return;
 		effect.applyEffectToPlayer(player);
+		spellBehaviour.mustBeDestroyed();
 	}
 	
 	public void isCasted(boolean isCasted) {
@@ -140,4 +146,13 @@ public class Spell extends Sprite {
 		return couldownTimer;
 	}
 
+	public int getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(int teamId) {
+		this.teamId = teamId;
+	}
+
+	
 }

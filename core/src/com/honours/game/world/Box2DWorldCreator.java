@@ -3,6 +3,7 @@ package com.honours.game.world;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
@@ -21,14 +22,17 @@ import com.honours.game.tools.UnitConverter;
 public class Box2DWorldCreator {
 	
 	
-	private static final String SPAWNS = "spawns";
+	private static final String SPAWNS_T1 = "spawnsT1";
+	private static final String SPAWNS_T2 = "spawnsT2";
 	private static final String COLLISIONS_FOR_WALLS = "collisionsForWalls";
 	private static final String COLLISIONS_FOR_TREES = "collisionsForTrees";
 	
-	private List<Vector2> listOfSpawns;
+	private List<Vector2> listOfSpawnsT1;
+	private List<Vector2> listOfSpawnsT2;
 
 	public Box2DWorldCreator(World world, TiledMap map) {
-		listOfSpawns = new ArrayList<Vector2>();
+		listOfSpawnsT1 = new ArrayList<Vector2>();
+		listOfSpawnsT2 = new ArrayList<Vector2>();
 		
 		BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
@@ -43,8 +47,12 @@ public class Box2DWorldCreator {
             polygonToBox2DBody(world, bdef, shape, fdef, walls);
         }
         
-        for(MapObject spawns : map.getLayers().get(SPAWNS).getObjects()){
-            listOfSpawns.add(getPolygonPosition(spawns));
+        for(MapObject spawns : map.getLayers().get(SPAWNS_T1).getObjects()){
+            listOfSpawnsT1.add(getPolygonPosition(spawns));
+        }
+        
+        for(MapObject spawns : map.getLayers().get(SPAWNS_T2).getObjects()){
+            listOfSpawnsT2.add(getPolygonPosition(spawns));
         }
 	}
 
@@ -73,11 +81,27 @@ public class Box2DWorldCreator {
 				UnitConverter.toPPM(colZoneForTrees.getY()));
 	}
 
-	public List<Vector2> getListOfSpawns() {
-		return listOfSpawns;
+	public List<Vector2> getListOfSpawnsT1() {
+		return listOfSpawnsT1;
 	}
 	
-	public Vector2 getSpawn(int index) {
-		return listOfSpawns.get(index);
+	public Vector2 getSpawnT1(int index) {
+		return listOfSpawnsT1.get(index);
+	}
+
+	public Vector2 getRandomSpawnT1() {
+		return this.listOfSpawnsT1.get(new Random().nextInt(listOfSpawnsT1.size()));
+	}
+	
+	public List<Vector2> getListOfSpawnsT2() {
+		return listOfSpawnsT2;
+	}
+	
+	public Vector2 getSpawnT2(int index) {
+		return listOfSpawnsT2.get(index);
+	}
+
+	public Vector2 getRandomSpawnT2() {
+		return this.listOfSpawnsT2.get(new Random().nextInt(listOfSpawnsT1.size()));
 	}
 }

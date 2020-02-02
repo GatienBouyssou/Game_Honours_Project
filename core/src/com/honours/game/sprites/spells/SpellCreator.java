@@ -19,9 +19,9 @@ public class SpellCreator {
 	
 	private void createSpells() {
 		Texture texture = new Texture(Gdx.files.internal("spell1OrWathever.png"));
-		Spell spell = new Spell(Spell.MEDIUM_RANGE, Spell.MEDIUM_COULDOWN, texture);
+		Spell spell = new Spell(Spell.MEDIUM_RANGE, Spell.SHORT_COULDOWN, texture);
 		spell.setSpellBehaviour(new LinearSpell());
-		spell.setEffect(new SpellEffect(10,0,0,0,true,(float)0.5));
+		spell.setEffect(new SpellEffect(50,0,0,0,true,(float)0.5));
 		listOfSpellCreated.add(spell);
 	}
 

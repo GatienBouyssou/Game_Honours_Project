@@ -17,7 +17,7 @@ import com.honours.game.tools.UnitConverter;
 
 public abstract class SpellGraphicBehaviour  {
 	
-	protected static final float MOVEMENT_SPEED = 1;
+	protected static final float MOVEMENT_SPEED = 5;
 
 	protected Body body;
 	protected World world;
@@ -33,6 +33,8 @@ public abstract class SpellGraphicBehaviour  {
 	protected float widthSprite;
 	protected float heightSprite;
 	
+	protected boolean mustBeDestroyed = false;
+	
 	
 	public SpellGraphicBehaviour() {
 		frames = new Array<TextureRegion>();
@@ -47,7 +49,7 @@ public abstract class SpellGraphicBehaviour  {
 		createBody(world, player.getBodyPosition(), widthSprite/2);
 		spell.setOrigin(widthSprite/2, heightSprite/2);
 		spell.setBounds(body.getPosition().x - widthSprite/2, body.getPosition().y-heightSprite/2, widthSprite, heightSprite);
-		spell.setRegion(frames.get(0));
+		spell.setRegion(frames.get(0)); 
 	}
 	
 	protected void createBody(World world, Vector2 position, float radius) {
@@ -66,7 +68,7 @@ public abstract class SpellGraphicBehaviour  {
 		def.shape = shape;
 		def.isSensor = true;
 		
-		this.body.createFixture(def);
+		this.body.createFixture(def).setUserData(spell);;
 		shape.dispose();
 	}
 		
@@ -85,6 +87,17 @@ public abstract class SpellGraphicBehaviour  {
 		}
 		spellAnimation = new Animation<TextureRegion>(01f, frames);
 		
+	}
+	
+	public void destroyBody() {
+		world.destroyBody(body);
+		body.setLinearVelocity(new Vector2(0, 0));
+		body = null; 
+		spell.isCasted(false);
+	}
+
+	public void mustBeDestroyed() {
+		this.mustBeDestroyed = true;
 	}
 	
 	

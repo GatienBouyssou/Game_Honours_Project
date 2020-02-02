@@ -29,7 +29,7 @@ public class EndScreen extends ScreenAdapter
     public EndScreen(final HonoursGame game) {
         this.game = game;
         
-        viewport = new FitViewport(HonoursGame.VIRTUAL_WIDTH, HonoursGame.VIRTUAL_HEIGHT, new OrthographicCamera());
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         stage = new Stage(viewport, game.getBatch());
         
         Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
