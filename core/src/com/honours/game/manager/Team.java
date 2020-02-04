@@ -9,6 +9,7 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -52,6 +53,12 @@ public class Team {
 	}
 	
 	public void addNewPlayer(Vector2 spawnPoint, Texture aspectOfPlayer, List<Spell> listOfSpells) {
+		Player player = new Player(world, spawnPoint, aspectOfPlayer, listOfSpells, rayHandler, teamId, listOfPlayersAlive.size());
+		listOfPlayersAlive.add(player.getId());
+		mapOfPlayers.put(player.getId(), player);
+	}
+	
+	public void addNewPlayer(Vector2 spawnPoint, TextureRegion aspectOfPlayer, List<Spell> listOfSpells) {
 		Player player = new Player(world, spawnPoint, aspectOfPlayer, listOfSpells, rayHandler, teamId, listOfPlayersAlive.size());
 		listOfPlayersAlive.add(player.getId());
 		mapOfPlayers.put(player.getId(), player);

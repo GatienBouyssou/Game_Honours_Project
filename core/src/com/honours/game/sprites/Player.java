@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -50,20 +51,36 @@ public class Player extends Sprite {
 		
 	public Player(World world, Vector2 startingPosition, Texture texture, List<Spell> listOfSpells, RayHandler rayHandler, int teamId, int playerId) {
 		super(texture);
+		SIZE_CHARACTER = UnitConverter.toPPM(texture.getWidth()/2);
+		float widthSprite = UnitConverter.toPPM(texture.getWidth());
+		float heightSprite = UnitConverter.toPPM(texture.getHeight());
+		setBounds(startingPosition.x - widthSprite/2, startingPosition.y-heightSprite/2, widthSprite, heightSprite);
+		setRegion(texture);
+		createPlayer(world, startingPosition, listOfSpells, rayHandler, teamId, playerId);
+		
+	}
+
+	public Player(World world, Vector2 startingPosition, TextureRegion region, List<Spell> listOfSpells, RayHandler rayHandler, int teamId, int playerId) {
+		super(region);
+		SIZE_CHARACTER = UnitConverter.toPPM(region.getRegionWidth()/2);
+		float widthSprite = UnitConverter.toPPM(region.getRegionWidth());
+		float heightSprite = UnitConverter.toPPM(region.getRegionHeight());
+		setBounds(startingPosition.x - widthSprite/2, startingPosition.y-heightSprite/2, widthSprite, heightSprite);
+		setRegion(region);
+		createPlayer(world, startingPosition, listOfSpells, rayHandler, teamId, playerId);
+		
+	}
+	
+	private void createPlayer(World world, Vector2 startingPosition, List<Spell> listOfSpells,
+			RayHandler rayHandler, int teamId, int playerId) {
 		this.playerId = playerId;
 		this.teamId = teamId;
-		SIZE_CHARACTER = UnitConverter.toPPM(texture.getWidth()/2);
 		this.world = world;
 		this.listOfSpells = listOfSpells;
 		for (Spell spell : listOfSpells) {
 			spell.setTeamId(teamId);
 		}
 		create(startingPosition);	
-		
-		float widthSprite = UnitConverter.toPPM(texture.getWidth());
-		float heightSprite = UnitConverter.toPPM(texture.getHeight());
-		setBounds(startingPosition.x - widthSprite/2, startingPosition.y-heightSprite/2, widthSprite, heightSprite);
-		setRegion(texture);
 		
 		Vector2 bodyPos = body.getPosition();
 		 
@@ -72,7 +89,6 @@ public class Player extends Sprite {
 		Filter filter = new Filter();
 		filter.categoryBits = HonoursGame.LIGHT_BIT;
 		playerSight.setContactFilter(filter);
-		
 	}
 
 	private void create(Vector2 startingPosition) {
@@ -100,7 +116,7 @@ public class Player extends Sprite {
 			super.draw(batch);
 		}
 		for (Spell spell : listOfSpells) {
-			if(rayHandlerHuman.pointAtLight(spell.getX(), spell.getY())) {
+			if(rayHandlerHuman.pointAtLight(spell.getInstanceX(), spell.getInstanceY())) {
 				spell.draw(batch);
 			}
 		}
@@ -132,7 +148,6 @@ public class Player extends Sprite {
 	}
     
     public void destroyBody() {
-    	System.out.println(body);
 		world.destroyBody(body);
 		body.setLinearVelocity(new Vector2(0, 0));
 		body.setUserData(null);

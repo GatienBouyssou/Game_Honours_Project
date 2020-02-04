@@ -23,8 +23,6 @@ public class EndScreen extends ScreenAdapter
     private HonoursGame game;
 	private FitViewport viewport;
 	private Stage stage;
-	
-	
     
     public EndScreen(final HonoursGame game) {
         this.game = game;

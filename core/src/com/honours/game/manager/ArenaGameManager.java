@@ -65,16 +65,17 @@ public class ArenaGameManager implements InputProcessor {
         boxRenderer = new Box2DDebugRenderer();       
         worldCreator = new Box2DWorldCreator(world, screen.getMap());
         
+        
         // Players
         Team teamHuman = new Team(TEAM_HUMAN, world, screen.getViewport());
         Team teamAI = new Team(TEAM_AI, world, screen.getViewport());
     	
     	// players
-    	Texture texture = new Texture(Gdx.files.local("icon.png"));
 		HonoursGame game = screen.getGame();
+		TextureAtlas textureAtlas = game.getTextureAtlas();
 		
-		teamHuman.addNewPlayer(worldCreator.getRandomSpawnT1(), texture, game.getListOfSpellsAvailable());
-		teamAI.addNewPlayer(worldCreator.getRandomSpawnT2(), texture, game.getListOfSpellsAvailable());
+		teamHuman.addNewPlayer(worldCreator.getRandomSpawnT1(), textureAtlas.findRegion("playerHuman"), game.getListOfSpellsAvailable());
+		teamAI.addNewPlayer(worldCreator.getRandomSpawnT2(), textureAtlas.findRegion("playerAI"), game.getListOfSpellsAvailable());
 
 		teams.add(teamHuman);
 		teams.add(teamAI);

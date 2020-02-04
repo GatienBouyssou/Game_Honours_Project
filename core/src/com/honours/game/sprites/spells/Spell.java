@@ -1,15 +1,13 @@
 package com.honours.game.sprites.spells;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.honours.game.sprites.Player;
 import com.honours.game.sprites.spells.spellBehaviours.SpellGraphicBehaviour;
 import com.honours.game.sprites.spells.spellEffects.SpellEffect;
 
-public class Spell extends Sprite {
+public class Spell {
 	public static final float SHORT_RANGE = 1;
 	public static final float MEDIUM_RANGE = 5;
 	public static final float LONG_RANGE = 10;
@@ -35,8 +33,7 @@ public class Spell extends Sprite {
 		
 	}
 
-	public Spell(float range, float couldown, SpellGraphicBehaviour spellBehaviour, SpellEffect effect, Texture texture) {
-		super(texture);
+	public Spell(float range, float couldown, SpellGraphicBehaviour spellBehaviour, SpellEffect effect) {
 		this.range = range;
 		this.couldown = couldown;
 		spellBehaviour.setSpell(this);
@@ -44,11 +41,9 @@ public class Spell extends Sprite {
 		this.effect = effect;
 	}
 
-	public Spell(float range, float couldown, Texture texture) {
-		super(texture);
+	public Spell(float range, float couldown) {
 		this.range = range;
 		this.couldown = couldown;
-		setPosition(0, 0);
 	}
 	
 	public void castSpell(Player player, World world, Vector2 destination) {
@@ -77,10 +72,9 @@ public class Spell extends Sprite {
 		return true;
 	}
 
-	@Override
 	public void draw(Batch batch) {
 		if(isCasted) {
-			super.draw(batch);
+			spellBehaviour.draw(batch);
 		}
 	}
 	
@@ -154,5 +148,11 @@ public class Spell extends Sprite {
 		this.teamId = teamId;
 	}
 
-	
+	public float getInstanceX() {
+		return spellBehaviour.getX();
+	}
+
+	public float getInstanceY() {
+		return spellBehaviour.getY();
+	}
 }

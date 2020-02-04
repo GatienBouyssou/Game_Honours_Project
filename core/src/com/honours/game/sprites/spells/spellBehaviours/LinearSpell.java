@@ -2,6 +2,7 @@ package com.honours.game.sprites.spells.spellBehaviours;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.honours.game.HonoursGame;
@@ -9,7 +10,34 @@ import com.honours.game.sprites.Player;
 import com.honours.game.tools.UnitConverter;
 
 public class LinearSpell extends SpellGraphicBehaviour {
+	
+	public static final float STATIC_SPELL = 0;
+	public static final float TURTLE_SPEED = 1;
+	public static final float HUMAN_SPEED = 2;
+	public static final float FOX_SPEED = 3;
+	public static final float CHEETAH_SPEED = 5;
+	public static final float GOD_SPEED = 8;
 
+	private float movementSpeed = 1;
+	
+	public LinearSpell(TextureRegion region) {
+		super(region);
+	}
+	
+	public LinearSpell(TextureRegion region, float movementSpeed) {
+		super(region);
+		this.movementSpeed = movementSpeed;
+	}
+
+	public LinearSpell(TextureRegion region, float scaleX, float scaleY) {
+		super(region, scaleX, scaleY);
+	}
+	
+	public LinearSpell(TextureRegion region, float scaleX, float scaleY, float movementSpeed) {
+		super(region, scaleX, scaleY);
+		this.movementSpeed = movementSpeed;
+	}
+	
 	private Vector2 destination;
 	
 	@Override
@@ -21,18 +49,17 @@ public class LinearSpell extends SpellGraphicBehaviour {
 		}
 		stateTime+=deltaTime;
 		if (iswayPointReached()) {
-    		spell.setPosition(body.getPosition().x - widthSprite/2, body.getPosition().y-widthSprite/2);
+    		setPosition(body.getPosition().x - widthSprite/2, body.getPosition().y-widthSprite/2);
     		if (iswayPointReached()) {
     			destroyBody();
     		}
     		return;
 		}
-		spell.setRegion(spellAnimation.getKeyFrame(stateTime, true));
-		spell.setPosition(body.getPosition().x - widthSprite/2, body.getPosition().y-heightSprite/2);	
+		setPosition(body.getPosition().x - widthSprite/2, body.getPosition().y-heightSprite/2);	
 	}
 
 	public boolean iswayPointReached() {
-		return Math.abs(destination.x - body.getPosition().x)<= MOVEMENT_SPEED * Gdx.graphics.getDeltaTime() && Math.abs(destination.y - body.getPosition().y) <= MOVEMENT_SPEED * Gdx.graphics.getDeltaTime();
+		return Math.abs(destination.x - body.getPosition().x)<= movementSpeed * Gdx.graphics.getDeltaTime() && Math.abs(destination.y - body.getPosition().y) <= movementSpeed * Gdx.graphics.getDeltaTime();
 	}
 	
 	@Override
@@ -57,9 +84,9 @@ public class LinearSpell extends SpellGraphicBehaviour {
 		float bodyY = body.getPosition().y;
 		
 		float angle = (float) Math.atan2(destination.y - bodyY, destination.x - bodyX);
-		spell.setRotation((float) Math.toDegrees(angle));
+		setRotation((float) Math.toDegrees(angle));
 		body.setTransform(body.getPosition(), angle);
-		velocity.set((float) Math.cos(angle) * MOVEMENT_SPEED, (float) Math.sin(angle) * MOVEMENT_SPEED);
+		velocity.set((float) Math.cos(angle) * movementSpeed, (float) Math.sin(angle) * movementSpeed);
 		body.setLinearVelocity(velocity);
 	}
 

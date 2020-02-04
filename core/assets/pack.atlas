@@ -1,0 +1,146 @@
+
+pack.png
+size: 1024,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Bubble
+  rotate: false
+  xy: 757, 129
+  size: 66, 66
+  orig: 66, 66
+  offset: 0, 0
+  index: -1
+Bush
+  rotate: false
+  xy: 2, 19
+  size: 111, 113
+  orig: 111, 113
+  offset: 0, 0
+  index: -1
+Champ
+  rotate: false
+  xy: 516, 140
+  size: 113, 106
+  orig: 113, 106
+  offset: 0, 0
+  index: -1
+WallOfPLants
+  rotate: false
+  xy: 341, 28
+  size: 124, 48
+  orig: 124, 48
+  offset: 0, 0
+  index: -1
+autoAttack
+  rotate: false
+  xy: 757, 197
+  size: 114, 49
+  orig: 114, 49
+  offset: 0, 0
+  index: -1
+fireColumn
+  rotate: false
+  xy: 115, 19
+  size: 111, 113
+  orig: 111, 113
+  offset: 0, 0
+  index: -1
+fireRay
+  rotate: false
+  xy: 2, 210
+  size: 512, 36
+  orig: 512, 36
+  offset: 0, 0
+  index: -1
+fireWall
+  rotate: false
+  xy: 631, 196
+  size: 124, 50
+  orig: 124, 50
+  offset: 0, 0
+  index: -1
+plantRay
+  rotate: false
+  xy: 2, 172
+  size: 512, 36
+  orig: 512, 36
+  offset: 0, 0
+  index: -1
+playerAI
+  rotate: false
+  xy: 873, 182
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+playerAIHeal
+  rotate: false
+  xy: 939, 182
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+playerAIHurt
+  rotate: false
+  xy: 467, 68
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+playerHuman
+  rotate: false
+  xy: 533, 74
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+playerHumanHeal
+  rotate: false
+  xy: 467, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+playerHumanHurt
+  rotate: false
+  xy: 533, 8
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+shadowBush
+  rotate: false
+  xy: 228, 19
+  size: 111, 113
+  orig: 111, 113
+  offset: 0, 0
+  index: -1
+shadowRay
+  rotate: false
+  xy: 2, 134
+  size: 512, 36
+  orig: 512, 36
+  offset: 0, 0
+  index: -1
+shadowWall
+  rotate: false
+  xy: 631, 146
+  size: 124, 48
+  orig: 124, 48
+  offset: 0, 0
+  index: -1
+wallWater
+  rotate: false
+  xy: 341, 78
+  size: 124, 54
+  orig: 124, 54
+  offset: 0, 0
+  index: -1
+waterBall
+  rotate: false
+  xy: 599, 104
+  size: 49, 34
+  orig: 49, 34
+  offset: 0, 0
+  index: -1
