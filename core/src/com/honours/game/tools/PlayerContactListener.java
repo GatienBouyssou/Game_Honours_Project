@@ -29,7 +29,6 @@ public class PlayerContactListener implements ContactListener{
 				} else {
 					((Spell) fixA.getUserData()).applyEffectToPlayer((Player) fixB.getUserData());
 				}
-				
 				break;
 			default:
 				System.out.println("default");

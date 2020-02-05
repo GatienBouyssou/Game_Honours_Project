@@ -21,6 +21,8 @@ import com.honours.game.HonoursGame;
 import com.honours.game.manager.ArenaGameManager;
 import com.honours.game.scenes.ArenaInformations;
 import com.honours.game.sprites.spells.Spell;
+import com.honours.game.tools.BodyFactory;
+import com.honours.game.tools.States;
 import com.honours.game.tools.UnitConverter;
 
 import box2dLight.PointLight;
@@ -28,6 +30,7 @@ import box2dLight.RayHandler;
 
 public class Player extends Sprite {
 	public static final float MOVEMENT_SPEED = 10;
+	public static final float STATE_ANIMATION_DURATION = 1;	
 	
 	private float healthPoints = 100;
 	private float amountOfMana = 100;
@@ -46,27 +49,26 @@ public class Player extends Sprite {
 	
 	private int teamId;
 	private int playerId;
+	
+	private States currentState = States.NORMAL;
+	private float stateTimer =0;
+	
+	private TextureRegion playerHurt;
+	private TextureRegion playerHealing;
+	private TextureRegion playerNormal;
+	
+	private boolean isVisible = true;
 
-	private boolean isDead = false;
-		
-	public Player(World world, Vector2 startingPosition, Texture texture, List<Spell> listOfSpells, RayHandler rayHandler, int teamId, int playerId) {
-		super(texture);
-		SIZE_CHARACTER = UnitConverter.toPPM(texture.getWidth()/2);
-		float widthSprite = UnitConverter.toPPM(texture.getWidth());
-		float heightSprite = UnitConverter.toPPM(texture.getHeight());
+	public Player(World world, Vector2 startingPosition, List<TextureRegion> listRegion, List<Spell> listOfSpells, RayHandler rayHandler, int teamId, int playerId) {
+		super(listRegion.get(0));
+		playerNormal = listRegion.get(0);
+		playerHealing = listRegion.get(1);
+		playerHurt = listRegion.get(2);
+		SIZE_CHARACTER = UnitConverter.toPPM(playerNormal.getRegionWidth()/2);
+		float widthSprite = UnitConverter.toPPM(playerNormal.getRegionWidth());
+		float heightSprite = UnitConverter.toPPM(playerNormal.getRegionHeight());
 		setBounds(startingPosition.x - widthSprite/2, startingPosition.y-heightSprite/2, widthSprite, heightSprite);
-		setRegion(texture);
-		createPlayer(world, startingPosition, listOfSpells, rayHandler, teamId, playerId);
-		
-	}
-
-	public Player(World world, Vector2 startingPosition, TextureRegion region, List<Spell> listOfSpells, RayHandler rayHandler, int teamId, int playerId) {
-		super(region);
-		SIZE_CHARACTER = UnitConverter.toPPM(region.getRegionWidth()/2);
-		float widthSprite = UnitConverter.toPPM(region.getRegionWidth());
-		float heightSprite = UnitConverter.toPPM(region.getRegionHeight());
-		setBounds(startingPosition.x - widthSprite/2, startingPosition.y-heightSprite/2, widthSprite, heightSprite);
-		setRegion(region);
+		setRegion(playerNormal);
 		createPlayer(world, startingPosition, listOfSpells, rayHandler, teamId, playerId);
 		
 	}
@@ -92,23 +94,9 @@ public class Player extends Sprite {
 	}
 
 	private void create(Vector2 startingPosition) {
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.position.set(startingPosition.x,startingPosition.y);
-		bodyDef.type = BodyType.DynamicBody;
-
-		this.body = world.createBody(bodyDef);
-		
-		CircleShape shape = new CircleShape();
-		shape.setRadius(SIZE_CHARACTER);
-		
-		FixtureDef def = new FixtureDef();
-		
-		def.filter.categoryBits = HonoursGame.PLAYER_BIT;
-		def.filter.maskBits = HonoursGame.WORLD_BIT | HonoursGame.SPELL_BIT;
-		def.shape = shape;
-		
-		this.body.createFixture(def).setUserData(this);;
-		shape.dispose();
+		this.body = BodyFactory.createBody(world, startingPosition, BodyType.DynamicBody);
+		Filter filter = BodyFactory.createFilter(HonoursGame.PLAYER_BIT, (short)0, (short)(HonoursGame.WORLD_BIT | HonoursGame.SPELL_BIT));		
+		BodyFactory.createFixture(body, this, BodyFactory.createCircleShape(SIZE_CHARACTER), filter, false);
 	}
 	
 	public void drawPlayerAndSpellsIfInLight(SpriteBatch batch, RayHandler rayHandlerHuman) {
@@ -124,18 +112,28 @@ public class Player extends Sprite {
 	
 	@Override
 	public void draw(Batch batch) {
-		super.draw(batch);
+		if (isVisible) {
+			super.draw(batch);
+		}
+		
 		for (Spell spell : listOfSpells) {
 			spell.draw(batch);
 		}
 	}
 
     public void update(float deltaTime) { 
-    	if (isDead) {
-    		destroyBody();
-			ArenaGameManager.playerIsDead(teamId, playerId);
-			return;
-		}
+    	if (currentState != States.NORMAL) {
+    		if (currentState == States.DEAD) {
+    			BodyFactory.destroyBody(world, body);
+				ArenaGameManager.playerIsDead(teamId, playerId);
+			} else {
+				stateTimer += deltaTime;
+				if (stateTimer >= STATE_ANIMATION_DURATION) {
+					setRegion(playerNormal);
+					stateTimer = 0;
+				}
+			}
+  		}
 		for (Spell spell : listOfSpells) {
 			spell.update(deltaTime);
 		}
@@ -145,13 +143,6 @@ public class Player extends Sprite {
     			body.setLinearVelocity( new Vector2(0, 0) );		
     		}
 		}
-	}
-    
-    public void destroyBody() {
-		world.destroyBody(body);
-		body.setLinearVelocity(new Vector2(0, 0));
-		body.setUserData(null);
-		body = null; 
 	}
     
     private void getVelocity() {
@@ -193,8 +184,18 @@ public class Player extends Sprite {
 		this.healthPoints -= damages;
 		ArenaInformations.updatePlayerHealth(teamId, playerId, healthPoints);
 		if (healthPoints <= 0) {
-			isDead = true;
+			currentState = States.DEAD;
+		} else {
+			currentState = States.HURT;
 		}
+		setRegion(playerHurt);
+	}
+	
+	public void healPlayer(float heal) {
+		this.healthPoints += heal;
+		ArenaInformations.updatePlayerHealth(teamId, playerId, healthPoints);
+		currentState = States.HEALING;
+		setRegion(playerHealing);
 	}
 
 	public float getAmountOfMana() {
@@ -225,6 +226,10 @@ public class Player extends Sprite {
 
 	public int getId() {
 		return playerId;
+	}
+	
+	public void setVisible(boolean isVisible) {
+		this.isVisible = isVisible;
 	}
 		
 }

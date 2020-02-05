@@ -1,20 +1,19 @@
 package com.honours.game.sprites.spells.spellBehaviours;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.honours.game.HonoursGame;
 import com.honours.game.sprites.Player;
 import com.honours.game.sprites.spells.Spell;
+import com.honours.game.tools.BodyFactory;
 import com.honours.game.tools.UnitConverter;
 
 public abstract class SpellGraphicBehaviour extends Sprite {
@@ -59,24 +58,9 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 	}
 	
 	protected void createBody(World world, Vector2 position) {
-		this.world = world;
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.position.set(position);
-		bodyDef.type = BodyType.DynamicBody;
-
-		this.body = world.createBody(bodyDef);
-		
-		PolygonShape polShape = new PolygonShape();
-		polShape.setAsBox(widthSprite/2, heightSprite/2);
-	
-		FixtureDef def = new FixtureDef();
-		def.filter.categoryBits = HonoursGame.SPELL_BIT;
-		def.filter.maskBits = HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT;
-		def.shape = polShape;
-		def.isSensor = true;
-		
-		this.body.createFixture(def).setUserData(spell);;
-		polShape.dispose();
+		this.body = BodyFactory.createBody(world, position, BodyType.DynamicBody);
+		Filter filter = BodyFactory.createFilter(HonoursGame.SPELL_BIT, (short)0,(short)(HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT));
+		BodyFactory.createFixture(body, spell, BodyFactory.createPolygonShapeAsBox(widthSprite, heightSprite), filter, true);
 	}
 		
 	public abstract void update(float deltaTime);
@@ -89,10 +73,8 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 		this.spell = spell;		
 	}
 	
-	public void destroyBody() {
-		world.destroyBody(body);
-		body.setLinearVelocity(new Vector2(0, 0));
-		body = null; 
+	public void destroySpell() {
+		BodyFactory.destroyBody(world, body);
 		spell.isCasted(false);
 	}
 

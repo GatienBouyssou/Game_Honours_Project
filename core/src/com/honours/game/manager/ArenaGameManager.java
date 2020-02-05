@@ -7,29 +7,20 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.honours.game.HonoursGame;
 import com.honours.game.scenes.ArenaInformations;
 import com.honours.game.screens.ArenaGameScreen;
-import com.honours.game.screens.EndScreen;
-import com.honours.game.sprites.Player;
-import com.honours.game.sprites.spells.Spell;
 import com.honours.game.tools.PlayerContactListener;
 import com.honours.game.world.Box2DWorldCreator;
-
-import box2dLight.PointLight;
-import box2dLight.RayHandler;
 
 public class ArenaGameManager implements InputProcessor {
 	private static final int MAIN_PLAYER_INDEX = 0;
@@ -73,9 +64,8 @@ public class ArenaGameManager implements InputProcessor {
     	// players
 		HonoursGame game = screen.getGame();
 		TextureAtlas textureAtlas = game.getTextureAtlas();
-		
-		teamHuman.addNewPlayer(worldCreator.getRandomSpawnT1(), textureAtlas.findRegion("playerHuman"), game.getListOfSpellsAvailable());
-		teamAI.addNewPlayer(worldCreator.getRandomSpawnT2(), textureAtlas.findRegion("playerAI"), game.getListOfSpellsAvailable());
+		teamHuman.addNewPlayer(worldCreator.getRandomSpawnT1(), textureAtlas, "Human", game.getListOfSpellsAvailable());
+		teamAI.addNewPlayer(worldCreator.getRandomSpawnT2(), textureAtlas, "AI", game.getListOfSpellsAvailable());
 
 		teams.add(teamHuman);
 		teams.add(teamAI);

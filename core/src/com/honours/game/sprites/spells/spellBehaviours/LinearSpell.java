@@ -43,7 +43,7 @@ public class LinearSpell extends SpellGraphicBehaviour {
 	@Override
 	public void update(float deltaTime) {
 		if (mustBeDestroyed) {
-			destroyBody();
+			destroySpell();
 			mustBeDestroyed = false;
 			return;
 		}
@@ -51,7 +51,7 @@ public class LinearSpell extends SpellGraphicBehaviour {
 		if (iswayPointReached()) {
     		setPosition(body.getPosition().x - widthSprite/2, body.getPosition().y-widthSprite/2);
     		if (iswayPointReached()) {
-    			destroyBody();
+    			destroySpell();
     		}
     		return;
 		}
