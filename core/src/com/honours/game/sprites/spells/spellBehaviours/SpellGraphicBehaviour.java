@@ -113,4 +113,8 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 	public Body getBody() {
 		return body;
 	}
+
+	public boolean isCastConditionFullfilled(Player player, Vector2 destination) {
+		return true;
+	}
 }

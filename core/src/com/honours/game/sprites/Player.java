@@ -28,7 +28,7 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 public class Player extends Sprite {
-	public static float MOVEMENT_SPEED = 10;
+	public static final float MOVEMENT_SPEED = 5;
 	public static final float STATE_ANIMATION_DURATION = 0.5f;	
 	
 	private float healthPoints = 100;
@@ -140,13 +140,13 @@ public class Player extends Sprite {
 		for (Spell spell : listOfSpells) {
 			spell.update(deltaTime);
 		}
-		if (!isRooted) {
-			setPosition(body.getPosition().x - getWidth()/2, body.getPosition().y-getHeight()/2);
-			if (wayPointNotReached && BodyHelper.iswayPointReached(body.getPosition(), destination, MOVEMENT_SPEED)) {
-	    		wayPointNotReached = false;
-	  			body.setLinearVelocity(new Vector2(0, 0));		
-			}
+		
+		setPosition(body.getPosition().x - getWidth()/2, body.getPosition().y-getHeight()/2);
+		if (wayPointNotReached && BodyHelper.iswayPointReached(body.getPosition(), destination, MOVEMENT_SPEED)) {
+    		wayPointNotReached = false;
+  			body.setLinearVelocity(new Vector2(0, 0));		
 		}
+		
 		
     	for (int i = 0; i < listOfLongTermEffect.size(); i++) {
 			listOfLongTermEffect.get(i).update(deltaTime, this);
@@ -155,10 +155,7 @@ public class Player extends Sprite {
   
 	public void moveTo(float x, float y) {
 		if (!isRooted) {
-			this.destination = new Vector2(x, y);
-			wayPointNotReached = true;
-			velocity = BodyHelper.createVelocity(body.getPosition(), destination, MOVEMENT_SPEED);
-			body.setLinearVelocity(velocity);
+			setDestination(new Vector2(x, y), MOVEMENT_SPEED);
 		}	
 	}
 	
@@ -245,11 +242,32 @@ public class Player extends Sprite {
 		this.isRooted = b;
 	}
 	
+	public boolean isRooted() {
+		return isRooted;
+	}
+	
 	public void isSilenced(boolean b) {
 		this.isSilenced = b;
 	}
 	
 	public void setVelocity(float x, float y) {
 		body.setLinearVelocity(x,y);
+	}
+	
+	public void setDestination(Vector2 destination, float movementSpeed) {
+		this.destination = destination;
+		wayPointNotReached = true;
+		velocity = BodyHelper.createVelocity(body.getPosition(), destination, movementSpeed);
+		body.setLinearVelocity(velocity);
+	}
+
+	public void setMovementSpeed(float movementSpeed) {
+		if (velocity.x != 0 && velocity.y != 0 && !isRooted) {
+			setDestination(destination, movementSpeed);
+		}		
+	}
+	
+	public boolean isWayPointNotReached() {
+		return wayPointNotReached;
 	}
 }

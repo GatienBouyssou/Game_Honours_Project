@@ -6,8 +6,10 @@ import java.util.List;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.honours.game.sprites.spells.spellBehaviours.LinearSpell;
+import com.honours.game.sprites.spells.spellBehaviours.SelfBasedSpell;
 import com.honours.game.sprites.spells.spellBehaviours.StaticSpell;
 import com.honours.game.sprites.spells.spellEffects.Burn;
+import com.honours.game.sprites.spells.spellEffects.Dash;
 import com.honours.game.sprites.spells.spellEffects.Invisibility;
 import com.honours.game.sprites.spells.spellEffects.ManaChanger;
 import com.honours.game.sprites.spells.spellEffects.Stun;
@@ -27,10 +29,10 @@ public class SpellCreator {
 		spell.setEffect(new ManaChanger(50));
 		listOfSpellCreated.add(spell);
 		
-		region = new TextureRegion(textureAtlas.findRegion("Bush"));
+		region = new TextureRegion(textureAtlas.findRegion("fireHalo"));
 		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN);
-		spell.setSpellBehaviour(new StaticSpell(region, 2, 2, Spell.MEDIUM_COULDOWN, true));
-		spell.setEffect(new Invisibility());
+		spell.setSpellBehaviour(new SelfBasedSpell(region));
+		spell.setEffect(new Dash(5));
 		listOfSpellCreated.add(spell);
 	}
 

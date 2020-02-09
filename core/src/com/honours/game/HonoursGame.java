@@ -32,7 +32,7 @@ public class HonoursGame extends Game
     public void create() {    
         this.batch = new SpriteBatch();
         setScreen(new TitleScreen(this));
-        textureAtlas = new TextureAtlas("pack.atlas");
+        textureAtlas = new TextureAtlas("packTextures.atlas");
         SpellCreator spellCreator = new SpellCreator(textureAtlas);
         ListOfSpellsAvailable = spellCreator.getListOfSpellCreated();
         

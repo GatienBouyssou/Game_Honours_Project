@@ -21,6 +21,7 @@ public class LinearSpell extends SpellGraphicBehaviour {
 
 	private float movementSpeed = 1;
 	private boolean destroyedWhenTouchTeamMate;
+	private Vector2 destination;
 	
 	public LinearSpell(TextureRegion region, boolean destroyedWhenTouchTeamMate) {
 		super(region);
@@ -44,8 +45,6 @@ public class LinearSpell extends SpellGraphicBehaviour {
 		super(linearSpell);
 		this.movementSpeed = linearSpell.getMovementSpeed();
 	}
-	
-	private Vector2 destination;
 	
 	@Override
 	public void update(float deltaTime) {

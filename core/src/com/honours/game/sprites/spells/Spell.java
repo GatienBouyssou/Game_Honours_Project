@@ -62,6 +62,8 @@ public class Spell {
 			return false;
 		} else if (manaCost > player.getAmountOfMana()) {
 			return false;
+		} else if (!spellBehaviour.isCastConditionFullfilled(player, destination)) {
+			return false;
 		}
 		return true;
 	}
