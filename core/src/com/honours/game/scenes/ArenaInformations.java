@@ -26,7 +26,6 @@ import com.honours.game.tools.Matrix;
 
 public class ArenaInformations implements Disposable {
 	
-	private static final int TEXT_ID = -1;
 	public static final int HEALTH_POINT_INDEX = 0;
 	public static final int MANA_POINT_INDEX = 1;
 	private Stage stage;
@@ -54,6 +53,7 @@ public class ArenaInformations implements Disposable {
 		for (Team team : teams) {
 			matrixLabelIds.newRow(team.getId());
 			table.add(LabelCreator.createLabel("Team " + counter + " :")).padRight(20);
+			counter ++;
 			int nbfOfPlayers = team.nbrOfPlayers();
 			for (int i=0; i < nbfOfPlayers; i++) {
 				Player player = team.getPlayer(i);
@@ -113,7 +113,7 @@ public class ArenaInformations implements Disposable {
 	}
 	
 	private void updatePlayerCouldown(Player player) {
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 2; i++) {
 			float couldown = player.getSpellCouldown(i);
 			if (couldown == 0) {
 				listKeyForSpells.get(i).setText(keyToString(ArenaGameManager.keyForSpells.get(i)));

@@ -1,27 +1,26 @@
 package com.honours.game.sprites;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.honours.game.HonoursGame;
 import com.honours.game.manager.ArenaGameManager;
+import com.honours.game.manager.Team;
 import com.honours.game.scenes.ArenaInformations;
 import com.honours.game.sprites.spells.Spell;
-import com.honours.game.tools.BodyFactory;
+import com.honours.game.sprites.spells.spellEffects.SpellEffect;
+import com.honours.game.tools.BodyHelper;
 import com.honours.game.tools.States;
 import com.honours.game.tools.UnitConverter;
 
@@ -29,8 +28,8 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 public class Player extends Sprite {
-	public static final float MOVEMENT_SPEED = 10;
-	public static final float STATE_ANIMATION_DURATION = 1;	
+	public static float MOVEMENT_SPEED = 10;
+	public static final float STATE_ANIMATION_DURATION = 0.5f;	
 	
 	private float healthPoints = 100;
 	private float amountOfMana = 100;
@@ -58,6 +57,9 @@ public class Player extends Sprite {
 	private TextureRegion playerNormal;
 	
 	private boolean isVisible = true;
+	private List<SpellEffect> listOfLongTermEffect;
+	private boolean isSilenced = false;
+	private boolean isRooted = false;
 
 	public Player(World world, Vector2 startingPosition, List<TextureRegion> listRegion, List<Spell> listOfSpells, RayHandler rayHandler, int teamId, int playerId) {
 		super(listRegion.get(0));
@@ -79,6 +81,7 @@ public class Player extends Sprite {
 		this.teamId = teamId;
 		this.world = world;
 		this.listOfSpells = listOfSpells;
+		this.listOfLongTermEffect = new ArrayList<SpellEffect>();
 		for (Spell spell : listOfSpells) {
 			spell.setTeamId(teamId);
 		}
@@ -90,23 +93,22 @@ public class Player extends Sprite {
 		playerSight.attachToBody(body);	
 		Filter filter = new Filter();
 		filter.categoryBits = HonoursGame.LIGHT_BIT;
+		filter.maskBits = HonoursGame.WORLD_BIT | HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT;
 		playerSight.setContactFilter(filter);
 	}
 
 	private void create(Vector2 startingPosition) {
-		this.body = BodyFactory.createBody(world, startingPosition, BodyType.DynamicBody);
-		Filter filter = BodyFactory.createFilter(HonoursGame.PLAYER_BIT, (short)0, (short)(HonoursGame.WORLD_BIT | HonoursGame.SPELL_BIT));		
-		BodyFactory.createFixture(body, this, BodyFactory.createCircleShape(SIZE_CHARACTER), filter, false);
+		this.body = BodyHelper.createBody(world, startingPosition, BodyType.DynamicBody);
+		Filter filter = BodyHelper.createFilter(HonoursGame.PLAYER_BIT, (short)0, (short)(HonoursGame.WORLD_BIT | HonoursGame.SPELL_BIT | HonoursGame.LIGHT_BIT));		
+		BodyHelper.createFixture(body, this, BodyHelper.createCircleShape(SIZE_CHARACTER), filter, false);
 	}
 	
-	public void drawPlayerAndSpellsIfInLight(SpriteBatch batch, RayHandler rayHandlerHuman) {
-		if(rayHandlerHuman.pointAtLight(getBodyPosition().x, getBodyPosition().y)) {
+	public void drawPlayerAndSpellsIfInLight(SpriteBatch batch, Team team) {
+		if(team.detectsBody(body.getPosition())) {
 			super.draw(batch);
 		}
 		for (Spell spell : listOfSpells) {
-			if(rayHandlerHuman.pointAtLight(spell.getInstanceX(), spell.getInstanceY())) {
-				spell.draw(batch);
-			}
+			spell.drawIfInLight(batch, team);
 		}
 	}
 	
@@ -124,47 +126,46 @@ public class Player extends Sprite {
     public void update(float deltaTime) { 
     	if (currentState != States.NORMAL) {
     		if (currentState == States.DEAD) {
-    			BodyFactory.destroyBody(world, body);
+    			BodyHelper.destroyBody(world, body);
 				ArenaGameManager.playerIsDead(teamId, playerId);
 			} else {
 				stateTimer += deltaTime;
 				if (stateTimer >= STATE_ANIMATION_DURATION) {
 					setRegion(playerNormal);
 					stateTimer = 0;
+					currentState = States.NORMAL;
 				}
 			}
   		}
 		for (Spell spell : listOfSpells) {
 			spell.update(deltaTime);
 		}
-    	if (wayPointNotReached) {
-    		setPosition(body.getPosition().x - getWidth()/2, body.getPosition().y-getHeight()/2);
-    		if (iswayPointReached()) {
-    			body.setLinearVelocity( new Vector2(0, 0) );		
-    		}
+		if (!isRooted) {
+			setPosition(body.getPosition().x - getWidth()/2, body.getPosition().y-getHeight()/2);
+			if (wayPointNotReached && BodyHelper.iswayPointReached(body.getPosition(), destination, MOVEMENT_SPEED)) {
+	    		wayPointNotReached = false;
+	  			body.setLinearVelocity(new Vector2(0, 0));		
+			}
+		}
+		
+    	for (int i = 0; i < listOfLongTermEffect.size(); i++) {
+			listOfLongTermEffect.get(i).update(deltaTime, this);
 		}
 	}
-    
-    private void getVelocity() {
-		float bodyX = body.getPosition().x;
-		float bodyY = body.getPosition().y;
-		
-		float angle = (float) Math.atan2(destination.y - bodyY, destination.x - bodyX);
-		velocity.set((float) Math.cos(angle) * MOVEMENT_SPEED, (float) Math.sin(angle) * MOVEMENT_SPEED);		
-    }
-    
+  
 	public void moveTo(float x, float y) {
-		this.destination = new Vector2(x, y);
-		wayPointNotReached = true;
-		getVelocity();
-		body.setLinearVelocity(velocity);
-	}
-
-	public boolean iswayPointReached() {
-		return Math.abs(destination.x - body.getPosition().x)<= MOVEMENT_SPEED * Gdx.graphics.getDeltaTime() && Math.abs(destination.y - body.getPosition().y) <= MOVEMENT_SPEED * Gdx.graphics.getDeltaTime();
+		if (!isRooted) {
+			this.destination = new Vector2(x, y);
+			wayPointNotReached = true;
+			velocity = BodyHelper.createVelocity(body.getPosition(), destination, MOVEMENT_SPEED);
+			body.setLinearVelocity(velocity);
+		}	
 	}
 	
 	public void castSpell(int spellIndex, Vector2 destination) {
+		if (isSilenced) {
+			return;
+		}
 		listOfSpells.get(spellIndex).castSpell(this, world, destination);		
 	}
 
@@ -231,5 +232,24 @@ public class Player extends Sprite {
 	public void setVisible(boolean isVisible) {
 		this.isVisible = isVisible;
 	}
-		
+
+	public void addLongTermEffect(SpellEffect effect) {
+		this.listOfLongTermEffect.add(effect);
+	}
+	
+	public void removeLongTermEffect(SpellEffect effect) {
+		this.listOfLongTermEffect.remove(effect);
+	}
+
+	public void isRooted(boolean b) {
+		this.isRooted = b;
+	}
+	
+	public void isSilenced(boolean b) {
+		this.isSilenced = b;
+	}
+	
+	public void setVelocity(float x, float y) {
+		body.setLinearVelocity(x,y);
+	}
 }

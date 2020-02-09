@@ -3,6 +3,7 @@ package com.honours.game.sprites.spells;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.honours.game.manager.Team;
 import com.honours.game.sprites.Player;
 import com.honours.game.sprites.spells.spellBehaviours.SpellGraphicBehaviour;
 import com.honours.game.sprites.spells.spellEffects.SpellEffect;
@@ -48,7 +49,7 @@ public class Spell {
 	
 	public void castSpell(Player player, World world, Vector2 destination) {
 		if (playerCanCastSpell(player, destination)) {
-			spellBehaviour.createSpell(player, world, destination);
+			spellBehaviour.castSpell(player, world, destination);
 			player.setAmountOfMana(player.getAmountOfMana() - manaCost);
 			isCasted = true;
 			canBeCasted = false;
@@ -78,6 +79,12 @@ public class Spell {
 		}
 	}
 	
+	public void drawIfInLight(Batch batch, Team team) {
+		if(isCasted && team.detectsBody(spellBehaviour.getBody().getPosition())) {
+			spellBehaviour.draw(batch);
+		}
+	}
+	
 	public void update(float deltaTime) {
 
 		if (isCasted) {
@@ -93,10 +100,10 @@ public class Spell {
 	}
 	
 	public void applyEffectToPlayer(Player player) {
-		if (player.getTeamId() != teamId) 
-			return;
-		effect.applyEffectToPlayer(player);
-		spellBehaviour.mustBeDestroyed();
+		effect.applyEffectToPlayer(player, teamId);
+		if (spellBehaviour.isDestroyedWhenTouch(player, teamId)) {
+			spellBehaviour.mustBeDestroyed();
+		}
 	}
 	
 	public void isCasted(boolean isCasted) {

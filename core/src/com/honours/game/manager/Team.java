@@ -13,10 +13,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.honours.game.sprites.Player;
 import com.honours.game.sprites.spells.Spell;
+import com.honours.game.tools.PlayerSightManager;
 
 import box2dLight.RayHandler;
 
@@ -81,10 +83,18 @@ public class Team {
 		rayHandler.render();
 	}
 	
-	public void drawPlayerAndSpellsIfInLight(SpriteBatch batch, RayHandler rayHandlerHuman) {
+	public void drawPlayerAndSpellsIfInLight(SpriteBatch batch, Team team) {
 		for (int playerId : listOfPlayersAlive) {
-			mapOfPlayers.get(playerId).drawPlayerAndSpellsIfInLight(batch, rayHandlerHuman);
+			mapOfPlayers.get(playerId).drawPlayerAndSpellsIfInLight(batch, team);
 		}
+	}
+	
+	public boolean detectsBody(Vector2 bodyPosition) {
+		for (Integer playerId : listOfPlayersAlive) {
+			if (PlayerSightManager.isBodySeen(world, mapOfPlayers.get(playerId).getBodyPosition(), bodyPosition)) 
+				return true;
+		}
+		return false;
 	}
 	
 	public List<Integer> getListOfPlayersAlive() {

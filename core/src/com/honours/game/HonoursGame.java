@@ -29,7 +29,7 @@ public class HonoursGame extends Game
     
     private TextureAtlas textureAtlas;
     
-    public void create() {    	
+    public void create() {    
         this.batch = new SpriteBatch();
         setScreen(new TitleScreen(this));
         textureAtlas = new TextureAtlas("pack.atlas");

@@ -19,6 +19,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.honours.game.HonoursGame;
 import com.honours.game.scenes.ArenaInformations;
 import com.honours.game.screens.ArenaGameScreen;
+import com.honours.game.sprites.spells.Spell;
+import com.honours.game.sprites.spells.SpellCreator;
 import com.honours.game.tools.PlayerContactListener;
 import com.honours.game.world.Box2DWorldCreator;
 
@@ -64,12 +66,14 @@ public class ArenaGameManager implements InputProcessor {
     	// players
 		HonoursGame game = screen.getGame();
 		TextureAtlas textureAtlas = game.getTextureAtlas();
-		teamHuman.addNewPlayer(worldCreator.getRandomSpawnT1(), textureAtlas, "Human", game.getListOfSpellsAvailable());
-		teamAI.addNewPlayer(worldCreator.getRandomSpawnT2(), textureAtlas, "AI", game.getListOfSpellsAvailable());
+		
+		List<Spell> spells = SpellCreator.duplicateListOfSpell(game.getListOfSpellsAvailable());
+		teamHuman.addNewPlayer(worldCreator.getRandomSpawnT1(), textureAtlas, "Human", spells);
 
+		spells = SpellCreator.duplicateListOfSpell(game.getListOfSpellsAvailable());
+		teamAI.addNewPlayer(worldCreator.getRandomSpawnT2(), textureAtlas, "AI", spells);
 		teams.add(teamHuman);
 		teams.add(teamAI);
-		
 		arenaInf = new ArenaInformations(game.getBatch(), Arrays.asList(teamHuman, teamAI), gameTime);
 	}
 
@@ -91,7 +95,7 @@ public class ArenaGameManager implements InputProcessor {
         batch.begin();
         teams.get(TEAM_HUMAN).draw(batch);
         for (int i = 1; i < teams.size(); i++) {
-        	teams.get(i).drawPlayerAndSpellsIfInLight(batch, teams.get(TEAM_HUMAN).getPointOfView());
+        	teams.get(i).drawPlayerAndSpellsIfInLight(batch, teams.get(TEAM_HUMAN));
 		}
         batch.end();
         
@@ -105,12 +109,14 @@ public class ArenaGameManager implements InputProcessor {
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		
-		if (keycode == Input.Keys.SPACE) {
-			Vector3 destInWorld = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+		Vector3 destInWorld ;
+		if (keycode == keyForSpells.get(AUTO_ATTACK_INDEX)) {
+			destInWorld = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 			teams.get(TEAM_HUMAN).playerCastSpell(MAIN_PLAYER_INDEX,AUTO_ATTACK_INDEX, new Vector2(destInWorld.x, destInWorld.y));
+		} else if(keycode == keyForSpells.get(SPELL_1_INDEX)) {
+			destInWorld = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+			teams.get(TEAM_HUMAN).playerCastSpell(MAIN_PLAYER_INDEX,SPELL_1_INDEX, new Vector2(destInWorld.x, destInWorld.y));
 		}
-			
 		return true;
 	}
 

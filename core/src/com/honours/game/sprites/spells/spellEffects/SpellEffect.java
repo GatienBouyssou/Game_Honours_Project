@@ -2,20 +2,27 @@ package com.honours.game.sprites.spells.spellEffects;
 
 import com.honours.game.sprites.Player;
 
-public class SpellEffect {
+public abstract class SpellEffect {
+	protected float damageDealt;
+	protected float timeActive;
+	protected float healing;
+	protected float rootTime;
+	protected boolean isPlayerSilenced;
+	protected float slow;
 	
-	private float damageDealt;
-	private float timeNeededToMakeTheDamages;
-	private float healing;
-	private float rootTime;
-	private boolean isPlayerSilenced;
-	private float slow;
+	public SpellEffect() {
+		this.damageDealt = 0;
+		this.timeActive = 0;
+		this.healing = 0;
+		this.rootTime = 0;
+		this.isPlayerSilenced = false;
+		this.slow = 1;
+	}
 	
 	public SpellEffect(float damageDealt, float timeNeededToMakeTheDamages, float healing, float rootTime,
 			boolean isPlayerSilenced, float slow) {
-		super();
 		this.damageDealt = damageDealt;
-		this.timeNeededToMakeTheDamages = timeNeededToMakeTheDamages;
+		this.timeActive = timeNeededToMakeTheDamages;
 		this.healing = healing;
 		this.rootTime = rootTime;
 		this.isPlayerSilenced = isPlayerSilenced;
@@ -23,11 +30,10 @@ public class SpellEffect {
 	}
 
 
+	public abstract void applyEffectToPlayer(Player player, int teamId);
 
-	public void applyEffectToPlayer(Player player) {
-		player.damagePlayer(damageDealt);
-	}
-
+	public abstract void update(float deltaTime, Player player);
+	
 	public float getDamageDealt() {
 		return damageDealt;
 	}
@@ -62,14 +68,13 @@ public class SpellEffect {
 
 
 
-	public float getTimeNeededToMakeTheDamages() {
-		return timeNeededToMakeTheDamages;
+	public float getTimeActive() {
+		return timeActive;
 	}
 
 
-
 	public void setTimeNeededToMakeTheDamages(float timeNeededToMakeTheDamages) {
-		this.timeNeededToMakeTheDamages = timeNeededToMakeTheDamages;
+		this.timeActive = timeNeededToMakeTheDamages;
 	}
 
 
@@ -83,7 +88,5 @@ public class SpellEffect {
 	public void setPlayerSilenced(boolean isPlayerSilenced) {
 		this.isPlayerSilenced = isPlayerSilenced;
 	}
-	
-	
 	
 }

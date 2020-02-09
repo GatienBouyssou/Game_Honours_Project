@@ -4,22 +4,21 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
 import com.honours.game.HonoursGame;
 import com.honours.game.sprites.Player;
 import com.honours.game.sprites.spells.Spell;
-import com.honours.game.tools.BodyFactory;
+import com.honours.game.tools.BodyHelper;
 import com.honours.game.tools.UnitConverter;
 
 public abstract class SpellGraphicBehaviour extends Sprite {
 	
 	protected Body body;
 	protected World world;
+	
+	protected TextureRegion region;
 	
 	protected float stateTime;
 	
@@ -35,22 +34,37 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 	
 	public SpellGraphicBehaviour(TextureRegion region) {
 		super(region);
-		setUpSpell(region, 1, 1);
+		this.region = region;
+		setUpSpell(1, 1);
 	}
 	
 	public SpellGraphicBehaviour(TextureRegion region, float scaleX, float scaleY) {
 		super(region);
-		setUpSpell(region, scaleX, scaleY);
+		this.region = region;
+		setUpSpell(scaleX, scaleY);
 	}
 	
-	private void setUpSpell(TextureRegion region, float scaleX, float scaleY) {
+	public SpellGraphicBehaviour(SpellGraphicBehaviour behaviour) {
+		super(behaviour.getRegion());
+		this.region = behaviour.getRegion();
+		stateTime = 0;
+		velocity = new Vector2();
+		this.widthSprite = behaviour.getWidthSprite();
+		this.heightSprite = behaviour.getHeightSprite();
+	}
+
+	private void setUpSpell(float scaleX, float scaleY) {
 		stateTime = 0;
 		velocity = new Vector2();
 		widthSprite = UnitConverter.toPPM(getWidth()) * scaleX;
 		heightSprite = UnitConverter.toPPM(getHeight()) * scaleY;
 	}
 	
-	public void createSpell(Player player, World world, Vector2 destination) {
+	public abstract void castSpell(Player player, World world, Vector2 destination);
+	
+	public abstract SpellGraphicBehaviour clone();
+	
+	protected void createSpell(Player player, World world, Vector2 destination) {
 		this.world = world;
 		createBody(world, player.getBodyPosition());
 		setOrigin(widthSprite/2, heightSprite/2);
@@ -58,9 +72,9 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 	}
 	
 	protected void createBody(World world, Vector2 position) {
-		this.body = BodyFactory.createBody(world, position, BodyType.DynamicBody);
-		Filter filter = BodyFactory.createFilter(HonoursGame.SPELL_BIT, (short)0,(short)(HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT));
-		BodyFactory.createFixture(body, spell, BodyFactory.createPolygonShapeAsBox(widthSprite, heightSprite), filter, true);
+		this.body = BodyHelper.createBody(world, position, BodyType.DynamicBody);
+		Filter filter = BodyHelper.createFilter(HonoursGame.SPELL_BIT, (short)0,(short)(HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT));
+		BodyHelper.createFixture(body, spell, BodyHelper.createPolygonShapeAsBox(widthSprite, heightSprite), filter, true);
 	}
 		
 	public abstract void update(float deltaTime);
@@ -74,14 +88,29 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 	}
 	
 	public void destroySpell() {
-		BodyFactory.destroyBody(world, body);
+		BodyHelper.destroyBody(world, body);
 		spell.isCasted(false);
 	}
 
 	public void mustBeDestroyed() {
 		this.mustBeDestroyed = true;
 	}
+
+	public abstract boolean isDestroyedWhenTouch(Player player, int teamId);
 	
+	public TextureRegion getRegion() {
+		return region;
+	}	
 	
+	public float getWidthSprite() {
+		return widthSprite;
+	}
 	
+	public float getHeightSprite() {
+		return heightSprite;
+	}
+	
+	public Body getBody() {
+		return body;
+	}
 }

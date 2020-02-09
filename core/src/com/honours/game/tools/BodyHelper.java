@@ -1,5 +1,6 @@
 package com.honours.game.tools;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -10,13 +11,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.honours.game.HonoursGame;
 
-public class BodyFactory {
+public class BodyHelper {
 	public static BodyDef createBodyDef(Vector2 position, BodyType type) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(position);
-		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.type = type;
 		return bodyDef;
 	}
 	
@@ -62,5 +62,14 @@ public class BodyFactory {
 		body.setUserData(null);
 		body = null; 
 		
+	}
+	
+	public static Vector2 createVelocity(Vector2 bodyPos, Vector2 destination, float movementSpeed) {
+		float angle = (float) Math.atan2(destination.y - bodyPos.y, destination.x - bodyPos.x);
+		return new Vector2((float) Math.cos(angle) * movementSpeed, (float) Math.sin(angle) * movementSpeed);
+	}
+	
+	public static boolean iswayPointReached(Vector2 bodyPos, Vector2 destination, float movementSpeed) {
+		return Math.abs(destination.x - bodyPos.x)<= movementSpeed * Gdx.graphics.getDeltaTime() && Math.abs(destination.y - bodyPos.y) <= movementSpeed * Gdx.graphics.getDeltaTime();
 	}
 }

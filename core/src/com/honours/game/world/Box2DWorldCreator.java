@@ -46,7 +46,7 @@ public class Box2DWorldCreator {
         for(MapObject walls : map.getLayers().get(COLLISIONS_FOR_WALLS).getObjects()){
             polygonToBox2DBody(world, bdef, shape, fdef, walls);
         }
-        
+
         for(MapObject spawns : map.getLayers().get(SPAWNS_T1).getObjects()){
             listOfSpawnsT1.add(getPolygonPosition(spawns));
         }
