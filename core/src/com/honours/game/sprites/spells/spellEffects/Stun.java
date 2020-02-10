@@ -34,4 +34,8 @@ public class Stun extends SpellEffect {
 		}
 	}
 
+	@Override
+	public SpellEffect clone() {
+		return new Stun(this);
+	}
 }

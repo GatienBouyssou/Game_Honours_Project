@@ -54,7 +54,9 @@ public class Burn extends SpellEffect{
 	public void setCurrentTimeActive(float currentTimeActive) {
 		this.currentTimeActive = currentTimeActive;
 	}
-	
-	
-	
+
+	@Override
+	public SpellEffect clone() {
+		return new Burn(this);
+	}	
 }

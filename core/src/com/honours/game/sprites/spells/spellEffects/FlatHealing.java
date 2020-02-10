@@ -8,6 +8,10 @@ public class FlatHealing extends SpellEffect {
 		this.healing = healing;
 	}
 	
+	public FlatHealing(FlatHealing flatHealing) {
+		this.healing = flatHealing.getHealing();
+	}
+	
 	@Override
 	public void applyEffectToPlayer(Player player, int teamId) {
 		if (player.getTeamId() == teamId) {
@@ -19,6 +23,13 @@ public class FlatHealing extends SpellEffect {
 	public void update(float deltaTime, Player player) {
 		// TODO Auto-generated method stub
 
+	}
+
+
+
+	@Override
+	public SpellEffect clone() {
+		return new FlatHealing(this);
 	}
 
 }

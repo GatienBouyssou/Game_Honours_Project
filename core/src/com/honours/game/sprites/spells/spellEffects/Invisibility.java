@@ -17,4 +17,9 @@ public class Invisibility extends SpellEffect {
 
 	}
 
+	@Override
+	public SpellEffect clone() {
+		return new Invisibility();
+	}
+
 }

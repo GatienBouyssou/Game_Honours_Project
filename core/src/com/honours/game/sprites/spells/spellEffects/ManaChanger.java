@@ -12,6 +12,10 @@ public class ManaChanger extends SpellEffect {
 		this.amountManaChanged = drainedValue;
 	}
 	
+	public ManaChanger(ManaChanger changer) {
+		this.amountManaChanged = changer.getAmountManaChanged();
+	}
+	
 	@Override
 	public void applyEffectToPlayer(Player player, int teamId) {
 		
@@ -26,6 +30,15 @@ public class ManaChanger extends SpellEffect {
 	public void update(float deltaTime, Player player) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public SpellEffect clone() {
+		return new ManaChanger(this);
+	}
+	
+	public float getAmountManaChanged() {
+		return amountManaChanged;
 	}
 
 }

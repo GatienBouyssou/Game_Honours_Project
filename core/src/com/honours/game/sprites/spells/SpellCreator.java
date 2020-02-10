@@ -5,13 +5,16 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.honours.game.sprites.spells.spellBehaviours.DashBehaviour;
 import com.honours.game.sprites.spells.spellBehaviours.LinearSpell;
 import com.honours.game.sprites.spells.spellBehaviours.SelfBasedSpell;
+import com.honours.game.sprites.spells.spellBehaviours.ShieldBehaviour;
 import com.honours.game.sprites.spells.spellBehaviours.StaticSpell;
 import com.honours.game.sprites.spells.spellEffects.Burn;
 import com.honours.game.sprites.spells.spellEffects.Dash;
 import com.honours.game.sprites.spells.spellEffects.Invisibility;
 import com.honours.game.sprites.spells.spellEffects.ManaChanger;
+import com.honours.game.sprites.spells.spellEffects.Shield;
 import com.honours.game.sprites.spells.spellEffects.Stun;
 
 public class SpellCreator {
@@ -31,8 +34,9 @@ public class SpellCreator {
 		
 		region = new TextureRegion(textureAtlas.findRegion("fireHalo"));
 		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN);
-		spell.setSpellBehaviour(new SelfBasedSpell(region));
-		spell.setEffect(new Dash(5));
+		spell.setSpellBehaviour(new ShieldBehaviour(region));
+		spell.setEffect(new Shield(50, 5));
+		System.out.println(spell);
 		listOfSpellCreated.add(spell);
 	}
 
@@ -49,7 +53,7 @@ public class SpellCreator {
 		for (Spell spell : spells) {
 			Spell newSpell = new Spell(spell.getRange(), spell.getCouldown());
 			newSpell.setSpellBehaviour(spell.getSpellBehaviour().clone());
-			newSpell.setEffect(spell.getEffect());
+			newSpell.setEffect(spell.getEffect().clone());
 			newSpells.add(newSpell);
 		}
 		return newSpells;	

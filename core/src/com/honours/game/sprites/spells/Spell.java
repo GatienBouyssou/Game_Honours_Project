@@ -88,7 +88,6 @@ public class Spell {
 	}
 	
 	public void update(float deltaTime) {
-
 		if (isCasted) {
 			spellBehaviour.update(deltaTime);
 		}
@@ -142,6 +141,7 @@ public class Spell {
 	}
 
 	public void setEffect(SpellEffect effect) {
+		effect.setSpell(this);
 		this.effect = effect;
 	}
 

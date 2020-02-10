@@ -195,6 +195,10 @@ public class Player extends Sprite {
 		currentState = States.HEALING;
 		setRegion(playerHealing);
 	}
+	public void setHealthPoints(float healthPoints) {
+		this.healthPoints = healthPoints;
+		ArenaInformations.updatePlayerHealth(teamId, playerId, healthPoints);
+	}
 
 	public float getAmountOfMana() {
 		return amountOfMana;

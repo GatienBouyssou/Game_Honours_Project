@@ -8,6 +8,10 @@ public class FlatDamage extends SpellEffect {
 		this.damageDealt = damage;
 	}
 	
+	public FlatDamage(FlatDamage flatDamage) {
+		this.damageDealt = flatDamage.getDamageDealt();
+	}
+	
 	@Override
 	public void applyEffectToPlayer(Player player, int teamId) {
 		if (player.getTeamId() != teamId) {
@@ -19,6 +23,11 @@ public class FlatDamage extends SpellEffect {
 	public void update(float deltaTime, Player player) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public SpellEffect clone() {
+		return new FlatDamage(this);
 	}
 
 }

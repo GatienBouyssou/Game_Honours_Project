@@ -51,4 +51,9 @@ public class ConstantHealing extends SpellEffect{
 	public void setCurrentTimeActive(float currentTimeActive) {
 		this.currentTimeActive = currentTimeActive;
 	}
+
+	@Override
+	public SpellEffect clone() {
+		return new ConstantHealing(this);
+	}
 }

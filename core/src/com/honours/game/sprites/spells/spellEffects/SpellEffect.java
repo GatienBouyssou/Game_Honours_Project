@@ -1,6 +1,7 @@
 package com.honours.game.sprites.spells.spellEffects;
 
 import com.honours.game.sprites.Player;
+import com.honours.game.sprites.spells.Spell;
 
 public abstract class SpellEffect {
 	protected float damageDealt;
@@ -9,6 +10,7 @@ public abstract class SpellEffect {
 	protected float rootTime;
 	protected boolean isPlayerSilenced;
 	protected float slow;
+	protected Spell spell;
 	
 	public SpellEffect() {
 		this.damageDealt = 0;
@@ -27,6 +29,10 @@ public abstract class SpellEffect {
 		this.rootTime = rootTime;
 		this.isPlayerSilenced = isPlayerSilenced;
 		this.slow = slow;
+	}
+	
+	public SpellEffect(SpellEffect spellEffect) {
+		this.spell = spellEffect.getSpell();
 	}
 
 
@@ -66,8 +72,6 @@ public abstract class SpellEffect {
 		this.slow = slow;
 	}
 
-
-
 	public float getTimeActive() {
 		return timeActive;
 	}
@@ -77,16 +81,21 @@ public abstract class SpellEffect {
 		this.timeActive = timeNeededToMakeTheDamages;
 	}
 
-
-
 	public boolean isPlayerSilenced() {
 		return isPlayerSilenced;
 	}
-
-
 
 	public void setPlayerSilenced(boolean isPlayerSilenced) {
 		this.isPlayerSilenced = isPlayerSilenced;
 	}
 	
+	public void setSpell(Spell spell) {
+		this.spell = spell;
+	}
+	
+	public Spell getSpell() {
+		return spell;
+	}
+	
+	public abstract SpellEffect clone();
 }
