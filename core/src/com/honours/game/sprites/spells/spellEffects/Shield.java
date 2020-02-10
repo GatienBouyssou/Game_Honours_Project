@@ -20,7 +20,6 @@ public class Shield extends SpellEffect{
 	
 	@Override
 	public void applyEffectToPlayer(Player player, int teamId) {
-		System.out.println("here");
 		player.setHealthPoints(player.getHealthPoints() + this.healing);
 		player.addLongTermEffect(clone());
 	}
