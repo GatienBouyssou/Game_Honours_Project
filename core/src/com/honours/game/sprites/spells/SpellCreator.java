@@ -32,10 +32,10 @@ public class SpellCreator {
 		spell.setEffect(new ManaChanger(50));
 		listOfSpellCreated.add(spell);
 		
-		region = new TextureRegion(textureAtlas.findRegion("fireHalo"));
+		region = new TextureRegion(textureAtlas.findRegion("fireWall"));
 		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN);
-		spell.setSpellBehaviour(new ShieldBehaviour(region));
-		spell.setEffect(new Shield(50, 5));
+		spell.setSpellBehaviour(new StaticSpell(region, 5, false, true));
+		spell.setEffect(new Burn(30, 2));
 		listOfSpellCreated.add(spell);
 	}
 
