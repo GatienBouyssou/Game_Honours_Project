@@ -52,6 +52,6 @@ public abstract class SelfBasedSpell extends SpellGraphicBehaviour {
 	@Override
 	public void destroySpell() {
 		body = null; 
-		spell.isCasted(false);
+		spell.removeActiveSpell(this);
 	}
 }

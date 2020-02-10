@@ -16,7 +16,6 @@ public class Dash extends SpellEffect {
 
 	@Override
 	public void applyEffectToPlayer(Player player, int teamId) {
-		System.out.println("2"+spell);
 		player.setMovementSpeed(Player.MOVEMENT_SPEED + bonusMovementSpeed);
 		player.isRooted(true);
 		player.addLongTermEffect(new Dash(this));
@@ -29,8 +28,7 @@ public class Dash extends SpellEffect {
 		}
 		player.isRooted(false);
 		player.removeLongTermEffect(this);
-		System.out.println("3"+spell);
-		spell.getSpellBehaviour().destroySpell();
+		spellGraphicBehaviour.destroySpell();
 	}
 	
 	public float getBonusMovementSpeed() {

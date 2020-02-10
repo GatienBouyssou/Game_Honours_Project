@@ -3,6 +3,7 @@ package com.honours.game.sprites.spells;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.honours.game.manager.Team;
 import com.honours.game.sprites.Player;
 import com.honours.game.sprites.spells.spellBehaviours.SpellGraphicBehaviour;
@@ -25,9 +26,8 @@ public class Spell {
 	private SpellEffect effect;  
 	
 	private boolean canBeCasted = true;
-	private boolean isCasted = false;
 	private float couldownTimer = 0;
-	
+	private Array<SpellGraphicBehaviour> listActiveSpells = new Array<SpellGraphicBehaviour>(false, 5);
 	private int teamId;
 	
 	public Spell() {
@@ -49,9 +49,11 @@ public class Spell {
 	
 	public void castSpell(Player player, World world, Vector2 destination) {
 		if (playerCanCastSpell(player, destination)) {
-			spellBehaviour.castSpell(player, world, destination);
+			SpellGraphicBehaviour behaviour = spellBehaviour.clone();
+			listActiveSpells.add(behaviour);
+			effect.setSpellBehaviour(behaviour);
+			behaviour.castSpell(player, world, destination);
 			player.setAmountOfMana(player.getAmountOfMana() - manaCost);
-			isCasted = true;
 			canBeCasted = false;
 			couldownTimer = couldown;
 		}
@@ -76,20 +78,22 @@ public class Spell {
 	}
 
 	public void draw(Batch batch) {
-		if(isCasted) {
-			spellBehaviour.draw(batch);
+		for (SpellGraphicBehaviour spellGraphicBehaviour : listActiveSpells) {
+			spellGraphicBehaviour.draw(batch);
 		}
 	}
 	
 	public void drawIfInLight(Batch batch, Team team) {
-		if(isCasted && team.detectsBody(spellBehaviour.getBody().getPosition())) {
-			spellBehaviour.draw(batch);
-		}
+		for (SpellGraphicBehaviour spellGraphicBehaviour : listActiveSpells) {
+			if(team.detectsBody(spellGraphicBehaviour.getBody().getPosition())) {
+				spellGraphicBehaviour.draw(batch);
+			}
+		}	
 	}
 	
 	public void update(float deltaTime) {
-		if (isCasted) {
-			spellBehaviour.update(deltaTime);
+		for (SpellGraphicBehaviour spellGraphicBehaviour : listActiveSpells) {
+			spellGraphicBehaviour.update(deltaTime);
 		}
 		if (!canBeCasted) {
 			couldownTimer -= deltaTime;
@@ -105,10 +109,6 @@ public class Spell {
 		if (spellBehaviour.isDestroyedWhenTouch(player, teamId)) {
 			spellBehaviour.mustBeDestroyed();
 		}
-	}
-	
-	public void isCasted(boolean isCasted) {
-		this.isCasted = isCasted;
 	}
 	
 	public float getRange() {
@@ -141,7 +141,6 @@ public class Spell {
 	}
 
 	public void setEffect(SpellEffect effect) {
-		effect.setSpell(this);
 		this.effect = effect;
 	}
 
@@ -163,5 +162,9 @@ public class Spell {
 
 	public float getInstanceY() {
 		return spellBehaviour.getY();
+	}
+
+	public void removeActiveSpell(SpellGraphicBehaviour spellGraphicBehaviour) {
+		listActiveSpells.removeValue(spellGraphicBehaviour, true);		
 	}
 }

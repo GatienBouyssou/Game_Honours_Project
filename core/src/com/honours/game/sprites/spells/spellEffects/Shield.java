@@ -20,7 +20,8 @@ public class Shield extends SpellEffect{
 	
 	@Override
 	public void applyEffectToPlayer(Player player, int teamId) {
-		player.setHealthPoints(player.getHealthPoints() + this.healing);
+		this.playerHealth = player.getHealthPoints();
+		player.setHealthPoints(playerHealth + this.healing);
 		player.addLongTermEffect(clone());
 	}
 
@@ -28,14 +29,14 @@ public class Shield extends SpellEffect{
 	public void update(float deltaTime, Player player) {
 		if (player.getHealthPoints() < playerHealth) {
 			player.removeLongTermEffect(this);
-			spell.getSpellBehaviour().destroySpell();
+			spellGraphicBehaviour.destroySpell();
 			return;
 		}
 		currentTimeActive += deltaTime;
 		if (currentTimeActive >= timeActive) {
 			player.setHealthPoints(playerHealth);
 			player.removeLongTermEffect(this);
-			spell.getSpellBehaviour().destroySpell();
+			spellGraphicBehaviour.destroySpell();
 		}
 	}
 

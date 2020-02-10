@@ -51,6 +51,7 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 		velocity = new Vector2();
 		this.widthSprite = behaviour.getWidthSprite();
 		this.heightSprite = behaviour.getHeightSprite();
+		this.spell = behaviour.getSpell();
 	}
 
 	private void setUpSpell(float scaleX, float scaleY) {
@@ -89,7 +90,7 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 	
 	public void destroySpell() {
 		BodyHelper.destroyBody(world, body);
-		spell.isCasted(false);
+		spell.removeActiveSpell(this);
 	}
 
 	public void mustBeDestroyed() {

@@ -36,7 +36,6 @@ public class SpellCreator {
 		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN);
 		spell.setSpellBehaviour(new ShieldBehaviour(region));
 		spell.setEffect(new Shield(50, 5));
-		System.out.println(spell);
 		listOfSpellCreated.add(spell);
 	}
 
