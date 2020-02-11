@@ -31,6 +31,15 @@ public class PlayerContactListener implements ContactListener{
 					((Spell) fixA.getUserData()).applyEffectToPlayer((Player) fixB.getUserData());
 				}
 				break;
+			case  HonoursGame.SPELL_BIT | HonoursGame.SPELL_BIT:
+				Spell spellA = (Spell) fixA.getUserData();
+				Spell spellB = (Spell) fixB.getUserData();
+				if(spellA.cancels(spellB)) {
+					spellB.destroyBody(fixB.getBody());
+				} else if (spellB.cancels(spellA)) {
+					spellA.destroyBody(fixA.getBody());
+				}
+				break;
 			default:
 				System.out.println("default");
 				break;

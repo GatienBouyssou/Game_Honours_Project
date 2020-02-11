@@ -34,7 +34,7 @@ public class DashBehaviour extends SelfBasedSpell {
 			this.destination = destination;
 		}	
 		
-		player.moveTo(this.destination.x, this.destination.y);
+		player.moveTo(this.destination);
 		spell.applyEffectToPlayer(player);
 	}
 

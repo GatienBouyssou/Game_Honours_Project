@@ -5,8 +5,6 @@ import com.honours.game.sprites.Player;
 public class ManaChanger extends SpellEffect {
 	
 	private float amountManaChanged;
-	private boolean notDrainedYet = true;
-	private boolean notRefilledYet = true;
 
 	public ManaChanger(float drainedValue) {
 		this.amountManaChanged = drainedValue;
@@ -19,9 +17,9 @@ public class ManaChanger extends SpellEffect {
 	@Override
 	public void applyEffectToPlayer(Player player, int teamId) {
 		
-		if (player.getTeamId() == teamId && notRefilledYet) {
+		if (player.getTeamId() == teamId) {
 			player.setAmountOfMana(player.getAmountOfMana() + amountManaChanged);
-		} else if (player.getTeamId()!=teamId && notDrainedYet) {
+		} else if (player.getTeamId()!=teamId) {
 			player.setAmountOfMana(player.getAmountOfMana() - amountManaChanged);
 		}
 	}

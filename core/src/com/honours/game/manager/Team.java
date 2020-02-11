@@ -118,7 +118,7 @@ public class Team {
 	}
 	
 	public void playerMoveTo(int playerId, float x, float y) {
-		mapOfPlayers.get(playerId).moveTo(x, y);
+		mapOfPlayers.get(playerId).moveTo(new Vector2(x, y));
 	}
 	
 	public int nbrOfPlayers() {
@@ -126,11 +126,8 @@ public class Team {
 	}
 
 	public void dispose() {
-		try {
-			rayHandler.dispose();
-		} catch(IllegalArgumentException e) {
-			System.out.println("already disposed");
-		}
+		rayHandler.dispose();
+
 	}
 
 	public void removePlayer(Integer playerId) {

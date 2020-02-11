@@ -1,13 +1,21 @@
 package com.honours.game.sprites.spells;
 
+import java.util.Iterator;
+
+import javax.swing.text.StyledEditorKit.ItalicAction;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Array.ArrayIterator;
 import com.honours.game.manager.Team;
 import com.honours.game.sprites.Player;
 import com.honours.game.sprites.spells.spellBehaviours.SpellGraphicBehaviour;
 import com.honours.game.sprites.spells.spellEffects.SpellEffect;
+import com.honours.game.sprites.spells.type.Element;
+import com.honours.game.sprites.spells.type.SpellType;
 
 public class Spell {
 	public static final float SHORT_RANGE = 1;
@@ -24,15 +32,15 @@ public class Spell {
 	
 	private SpellGraphicBehaviour spellBehaviour;  
 	private SpellEffect effect;  
+	private SpellType type;
 	
 	private boolean canBeCasted = true;
 	private float couldownTimer = 0;
-	private Array<SpellGraphicBehaviour> listActiveSpells = new Array<SpellGraphicBehaviour>(false, 5);
 	private int teamId;
 	
-	public Spell() {
-		
-	}
+	private Array<SpellGraphicBehaviour> listActiveSpells = new Array<SpellGraphicBehaviour>(false, 5);
+	private Array<SpellGraphicBehaviour> listSpellsToDestroy = new Array<SpellGraphicBehaviour>(false, 5);
+	
 
 	public Spell(float range, float couldown, SpellGraphicBehaviour spellBehaviour, SpellEffect effect) {
 		this.range = range;
@@ -45,6 +53,13 @@ public class Spell {
 	public Spell(float range, float couldown) {
 		this.range = range;
 		this.couldown = couldown;
+	}
+	
+	public Spell(Spell spell) {
+		this(spell.getRange(), spell.getCouldown());
+		setSpellBehaviour(spell.getSpellBehaviour().clone());
+		setEffect(spell.getEffect().clone());
+		setType(spell.getType());
 	}
 	
 	public void castSpell(Player player, World world, Vector2 destination) {
@@ -77,6 +92,25 @@ public class Spell {
 		return true;
 	}
 
+	public void update(float deltaTime) {
+		Iterator<SpellGraphicBehaviour> iterator = listSpellsToDestroy.iterator();
+		while (iterator.hasNext()) {
+			SpellGraphicBehaviour instanceToDestroy = iterator.next(); 
+			instanceToDestroy.destroySpell();
+			listSpellsToDestroy.removeValue(instanceToDestroy, true);
+		}
+		for (SpellGraphicBehaviour spellGraphicBehaviour : listActiveSpells) {
+			spellGraphicBehaviour.update(deltaTime);
+		}
+		if (!canBeCasted) {
+			couldownTimer -= deltaTime;
+			if (couldownTimer <= 0) {
+				couldownTimer = 0;
+				canBeCasted = true;
+			}
+		}
+	}
+	
 	public void draw(Batch batch) {
 		for (SpellGraphicBehaviour spellGraphicBehaviour : listActiveSpells) {
 			spellGraphicBehaviour.draw(batch);
@@ -91,23 +125,26 @@ public class Spell {
 		}	
 	}
 	
-	public void update(float deltaTime) {
-		for (SpellGraphicBehaviour spellGraphicBehaviour : listActiveSpells) {
-			spellGraphicBehaviour.update(deltaTime);
-		}
-		if (!canBeCasted) {
-			couldownTimer -= deltaTime;
-			if (couldownTimer <= 0) {
-				couldownTimer = 0;
-				canBeCasted = true;
-			}
+	public void applyEffectToPlayer(Player player) {
+		effect.applyEffectToPlayer(player, teamId);
+		type.applyEffect(player, teamId);
+		if (spellBehaviour.isDestroyedWhenTouch(player, teamId)) {
+			spellBehaviour.mustBeDestroyed();
 		}
 	}
 	
-	public void applyEffectToPlayer(Player player) {
-		effect.applyEffectToPlayer(player, teamId);
-		if (spellBehaviour.isDestroyedWhenTouch(player, teamId)) {
-			spellBehaviour.mustBeDestroyed();
+	public boolean cancels(Spell spellB) {
+		return type.doesCounterElement(spellB.getElement());
+	}
+	
+	public void destroyBody(Body body) {
+		Iterator<SpellGraphicBehaviour> iterator = listActiveSpells.iterator();
+		while (iterator.hasNext()){
+			SpellGraphicBehaviour behaviour = iterator.next();
+			if (behaviour.getBody() == body) {
+				listSpellsToDestroy.add(behaviour);
+			}
+			
 		}
 	}
 	
@@ -166,5 +203,17 @@ public class Spell {
 
 	public void removeActiveSpell(SpellGraphicBehaviour spellGraphicBehaviour) {
 		listActiveSpells.removeValue(spellGraphicBehaviour, true);		
+	}
+	
+	public SpellType getType() {
+		return type;
+	}
+	
+	public void setType(SpellType type) {
+		this.type = type;
+	}
+	
+	public Element getElement() {
+		return type.getElement();
 	}
 }

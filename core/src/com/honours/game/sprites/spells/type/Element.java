@@ -1,5 +1,5 @@
 package com.honours.game.sprites.spells.type;
 
 public enum Element {
-	FIRE, PLANT, WATER;
+	FIRE, PLANT, WATER, AETHER, NONE;
 }

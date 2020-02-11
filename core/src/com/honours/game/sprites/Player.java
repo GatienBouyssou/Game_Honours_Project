@@ -41,6 +41,7 @@ public class Player extends Sprite {
 	private boolean wayPointNotReached = false;
 	private Vector2 destination;
 	private Vector2 velocity = new Vector2();
+	private float currentMovementSpeed = MOVEMENT_SPEED;
 	
 	private List<Spell> listOfSpells;
 
@@ -142,7 +143,8 @@ public class Player extends Sprite {
 		}
 		
 		setPosition(body.getPosition().x - getWidth()/2, body.getPosition().y-getHeight()/2);
-		if (wayPointNotReached && BodyHelper.iswayPointReached(body.getPosition(), destination, MOVEMENT_SPEED)) {
+		
+		if (wayPointNotReached && BodyHelper.iswayPointReached(body.getPosition(), destination, currentMovementSpeed)) {
     		wayPointNotReached = false;
   			body.setLinearVelocity(new Vector2(0, 0));		
 		}
@@ -153,10 +155,24 @@ public class Player extends Sprite {
 		}
 	}
   
-	public void moveTo(float x, float y) {
+	public void moveTo(Vector2 destination) {
 		if (!isRooted) {
-			setDestination(new Vector2(x, y), MOVEMENT_SPEED);
+			setDestination(destination, currentMovementSpeed);
 		}	
+	}
+	
+	public void setDestination(Vector2 destination, float movementSpeed) {
+		this.destination = destination;
+		wayPointNotReached = true;
+		velocity = BodyHelper.createVelocity(body.getPosition(), destination, movementSpeed);
+		body.setLinearVelocity(velocity);
+	}
+	
+	public void setMovementSpeed(float movementSpeed) {
+		currentMovementSpeed = movementSpeed;
+		if (velocity.x != 0 && velocity.y != 0 && !isRooted) {
+			setDestination(destination, movementSpeed);
+		}		
 	}
 	
 	public void castSpell(int spellIndex, Vector2 destination) {
@@ -256,19 +272,6 @@ public class Player extends Sprite {
 	
 	public void setVelocity(float x, float y) {
 		body.setLinearVelocity(x,y);
-	}
-	
-	public void setDestination(Vector2 destination, float movementSpeed) {
-		this.destination = destination;
-		wayPointNotReached = true;
-		velocity = BodyHelper.createVelocity(body.getPosition(), destination, movementSpeed);
-		body.setLinearVelocity(velocity);
-	}
-
-	public void setMovementSpeed(float movementSpeed) {
-		if (velocity.x != 0 && velocity.y != 0 && !isRooted) {
-			setDestination(destination, movementSpeed);
-		}		
 	}
 	
 	public boolean isWayPointNotReached() {

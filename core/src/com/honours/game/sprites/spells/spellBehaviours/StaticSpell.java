@@ -56,10 +56,7 @@ public class StaticSpell extends SpellGraphicBehaviour {
 	protected void createSpell(Player player, World world, Vector2 destination) {
 		this.world = world;
 		createBody(world, destination);
-		Vector2 playerPos = new Vector2(player.getBodyPosition());
-		playerPos.x -= destination.x;
-		playerPos.y -= destination.y;
-		Vector2 vec = new Vector2(-playerPos.y, playerPos.x);
+		Vector2 vec = new Vector2(-(player.getBodyPosition().y - destination.y), player.getBodyPosition().x - destination.x);
 		float angle = vec.angle();
 		setRotation(angle);
 		body.setTransform(body.getPosition(), (float) Math.toRadians(angle));
