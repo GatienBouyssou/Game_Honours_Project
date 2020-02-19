@@ -48,4 +48,9 @@ public class Shield extends SpellEffect{
 	public float getCurrentPlayerHealth() {
 		return playerHealth;
 	}
+	
+	@Override
+	public String toString() {
+		return "Confer a shield a shield to the player shielding " + healing + " damages. \nIt remains active during " + timeActive + "s.";
+	}
 }

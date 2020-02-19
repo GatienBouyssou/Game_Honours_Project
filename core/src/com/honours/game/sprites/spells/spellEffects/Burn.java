@@ -59,4 +59,9 @@ public class Burn extends SpellEffect{
 	public SpellEffect clone() {
 		return new Burn(this);
 	}	
+	
+	@Override
+	public String toString() {
+		return "Burn the enemy player for " + timeActive + "s dealing " + damageDealtPerSec + " each second.";
+	}
 }

@@ -26,9 +26,9 @@ public class PlayerContactListener implements ContactListener{
 			
 			case  HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT:
 				if (isFixtureAPlayer(fixA)) {
-					((Spell) fixB.getUserData()).applyEffectToPlayer((Player) fixA.getUserData());
+					((Spell) fixB.getUserData()).applyEffectToPlayer((Player) fixA.getUserData(), fixB.getBody());
 				} else {
-					((Spell) fixA.getUserData()).applyEffectToPlayer((Player) fixB.getUserData());
+					((Spell) fixA.getUserData()).applyEffectToPlayer((Player) fixB.getUserData(), fixA.getBody());
 				}
 				break;
 			case  HonoursGame.SPELL_BIT | HonoursGame.SPELL_BIT:

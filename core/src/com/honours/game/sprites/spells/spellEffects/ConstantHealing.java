@@ -56,4 +56,9 @@ public class ConstantHealing extends SpellEffect{
 	public SpellEffect clone() {
 		return new ConstantHealing(this);
 	}
+	
+	@Override
+	public String toString() {
+		return "When touch a teamate, heal the player during "  + timeActive + "s, healing " + healingDealtPerSec + "hp each second.";
+	}
 }

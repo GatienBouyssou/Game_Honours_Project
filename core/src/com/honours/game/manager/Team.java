@@ -3,18 +3,16 @@ package com.honours.game.manager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.honours.game.sprites.Player;
 import com.honours.game.sprites.spells.Spell;
@@ -59,7 +57,7 @@ public class Team {
 	}
 	
 		
-	public void addNewPlayer(Vector2 spawnPoint, TextureAtlas atlas, String TypeOfPlayer, List<Spell> listOfSpells) {
+	public void addNewPlayer(Vector2 spawnPoint, TextureAtlas atlas, String TypeOfPlayer, Array<Spell> listOfSpells) {
 		List<TextureRegion> regions = new ArrayList<TextureRegion>();
 		for (String nameRegion : nameRegions) {
 			regions.add(new TextureRegion(atlas.findRegion("player"+TypeOfPlayer+nameRegion)));

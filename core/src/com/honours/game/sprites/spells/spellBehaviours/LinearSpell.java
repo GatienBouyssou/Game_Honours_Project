@@ -1,14 +1,10 @@
 package com.honours.game.sprites.spells.spellBehaviours;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.honours.game.HonoursGame;
 import com.honours.game.sprites.Player;
 import com.honours.game.tools.BodyHelper;
-import com.honours.game.tools.UnitConverter;
 
 public class LinearSpell extends SpellGraphicBehaviour {
 	
@@ -92,7 +88,7 @@ public class LinearSpell extends SpellGraphicBehaviour {
 
 	@Override
 	public boolean isDestroyedWhenTouch(Player player, int teamId) {
-		boolean fromTheSameTeam = player.getTeamId() == teamId;
+		boolean fromTheSameTeam = (player.getTeamId() == teamId);
 		if (destroyedWhenTouchTeamMate && fromTheSameTeam) {
 			return true;
 		} else if (!destroyedWhenTouchTeamMate && !fromTheSameTeam) {
@@ -106,4 +102,8 @@ public class LinearSpell extends SpellGraphicBehaviour {
 		return new LinearSpell(this);
 	}
 
+	@Override
+	public String toString() {
+		return "The spell will go from the player toward the pointed destination. \nIt gets destroyed once it reaches the max range or touches an opponent";
+	}
 }

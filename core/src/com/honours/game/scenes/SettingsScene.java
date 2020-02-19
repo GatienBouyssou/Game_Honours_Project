@@ -47,9 +47,10 @@ public class SettingsScene implements Disposable, InputProcessor {
 		viewport = new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
 		stage = new Stage(viewport, batch);
 		
-		TableCreator tableCreator = new TableCreator(Align.left, true);
-		tableCreator.createRow(Arrays.asList("Click on the key to update it."));
-		tableCreator.createRow(Arrays.asList("Spells", "Keys"));
+		
+		Table table = TableCreator.setTableConfiguration(Align.left);
+		TableCreator.createRow(table, Arrays.asList("Click on the key to update it."));
+		TableCreator.createRow(table, Arrays.asList("Spells", "Keys"));
 		
 		List<Integer> keyForSpells = ArenaGameManager.keyForSpells;
 		String key;
@@ -57,11 +58,10 @@ public class SettingsScene implements Disposable, InputProcessor {
 			key = Input.Keys.toString(keyForSpells.get(i));
 			mapKeyNameIndex.put(key,i);
 			listOfKeyLabel.add(LabelCreator.createLabel(key));
-			tableCreator.createRowWithCell(Arrays.asList(LabelCreator.createLabel("Spell "+ (i+1) +" :"), listOfKeyLabel.get(i)));
+			TableCreator.createRowWithCell(table, Arrays.asList(LabelCreator.createLabel("Spell "+ (i+1) +" :"), listOfKeyLabel.get(i)));
 		}
 		labelError = LabelCreator.createLabel("", Color.RED);
-		tableCreator.createRowWithCell(Arrays.asList(labelError));
-		table = tableCreator.getTable();
+		TableCreator.createRowWithCell(table, Arrays.asList(labelError));
 		stage.addActor(table);
 	}
 	

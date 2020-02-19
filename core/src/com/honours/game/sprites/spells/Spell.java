@@ -22,6 +22,7 @@ public class Spell {
 	public static final float MEDIUM_RANGE = 5;
 	public static final float LONG_RANGE = 10;
 	
+	public static final float VERY_SHORT_COULDOWN = 1;
 	public static final float SHORT_COULDOWN = 2;
 	public static final float MEDIUM_COULDOWN = 5;
 	public static final float LONG_COULDOWN = 10;
@@ -65,6 +66,7 @@ public class Spell {
 	public void castSpell(Player player, World world, Vector2 destination) {
 		if (playerCanCastSpell(player, destination)) {
 			SpellGraphicBehaviour behaviour = spellBehaviour.clone();
+			System.out.println(spellBehaviour);
 			listActiveSpells.add(behaviour);
 			effect.setSpellBehaviour(behaviour);
 			behaviour.castSpell(player, world, destination);
@@ -125,11 +127,11 @@ public class Spell {
 		}	
 	}
 	
-	public void applyEffectToPlayer(Player player) {
+	public void applyEffectToPlayer(Player player, Body body) {
 		effect.applyEffectToPlayer(player, teamId);
 		type.applyEffect(player, teamId);
 		if (spellBehaviour.isDestroyedWhenTouch(player, teamId)) {
-			spellBehaviour.mustBeDestroyed();
+			getBehaviorWithBody(body).mustBeDestroyed();
 		}
 	}
 	
@@ -138,14 +140,16 @@ public class Spell {
 	}
 	
 	public void destroyBody(Body body) {
-		Iterator<SpellGraphicBehaviour> iterator = listActiveSpells.iterator();
-		while (iterator.hasNext()){
-			SpellGraphicBehaviour behaviour = iterator.next();
-			if (behaviour.getBody() == body) {
-				listSpellsToDestroy.add(behaviour);
+		listSpellsToDestroy.add(getBehaviorWithBody(body));
+	}
+	
+	public SpellGraphicBehaviour getBehaviorWithBody(Body body) {
+		for (SpellGraphicBehaviour spellGraphicBehaviour : listActiveSpells) {
+			if (spellGraphicBehaviour.getBody() == body) {
+				return spellGraphicBehaviour;
 			}
-			
 		}
+		return null;
 	}
 	
 	public float getRange() {
@@ -215,5 +219,16 @@ public class Spell {
 	
 	public Element getElement() {
 		return type.getElement();
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(spellBehaviour.toString()).append("\n");
+		sb.append(effect.toString()).append("\n");
+		sb.append(type.toString()).append("\n");
+		sb.append("Range : ").append(range).append("\n");
+		sb.append("Couldown : ").append(couldown).append("\n");
+		return sb.toString();
 	}
 }

@@ -39,4 +39,9 @@ public class ManaChanger extends SpellEffect {
 		return amountManaChanged;
 	}
 
+	@Override
+	public String toString() {
+		float abs = Math.abs(amountManaChanged);
+		return "The teamates touching the spell gain " + abs + " mana.\n If an opponent touches the spell, it drains " + abs + " mana." ;
+	}
 }

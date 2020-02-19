@@ -35,7 +35,7 @@ public class DashBehaviour extends SelfBasedSpell {
 		}	
 		
 		player.moveTo(this.destination);
-		spell.applyEffectToPlayer(player);
+		spell.applyEffectToPlayer(player, body);
 	}
 
 	@Override
@@ -49,5 +49,10 @@ public class DashBehaviour extends SelfBasedSpell {
 			return false;
 		}
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "";
 	}
 }

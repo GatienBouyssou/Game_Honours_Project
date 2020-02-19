@@ -10,46 +10,29 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class TableCreator {
 	
-	private Table table;
-	
-	public TableCreator() {
-		table = new Table();
-	}
-	
-	public TableCreator(int align, boolean doFillParent) {
-		table = new Table();
+	public static Table setTableConfiguration(int align) {
+		Table table = new Table();
 		table.align(align);
-		table.setFillParent(doFillParent);
+		table.setFillParent(true);
+		return table;
 	}
 	
-	public TableCreator(int align, float width, float height) {
-		table = new Table();
+	public static Table setTableConfiguration(int align, float width, float height) {
+		Table table = new Table();
 		table.align(align);
 		table.setWidth(width);
 		table.setHeight(height);
+		return table;
 	}
 	
-	public void setTableConfiguration(int align, boolean doFillParent) {
-		table = new Table();
-		table.align(align);
-		table.setFillParent(doFillParent);
-	}
-	
-	public void setTableConfiguration(int align, float width, float height) {
-		table = new Table();
-		table.align(align);
-		table.setWidth(width);
-		table.setHeight(height);
-	}
-	
-	public void createRow(List<String> listContentCell) {
+	public static void createRow(Table table, List<String> listContentCell) {
 		for (String content : listContentCell) {
 			table.add(LabelCreator.createLabel(content)).expandX();
 		}
 		table.row();
 	}
 	
-	public <T> void createRowWithCell(List<T> listOfCells) {
+	public static <T> void createRowWithCell(Table table, List<T> listOfCells) {
 		for (T cell : listOfCells) {
 			table.add((Actor)cell).expandX();
 		}
@@ -73,24 +56,8 @@ public class TableCreator {
 		}
 		return table;
 	}
-	
-	public void clear() {
-		table = new Table();
-	}
 
-	public Table getTable() {
-		return table;
-	}
-
-	public void setTable(Table table) {
-		this.table = table;
-	}
-
-	public void addCell(Actor actor) {
-		table.add(actor);
-	}
-
-	public void createCellWithList(List<Label> element) {
+	public static void createCellWithList(Table table, List<Label> element) {
 		Stack stack = new Stack();
 		for (Label label : element) {
 			stack.add(label);

@@ -16,7 +16,7 @@ public class Slow extends SpellEffect {
 	
 	@Override
 	public void applyEffectToPlayer(Player player, int teamId) {
-		if (player.getTeamId() == teamId) {
+		if (player.getTeamId() != teamId) {
 			player.setMovementSpeed(Player.MOVEMENT_SPEED * slow);
 			player.addLongTermEffect(clone());
 		}
@@ -36,4 +36,8 @@ public class Slow extends SpellEffect {
 		return new Slow(this);
 	}
 
+	@Override
+	public String toString() {
+		return "Slows opponent players reducing their speed by " + ((1-slow)*100) + "%.";
+	}
 }

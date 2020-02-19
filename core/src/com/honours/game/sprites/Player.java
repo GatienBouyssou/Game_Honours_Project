@@ -3,7 +3,6 @@ package com.honours.game.sprites;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -14,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.honours.game.HonoursGame;
 import com.honours.game.manager.ArenaGameManager;
 import com.honours.game.manager.Team;
@@ -43,7 +43,7 @@ public class Player extends Sprite {
 	private Vector2 velocity = new Vector2();
 	private float currentMovementSpeed = MOVEMENT_SPEED;
 	
-	private List<Spell> listOfSpells;
+	private Array<Spell> listOfSpells;
 
 	private PointLight playerSight;
 	
@@ -62,7 +62,7 @@ public class Player extends Sprite {
 	private boolean isSilenced = false;
 	private boolean isRooted = false;
 
-	public Player(World world, Vector2 startingPosition, List<TextureRegion> listRegion, List<Spell> listOfSpells, RayHandler rayHandler, int teamId, int playerId) {
+	public Player(World world, Vector2 startingPosition, List<TextureRegion> listRegion, Array<Spell> listOfSpells, RayHandler rayHandler, int teamId, int playerId) {
 		super(listRegion.get(0));
 		playerNormal = listRegion.get(0);
 		playerHealing = listRegion.get(1);
@@ -76,7 +76,7 @@ public class Player extends Sprite {
 		
 	}
 	
-	private void createPlayer(World world, Vector2 startingPosition, List<Spell> listOfSpells,
+	private void createPlayer(World world, Vector2 startingPosition, Array<Spell> listOfSpells,
 			RayHandler rayHandler, int teamId, int playerId) {
 		this.playerId = playerId;
 		this.teamId = teamId;
@@ -90,7 +90,7 @@ public class Player extends Sprite {
 		
 		Vector2 bodyPos = body.getPosition();
 		 
-        playerSight = new PointLight(rayHandler, 100,Color.BLACK, 15, bodyPos.x, bodyPos.y);
+        playerSight = new PointLight(rayHandler, 50,Color.BLACK, 15, bodyPos.x, bodyPos.y);
 		playerSight.attachToBody(body);	
 		Filter filter = new Filter();
 		filter.categoryBits = HonoursGame.LIGHT_BIT;
@@ -226,7 +226,7 @@ public class Player extends Sprite {
 	}
 	
 
-	public void setListOfSpells(List<Spell> listOfSpells) {
+	public void setListOfSpells(Array<Spell> listOfSpells) {
 		this.listOfSpells = listOfSpells;
 	}
 

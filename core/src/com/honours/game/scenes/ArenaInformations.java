@@ -74,14 +74,11 @@ public class ArenaInformations implements Disposable {
 		
 		stage.addActor(table);
 		
+		table = TableCreator.setTableConfiguration(Align.bottom, stage.getWidth(), stage.getHeight()/10);
 		
-		TableCreator tableCreator = new TableCreator(Align.top, true);
-		tableCreator.clear();
+		TableCreator.createRowWithCell(table, listKeyForSpells);
 		
-		tableCreator.setTableConfiguration(Align.bottom, stage.getWidth(), stage.getHeight()/10);
-		tableCreator.createRowWithCell(listKeyForSpells);
-		
-		stage.addActor(tableCreator.getTable());
+		stage.addActor(table);
 	}
 
 	public void updateTime(float gameTime) {
@@ -113,7 +110,7 @@ public class ArenaInformations implements Disposable {
 	}
 	
 	private void updatePlayerCouldown(Player player) {
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 5; i++) {
 			float couldown = player.getSpellCouldown(i);
 			if (couldown == 0) {
 				listKeyForSpells.get(i).setText(keyToString(ArenaGameManager.keyForSpells.get(i)));

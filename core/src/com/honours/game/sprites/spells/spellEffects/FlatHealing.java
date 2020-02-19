@@ -25,11 +25,14 @@ public class FlatHealing extends SpellEffect {
 
 	}
 
-
-
 	@Override
 	public SpellEffect clone() {
 		return new FlatHealing(this);
+	}
+	
+	@Override
+	public String toString() {
+		return "Heal " + healing + "hp";
 	}
 
 }

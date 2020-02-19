@@ -40,4 +40,9 @@ public class Dash extends SpellEffect {
 		return new Dash(this);
 	}
 	
+	@Override
+	public String toString() {
+		return "Dash by increasing the movement speed of " + bonusMovementSpeed;
+	}
+	
 }

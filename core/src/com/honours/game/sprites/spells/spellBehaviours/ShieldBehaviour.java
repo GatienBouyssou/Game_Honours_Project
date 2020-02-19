@@ -22,7 +22,7 @@ public class ShieldBehaviour extends SelfBasedSpell {
 	@Override
 	public void castSpell(Player player, World world, Vector2 destination) {
 		createSpell(player, world, destination);
-		spell.applyEffectToPlayer(player);
+		spell.applyEffectToPlayer(player, body);
 	}
 
 	@Override
@@ -30,4 +30,8 @@ public class ShieldBehaviour extends SelfBasedSpell {
 		return new ShieldBehaviour(this);
 	}
 
+	@Override
+	public String toString() {
+		return "";
+	}
 }

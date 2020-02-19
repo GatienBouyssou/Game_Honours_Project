@@ -15,7 +15,7 @@ public class Stun extends SpellEffect {
 	
 	@Override
 	public void applyEffectToPlayer(Player player, int teamId) {
-		if (player.getTeamId() == teamId) {
+		if (player.getTeamId() != teamId) {
 			player.addLongTermEffect(new Stun(this));
 			player.isRooted(true);
 			player.isSilenced(true);
@@ -37,5 +37,10 @@ public class Stun extends SpellEffect {
 	@Override
 	public SpellEffect clone() {
 		return new Stun(this);
+	}
+	
+	@Override
+	public String toString() {
+		return "Opponent player touched won't be able to cast spells nor move during "+timeActive+"s";
 	}
 }

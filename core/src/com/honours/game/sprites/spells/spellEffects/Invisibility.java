@@ -22,4 +22,8 @@ public class Invisibility extends SpellEffect {
 		return new Invisibility();
 	}
 
+	@Override
+	public String toString() {
+		return "Player and teamates in the spell are invisible.";
+	}
 }

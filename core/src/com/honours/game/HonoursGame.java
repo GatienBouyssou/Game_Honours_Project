@@ -10,6 +10,7 @@ import java.util.List;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.Array;
 import com.honours.game.screens.TitleScreen;
 import com.honours.game.sprites.spells.Spell;
 import com.honours.game.sprites.spells.SpellCreator;
@@ -25,8 +26,9 @@ public class HonoursGame extends Game
     public static final int VIRTUAL_WIDTH = 16;
     public static final int VIRTUAL_HEIGHT = 16;
     public static final int FRAME_WIDTH = 32;
-    private List<Spell> ListOfSpellsAvailable;
     
+    private Array<Spell> ListOfSpellsAvailable;
+    private Array<Spell> spellHumans;
     private TextureAtlas textureAtlas;
     
     public void create() {    
@@ -51,11 +53,11 @@ public class HonoursGame extends Game
         return this.batch;
     }
 
-	public List<Spell> getListOfSpellsAvailable() {
+	public Array<Spell> getListOfSpellsAvailable() {
 		return ListOfSpellsAvailable;
 	}
 
-	public void setListOfSpellsAvailable(List<Spell> listOfSpellsAvailable) {
+	public void setListOfSpellsAvailable(Array<Spell> listOfSpellsAvailable) {
 		ListOfSpellsAvailable = listOfSpellsAvailable;
 	}
 	
@@ -63,5 +65,12 @@ public class HonoursGame extends Game
 		return textureAtlas;
 	}
        
+	public Array<Spell> getSpellHumans() {
+		return spellHumans;
+	}
+	
+	public void setSpellHumans(Array<Spell> spellHumans) {
+		this.spellHumans = spellHumans;
+	}
     	
 }

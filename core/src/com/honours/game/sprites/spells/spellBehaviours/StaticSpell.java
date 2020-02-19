@@ -56,7 +56,8 @@ public class StaticSpell extends SpellGraphicBehaviour {
 	protected void createSpell(Player player, World world, Vector2 destination) {
 		this.world = world;
 		createBody(world, destination);
-		Vector2 vec = new Vector2(-(player.getBodyPosition().y - destination.y), player.getBodyPosition().x - destination.x);
+		Vector2 bodyPosition = player.getBodyPosition();
+		Vector2 vec = new Vector2(-(bodyPosition.y - destination.y), bodyPosition.x - destination.x);
 		float angle = vec.angle();
 		setRotation(angle);
 		body.setTransform(body.getPosition(), (float) Math.toRadians(angle));
@@ -98,11 +99,16 @@ public class StaticSpell extends SpellGraphicBehaviour {
 	}
 
 	@Override
-	public SpellGraphicBehaviour clone() {
+	public StaticSpell clone() {
 		return new StaticSpell(this);
 	}
 	
 	public boolean isOpaque() {
 		return isOpaque;
+	}
+	
+	@Override
+	public String toString() {
+		return "This spell won't move during " + activityTime + "s unless it gets destroyed by another effect.";
 	}
 }

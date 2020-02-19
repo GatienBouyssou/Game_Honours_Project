@@ -99,4 +99,6 @@ public abstract class SpellEffect {
 	}
 	
 	public abstract SpellEffect clone();
+	
+	public abstract String toString();
 }

@@ -30,4 +30,8 @@ public class FlatDamage extends SpellEffect {
 		return new FlatDamage(this);
 	}
 
+	@Override
+	public String toString() {
+		return "Deal " + damageDealt + " damages";
+	}
 }

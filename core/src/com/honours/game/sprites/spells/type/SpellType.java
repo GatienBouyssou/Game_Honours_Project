@@ -37,4 +37,24 @@ public class SpellType {
 	public Element getElement() {
 		return element;
 	}
+	
+	@Override
+	public String toString() {
+		String string = "";
+		switch (element) {
+			case FIRE:
+				string += "This spell is made out of fire, therefore it will be destroyed by water spells.";
+				break;
+			case WATER:
+				string += "This spell is made out of water, therefore it will be destroyed by plant spells.";
+				break;
+			case PLANT:
+				string += "This spell is made out of plants, therefore it will be destroyed by fire spells.";
+				break;
+			case AETHER:
+				string += "This spell is made out of aether the greater element in this dimension it can't be destroyed.";
+				return string;
+		}
+		return string + "\nEffect :" + effect.toString();
+	}
 }

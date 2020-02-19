@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -25,26 +26,22 @@ public class TitleScreen extends ScreenAdapter
 {
 	private FitViewport viewport;
 	private Stage stage;
-	
-//	private Label startTheGame;
-//	private Label settings;
     
     public TitleScreen(final HonoursGame game) {
-        
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         stage = new Stage(viewport, game.getBatch());
         
-    	TableCreator tableCreator = new TableCreator(Align.right, true);
-        Label startTheGame = LabelCreator.createLabel("Start the game !", Color.ROYAL); 
+        Table table = TableCreator.setTableConfiguration(Align.right);
+    	Label startTheGame = LabelCreator.createLabel("Start the game !", Color.ROYAL); 
         startTheGame.addListener(new ClickListener() {
             @Override 
             public void clicked(InputEvent event, float x, float y){
-            	game.setScreen(new ArenaGameScreen(game));
+            	game.setScreen(new SpellSelectionScreen(game));
             }
         });
-        tableCreator.createRowWithCell(Arrays.asList(startTheGame));
+        TableCreator.createRowWithCell(table, Arrays.asList(startTheGame));
       
-        tableCreator.createRow(Arrays.asList(""));
+        TableCreator.createRow(table, Arrays.asList(""));
         
         Label settings = LabelCreator.createLabel("Settings", Color.ROYAL);
         settings.addListener(new ClickListener() {
@@ -53,21 +50,24 @@ public class TitleScreen extends ScreenAdapter
             	game.setScreen(new SettingsScreen(game));
             }
         });
-        tableCreator.createRowWithCell(Arrays.asList(settings));
+        TableCreator.createRowWithCell(table, Arrays.asList(settings));
 
-        stage.addActor(tableCreator.getTable());
+        stage.addActor(table);
+        
            
     }
     
     public void show() {
-    	Gdx.input.setInputProcessor(stage);
 
+        Gdx.input.setInputProcessor(stage);
+        stage.setDebugAll(true);
     }
     
     public void render(final float delta) {
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         Gdx.gl.glClear(16384);
         
+        stage.act();
         stage.draw();
     }
     
