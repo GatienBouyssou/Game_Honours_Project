@@ -7,6 +7,7 @@ import com.honours.game.sprites.Player;
 
 public class DashBehaviour extends SelfBasedSpell {
 	private Vector2 destination;
+	private Object playerVelocity;
 	
 	public DashBehaviour(TextureRegion region) {
 		super(region);
@@ -18,6 +19,7 @@ public class DashBehaviour extends SelfBasedSpell {
 
 	public DashBehaviour(DashBehaviour behaviour) {
 		super(behaviour);
+		this.playerVelocity = behaviour.getPlayerVelocity();
 	}
 
 	@Override
@@ -35,7 +37,16 @@ public class DashBehaviour extends SelfBasedSpell {
 		}	
 		
 		player.moveTo(this.destination);
+		playerVelocity = new Vector2(body.getLinearVelocity());
 		spell.applyEffectToPlayer(player, body);
+	}
+	
+	@Override
+	public void update(float deltaTime) {
+		super.update(deltaTime);
+		if (!body.getLinearVelocity().equals(playerVelocity)) {
+			this.destroySpell();
+		}
 	}
 
 	@Override
@@ -49,6 +60,10 @@ public class DashBehaviour extends SelfBasedSpell {
 			return false;
 		}
 		return true;
+	}
+	
+	public Object getPlayerVelocity() {
+		return playerVelocity;
 	}
 	
 	@Override

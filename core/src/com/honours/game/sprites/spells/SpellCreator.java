@@ -62,7 +62,7 @@ public class SpellCreator {
 		
 		region = new TextureRegion(textureAtlas.findRegion("fireColumn"));
 		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN);
-		spell.setSpellBehaviour(new StaticSpell(region, 1, true, false));
+		spell.setSpellBehaviour(new StaticSpell(region, 3, true, false));
 		spell.setEffect(new Burn(5, 2));
 		spell.setType(mapNameToType.get(FIRE));
 		listOfSpellCreated.add(spell);
@@ -135,7 +135,7 @@ public class SpellCreator {
 
 		region = new TextureRegion(textureAtlas.findRegion("Bush"));
 		spell = new Spell(Spell.MEDIUM_RANGE, Spell.MEDIUM_COULDOWN);
-		spell.setSpellBehaviour(new PowerRay(region, 5, true, false));
+		spell.setSpellBehaviour(new StaticSpell(region, 5, true, false));
 		spell.setEffect(new Invisibility());
 		spell.setType(mapNameToType.get(PLANT));
 		listOfSpellCreated.add(spell);

@@ -66,7 +66,6 @@ public class Spell {
 	public void castSpell(Player player, World world, Vector2 destination) {
 		if (playerCanCastSpell(player, destination)) {
 			SpellGraphicBehaviour behaviour = spellBehaviour.clone();
-			System.out.println(spellBehaviour);
 			listActiveSpells.add(behaviour);
 			effect.setSpellBehaviour(behaviour);
 			behaviour.castSpell(player, world, destination);

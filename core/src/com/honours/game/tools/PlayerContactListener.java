@@ -18,19 +18,16 @@ public class PlayerContactListener implements ContactListener{
 		Fixture fixA = contact.getFixtureA();
 		Fixture fixB = contact.getFixtureB();
 		
+		handleContact(fixA, fixB);
+	}
+
+	public static void handleContact(Fixture fixA, Fixture fixB) {
 		int categoryBit = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 		switch (categoryBit) {
 			case HonoursGame.WORLD_BIT | HonoursGame.PLAYER_BIT :
 				fixB.getBody().setLinearVelocity(new Vector2(0,0)); 
 				break;
-			
-			case  HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT:
-				if (isFixtureAPlayer(fixA)) {
-					((Spell) fixB.getUserData()).applyEffectToPlayer((Player) fixA.getUserData(), fixB.getBody());
-				} else {
-					((Spell) fixA.getUserData()).applyEffectToPlayer((Player) fixB.getUserData(), fixA.getBody());
-				}
-				break;
+				
 			case  HonoursGame.SPELL_BIT | HonoursGame.SPELL_BIT:
 				Spell spellA = (Spell) fixA.getUserData();
 				Spell spellB = (Spell) fixB.getUserData();
@@ -40,6 +37,15 @@ public class PlayerContactListener implements ContactListener{
 					spellA.destroyBody(fixA.getBody());
 				}
 				break;
+			
+			case  HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT:
+				if (isFixtureAPlayer(fixA)) {
+					((Spell) fixB.getUserData()).applyEffectToPlayer((Player) fixA.getUserData(), fixB.getBody());
+				} else {
+					((Spell) fixA.getUserData()).applyEffectToPlayer((Player) fixB.getUserData(), fixA.getBody());
+				}
+				break;
+			
 			default:
 				System.out.println("default");
 				break;
@@ -50,7 +56,6 @@ public class PlayerContactListener implements ContactListener{
 	public void endContact(Contact contact) {
 		Fixture fixA = contact.getFixtureA();
 		Fixture fixB = contact.getFixtureB();
-		
 		int categoryBit = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 		if (categoryBit != (HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT)) {
 			return;
@@ -70,13 +75,14 @@ public class PlayerContactListener implements ContactListener{
 
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {
+	
 	}
 
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 	}
 	
-	private boolean isFixtureAPlayer(Fixture fixture) {
+	private static boolean isFixtureAPlayer(Fixture fixture) {
 		return fixture.getFilterData().categoryBits == HonoursGame.PLAYER_BIT;
 	}
 

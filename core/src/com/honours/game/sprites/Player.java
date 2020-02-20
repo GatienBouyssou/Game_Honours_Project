@@ -176,10 +176,9 @@ public class Player extends Sprite {
 	}
 	
 	public void castSpell(int spellIndex, Vector2 destination) {
-		if (isSilenced) {
-			return;
+		if (!isSilenced) {
+			listOfSpells.get(spellIndex).castSpell(this, world, destination);
 		}
-		listOfSpells.get(spellIndex).castSpell(this, world, destination);		
 	}
 
 	public Vector2 getBodyPosition() {

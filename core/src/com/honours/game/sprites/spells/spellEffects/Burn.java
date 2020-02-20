@@ -19,7 +19,10 @@ public class Burn extends SpellEffect{
 	}
 
 	@Override
-	public void applyEffectToPlayer(Player player, int teamId) {		
+	public void applyEffectToPlayer(Player player, int teamId) {	
+		System.out.println(teamId);
+		System.out.println(player.getTeamId());
+		
 		if (teamId != player.getTeamId()) {
 			player.addLongTermEffect(new Burn(this));
 		}
