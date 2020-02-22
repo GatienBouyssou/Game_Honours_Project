@@ -1,8 +1,5 @@
 package com.honours.game.sprites.spells;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
@@ -44,6 +41,10 @@ public class SpellCreator {
 	}
 	
 	private void createSpells(TextureAtlas textureAtlas) {
+		TextureRegion shadowWall = new TextureRegion(textureAtlas.findRegion("shadowWall"));
+		TextureRegion shadowRay = new TextureRegion(textureAtlas.findRegion("shadowRay"));
+		TextureRegion shadowBush = new TextureRegion(textureAtlas.findRegion("shadowBush"));
+		
 		TextureRegion region = new TextureRegion(textureAtlas.findRegion("autoAttack"));
 		Spell spell = new Spell(Spell.LONG_RANGE, Spell.VERY_SHORT_COULDOWN);
 		spell.setSpellBehaviour(new LinearSpell(region, 0.25f, 0.25f, LinearSpell.GOD_SPEED, false));
@@ -54,15 +55,15 @@ public class SpellCreator {
 		
 		//fire spells
 		region = new TextureRegion(textureAtlas.findRegion("fireWall"));
-		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN);
-		spell.setSpellBehaviour(new StaticSpell(region, 5, false, true));
+		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN, 10);
+		spell.setSpellBehaviour(new StaticSpell(shadowWall, region, 5, false, true));
 		spell.setEffect(new Slow(0.7f, 2));
 		spell.setType(mapNameToType.get(FIRE));
 		listOfSpellCreated.add(spell);
 		
 		region = new TextureRegion(textureAtlas.findRegion("fireColumn"));
-		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN);
-		spell.setSpellBehaviour(new StaticSpell(region, 3, true, false));
+		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN, 10);
+		spell.setSpellBehaviour(new StaticSpell(shadowBush, region, 3, true, false));
 		spell.setEffect(new Burn(5, 2));
 		spell.setType(mapNameToType.get(FIRE));
 		listOfSpellCreated.add(spell);
@@ -75,22 +76,22 @@ public class SpellCreator {
 		listOfSpellCreated.add(spell);
 		
 		region = new TextureRegion(textureAtlas.findRegion("fireRay"));
-		spell = new Spell(Spell.SHORT_RANGE, Spell.MEDIUM_COULDOWN);
-		spell.setSpellBehaviour(new PowerRay(region, 1, true, false));
+		spell = new Spell(Spell.SHORT_RANGE, Spell.MEDIUM_COULDOWN,10);
+		spell.setSpellBehaviour(new PowerRay(shadowRay, region, 1, true, false));
 		spell.setEffect(new Burn(5,2));
 		spell.setType(mapNameToType.get(FIRE));
 		listOfSpellCreated.add(spell);
 		
 		//Water spells
 		region = new TextureRegion(textureAtlas.findRegion("wallWater"));
-		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN);
-		spell.setSpellBehaviour(new StaticSpell(region, 5, false, true));
+		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN,10);
+		spell.setSpellBehaviour(new StaticSpell(shadowWall, region, 5, false, true));
 		spell.setEffect(new Slow(0.7f, 2));
 		spell.setType(mapNameToType.get(WATER));
 		listOfSpellCreated.add(spell);
 		
 		region = new TextureRegion(textureAtlas.findRegion("waterBall"));
-		spell = new Spell(Spell.LONG_RANGE, Spell.MEDIUM_COULDOWN);
+		spell = new Spell(Spell.LONG_RANGE, Spell.MEDIUM_COULDOWN,10);
 		spell.setSpellBehaviour(new LinearSpell(region, LinearSpell.CHEETAH_SPEED, false));
 		spell.setEffect(new FlatDamage(10));
 		spell.setType(mapNameToType.get(WATER));
@@ -104,7 +105,7 @@ public class SpellCreator {
 		listOfSpellCreated.add(spell);
 		
 		region = new TextureRegion(textureAtlas.findRegion("Bubble"));
-		spell = new Spell(Spell.MEDIUM_RANGE, Spell.MEDIUM_COULDOWN);
+		spell = new Spell(Spell.MEDIUM_RANGE, Spell.MEDIUM_COULDOWN, 9);
 		spell.setSpellBehaviour(new LinearSpell(region,LinearSpell.CHEETAH_SPEED, false));
 		spell.setEffect(new Stun(1.5f));
 		spell.setType(mapNameToType.get(WATER));
@@ -113,29 +114,29 @@ public class SpellCreator {
 		
 		//Plant spell
 		region = new TextureRegion(textureAtlas.findRegion("WallOfPLants"));
-		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN);
-		spell.setSpellBehaviour(new StaticSpell(region, 5, false, true));
+		spell = new Spell(Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN, 10);
+		spell.setSpellBehaviour(new StaticSpell(shadowWall,region, 5, false, true));
 		spell.setEffect(new Slow(0.7f, 2));
 		spell.setType(mapNameToType.get(PLANT));
 		listOfSpellCreated.add(spell);
 		
 		region = new TextureRegion(textureAtlas.findRegion("Champ"));
-		spell = new Spell(Spell.LONG_RANGE, Spell.MEDIUM_COULDOWN);
-		spell.setSpellBehaviour(new StaticSpell(region, 5, true, false));
+		spell = new Spell(Spell.LONG_RANGE, Spell.MEDIUM_COULDOWN, 5);
+		spell.setSpellBehaviour(new StaticSpell(shadowBush, region, 5, true, false));
 		spell.setEffect(new Slow(0.3f, 5));
 		spell.setType(mapNameToType.get(PLANT));
 		listOfSpellCreated.add(spell);
 		
 		region = new TextureRegion(textureAtlas.findRegion("plantRay"));
-		spell = new Spell(Spell.SHORT_RANGE, 7);
-		spell.setSpellBehaviour(new PowerRay(region, 5, true, false));
+		spell = new Spell(Spell.SHORT_RANGE, 7, 8);
+		spell.setSpellBehaviour(new PowerRay(shadowRay, region, 5, true, false));
 		spell.setEffect(new Stun(2));
 		spell.setType(mapNameToType.get(PLANT));
 		listOfSpellCreated.add(spell);
 
 		region = new TextureRegion(textureAtlas.findRegion("Bush"));
 		spell = new Spell(Spell.MEDIUM_RANGE, Spell.MEDIUM_COULDOWN);
-		spell.setSpellBehaviour(new StaticSpell(region, 5, true, false));
+		spell.setSpellBehaviour(new StaticSpell(shadowBush, region, 5, true, false));
 		spell.setEffect(new Invisibility());
 		spell.setType(mapNameToType.get(PLANT));
 		listOfSpellCreated.add(spell);

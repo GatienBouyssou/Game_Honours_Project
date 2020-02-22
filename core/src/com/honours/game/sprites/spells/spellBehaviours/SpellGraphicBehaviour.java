@@ -19,6 +19,7 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 	protected World world;
 	
 	protected TextureRegion region;
+	protected TextureRegion activeRegion;
 	
 	protected float stateTime;
 	
@@ -32,21 +33,25 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 	protected boolean mustBeDestroyed = false;
 	
 	
+	
 	public SpellGraphicBehaviour(TextureRegion region) {
 		super(region);
 		this.region = region;
+		this.activeRegion = region;
 		setUpSpell(1, 1);
 	}
 	
 	public SpellGraphicBehaviour(TextureRegion region, float scaleX, float scaleY) {
 		super(region);
 		this.region = region;
+		this.activeRegion = region;
 		setUpSpell(scaleX, scaleY);
 	}
 	
 	public SpellGraphicBehaviour(SpellGraphicBehaviour behaviour) {
 		super(behaviour.getRegion());
 		this.region = behaviour.getRegion();
+		this.activeRegion = behaviour.getActiveRegion();
 		stateTime = 0;
 		velocity = new Vector2();
 		this.widthSprite = behaviour.getWidthSprite();
@@ -115,6 +120,10 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 		return body;
 	}
 
+	public TextureRegion getActiveRegion() {
+		return activeRegion;
+	}
+	
 	public boolean isCastConditionFullfilled(Player player, Vector2 destination) {
 		return true;
 	}

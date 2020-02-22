@@ -2,17 +2,21 @@ package com.honours.game.sprites.spells.spellBehaviours;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.honours.game.HonoursGame;
 import com.honours.game.sprites.Player;
+import com.honours.game.tools.BodyHelper;
 
 public class PowerRay extends StaticSpell {
 	public static final float MARGIN = 0.15f;
-	public PowerRay(TextureRegion region, float activityTime, boolean isSensor, boolean isOpaque) {
-		super(region, activityTime, isSensor, isOpaque);
+	public PowerRay(TextureRegion shadow, TextureRegion region, float activityTime, boolean isSensor, boolean isOpaque) {
+		super(shadow, region, activityTime, isSensor, isOpaque);
 	}
 	
-	public PowerRay(TextureRegion region, float scaleX, float scaleY, float activityTime, boolean isSensor, boolean isOpaque) {
-		super(region, scaleX, scaleY, activityTime, isSensor, isOpaque);
+	public PowerRay(TextureRegion shadow, TextureRegion region, float scaleX, float scaleY, float activityTime, boolean isSensor, boolean isOpaque) {
+		super(shadow, region, scaleX, scaleY, activityTime, isSensor, isOpaque);
 	}
 	
 	public PowerRay(PowerRay powerRay) {
@@ -37,6 +41,7 @@ public class PowerRay extends StaticSpell {
 		float angle = (float) Math.atan2(destination.y - bodyPosition.y, destination.x - bodyPosition.x);
 		setRotation((float) Math.toDegrees(angle));
 		body.setTransform(body.getPosition(), angle);
+		body.setActive(false);
 		setOrigin(widthSprite/2, heightSprite/2);
 		setBounds(body.getPosition().x - widthSprite/2, body.getPosition().y-heightSprite/2, widthSprite, heightSprite);
 	}

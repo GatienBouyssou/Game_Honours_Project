@@ -34,6 +34,7 @@ public class Spell {
 	private SpellGraphicBehaviour spellBehaviour;  
 	private SpellEffect effect;  
 	private SpellType type;
+	private float basicDamage;
 	
 	private boolean canBeCasted = true;
 	private float couldownTimer = 0;
@@ -51,13 +52,20 @@ public class Spell {
 		this.effect = effect;
 	}
 
+	public Spell(float range, float couldown, float basicDamage) {
+		this.range = range;
+		this.couldown = couldown;
+		this.basicDamage = basicDamage;
+	}
+	
 	public Spell(float range, float couldown) {
 		this.range = range;
 		this.couldown = couldown;
+		this.basicDamage = 0;
 	}
 	
 	public Spell(Spell spell) {
-		this(spell.getRange(), spell.getCouldown());
+		this(spell.getRange(), spell.getCouldown(), spell.getBasicDamage());
 		setSpellBehaviour(spell.getSpellBehaviour().clone());
 		setEffect(spell.getEffect().clone());
 		setType(spell.getType());
@@ -92,6 +100,21 @@ public class Spell {
 		}
 		return true;
 	}
+	
+	public void applyEffectToPlayer(Player player, Body body) {
+		effect.applyEffectToPlayer(player, teamId);
+		type.applyEffect(player, teamId);
+		if (player.getTeamId() !=  teamId) {
+			player.damagePlayer(basicDamage);
+		}
+		if (spellBehaviour.isDestroyedWhenTouch(player, teamId)) {
+			getBehaviorWithBody(body).mustBeDestroyed();
+		}
+	}
+	
+	public boolean cancels(SpellType spellType) {
+		return spellType.doesCounterElement(type.getElement());
+	}
 
 	public void update(float deltaTime) {
 		Iterator<SpellGraphicBehaviour> iterator = listSpellsToDestroy.iterator();
@@ -124,18 +147,6 @@ public class Spell {
 				spellGraphicBehaviour.draw(batch);
 			}
 		}	
-	}
-	
-	public void applyEffectToPlayer(Player player, Body body) {
-		effect.applyEffectToPlayer(player, teamId);
-		type.applyEffect(player, teamId);
-		if (spellBehaviour.isDestroyedWhenTouch(player, teamId)) {
-			getBehaviorWithBody(body).mustBeDestroyed();
-		}
-	}
-	
-	public boolean cancels(Spell spellB) {
-		return type.doesCounterElement(spellB.getElement());
 	}
 	
 	public void destroyBody(Body body) {
@@ -218,6 +229,14 @@ public class Spell {
 	
 	public Element getElement() {
 		return type.getElement();
+	}
+	
+	public float getBasicDamage() {
+		return basicDamage;
+	}
+	
+	public void setBasicDamage(float basicDamage) {
+		this.basicDamage = basicDamage;
 	}
 	
 	@Override

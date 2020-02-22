@@ -26,15 +26,12 @@ public class DashBehaviour extends SelfBasedSpell {
 	public void castSpell(Player player, World world, Vector2 destination) {
 		createSpell(player, world, destination);
 		Vector2 bodyPosition = player.getBodyPosition();
-		if (!spell.playerIsInRange(bodyPosition, destination)) {
-			Vector2 vectorDir = new Vector2(destination.x - bodyPosition.x, destination.y - bodyPosition.y);
-			vectorDir.nor();
-			vectorDir.x = vectorDir.x * spell.getRange() + bodyPosition.x;
-			vectorDir.y = vectorDir.y * spell.getRange() + bodyPosition.y;
-			this.destination = vectorDir;
-		} else {
-			this.destination = destination;
-		}	
+		Vector2 vectorDir = new Vector2(destination.x - bodyPosition.x, destination.y - bodyPosition.y);
+		vectorDir.nor();
+		vectorDir.x = vectorDir.x * spell.getRange() + bodyPosition.x;
+		vectorDir.y = vectorDir.y * spell.getRange() + bodyPosition.y;
+		this.destination = vectorDir;
+		
 		
 		player.moveTo(this.destination);
 		playerVelocity = new Vector2(body.getLinearVelocity());

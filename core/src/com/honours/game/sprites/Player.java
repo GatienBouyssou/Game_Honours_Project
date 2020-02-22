@@ -28,7 +28,7 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 public class Player extends Sprite {
-	public static final float MOVEMENT_SPEED = 5;
+	public static final float MOVEMENT_SPEED = 3;
 	public static final float STATE_ANIMATION_DURATION = 0.5f;	
 	
 	private float healthPoints = 100;

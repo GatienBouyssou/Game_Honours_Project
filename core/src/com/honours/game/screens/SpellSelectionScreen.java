@@ -5,8 +5,10 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.honours.game.HonoursGame;
 import com.honours.game.scenes.SpellSelectionScene;
+import com.honours.game.sprites.spells.spellBonus.SpellBonus;
 
 public class SpellSelectionScreen extends ScreenAdapter {
 

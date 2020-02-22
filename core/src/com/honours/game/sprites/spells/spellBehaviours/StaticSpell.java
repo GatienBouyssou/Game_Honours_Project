@@ -17,23 +17,27 @@ import com.honours.game.tools.PlayerContactListener;
 
 public class StaticSpell extends SpellGraphicBehaviour {
 
-	private float activityTime;
-	private float currentLifeTime = 0;
-	private boolean isSensor;
-	private boolean isOpaque;
+	protected float activityTime;
+	protected float currentLifeTime = 0;
 	
-	public StaticSpell(TextureRegion region, float activityTime, boolean isSensor, boolean isOpaque) {
-		super(region);
+	protected boolean isSensor;
+	protected boolean isOpaque;
+	protected boolean isNotActive = true;
+		
+	public StaticSpell(TextureRegion shadow, TextureRegion activeSpell, float activityTime, boolean isSensor, boolean isOpaque) {
+		super(shadow);
 		this.activityTime = activityTime;
 		this.isSensor = isSensor;
 		this.isOpaque = isOpaque;
+		this.activeRegion = activeSpell;
 	}
 	
-	public StaticSpell(TextureRegion region, float scaleX, float scaleY, float activityTime, boolean isSensor, boolean isOpaque) {
+	public StaticSpell(TextureRegion region, TextureRegion activeSpell, float scaleX, float scaleY, float activityTime, boolean isSensor, boolean isOpaque) {
 		super(region, scaleX, scaleY);
 		this.activityTime = activityTime;
 		this.isSensor = isSensor;
 		this.isOpaque = isOpaque;
+		this.activeRegion = activeSpell;
 	}
 	
 	public StaticSpell(StaticSpell staticSpell) {
@@ -66,13 +70,17 @@ public class StaticSpell extends SpellGraphicBehaviour {
 		float angle = vec.angle();
 		setRotation(angle);
 		body.setTransform(body.getPosition(), (float) Math.toRadians(angle));
+		body.setActive(false);
 		setOrigin(widthSprite/2, heightSprite/2);
 		setBounds(destination.x - widthSprite/2, destination.y-heightSprite/2, widthSprite, heightSprite);
 	}
 	
 	@Override
 	protected void createBody(World world, Vector2 position) {
-		this.body = BodyHelper.createBody(world, position, BodyType.KinematicBody);
+		if (isSensor)
+			this.body = BodyHelper.createBody(world, position, BodyType.DynamicBody);
+		else 
+			this.body = BodyHelper.createBody(world, position, BodyType.KinematicBody);
 		Filter filter;
 		if (isOpaque)
 			filter = BodyHelper.createFilter(HonoursGame.SPELL_BIT, (short)0,(short)(HonoursGame.PLAYER_BIT | HonoursGame.SPELL_BIT | HonoursGame.LIGHT_BIT));
@@ -84,10 +92,21 @@ public class StaticSpell extends SpellGraphicBehaviour {
 	@Override
 	public void update(float deltaTime) {
 		currentLifeTime += deltaTime;
-		if(currentLifeTime >= activityTime) {
-			destroySpell();
-			currentLifeTime = 0;
+		if (isNotActive) {
+			if (currentLifeTime > 0.5) {
+				currentLifeTime = 0;
+				body.setActive(true);
+				isNotActive = false;
+				setRegion(activeRegion);
+			}
+		} else {
+			if(currentLifeTime >= activityTime) {
+				destroySpell();
+				currentLifeTime = 0;
+			}
 		}
+		
+		
 	}
 	
 	public float getActivityTime() {

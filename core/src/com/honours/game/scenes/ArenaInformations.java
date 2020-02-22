@@ -129,7 +129,7 @@ public class ArenaInformations implements Disposable {
 		return Input.Keys.toString(keyCode);
 	}
 	
-	private static String formatFloat(float f) {
+	public static String formatFloat(float f) {
 		return String.format("%.1f",f);
 	}
 	
