@@ -42,7 +42,9 @@ public class ArenaGameManager implements InputProcessor {
 	private static List<Team> teams = new ArrayList<Team>();
 	
 	private ArenaInformations arenaInf;
-	public static List<Integer> keyForSpells = Arrays.asList(Input.Keys.SPACE,Input.Keys.A,Input.Keys.Z,Input.Keys.E,Input.Keys.R);
+
+	public static List<Integer> keyForSpells = Arrays.asList(Input.Keys.SPACE,Input.Keys.Q,Input.Keys.W,Input.Keys.E,Input.Keys.R);
+
 		
 	private float gameTime = 0;
 		

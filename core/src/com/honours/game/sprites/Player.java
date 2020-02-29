@@ -28,7 +28,9 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 public class Player extends Sprite {
-	public static final float MOVEMENT_SPEED = 3;
+
+	public static final float MOVEMENT_SPEED = 0.5f;
+
 	public static final float STATE_ANIMATION_DURATION = 0.5f;	
 	
 	private float healthPoints = 100;
@@ -141,15 +143,14 @@ public class Player extends Sprite {
 		for (Spell spell : listOfSpells) {
 			spell.update(deltaTime);
 		}
-		
-		setPosition(body.getPosition().x - getWidth()/2, body.getPosition().y-getHeight()/2);
-		
+				
 		if (wayPointNotReached && BodyHelper.iswayPointReached(body.getPosition(), destination, currentMovementSpeed)) {
     		wayPointNotReached = false;
-  			body.setLinearVelocity(new Vector2(0, 0));		
+  			body.setLinearVelocity(new Vector2(0, 0));	
+  			body.setTransform(destination, body.getAngle());
 		}
-		
-		
+		setPosition(body.getPosition().x - getWidth()/2, body.getPosition().y-getHeight()/2);
+
     	for (int i = 0; i < listOfLongTermEffect.size(); i++) {
 			listOfLongTermEffect.get(i).update(deltaTime, this);
 		}

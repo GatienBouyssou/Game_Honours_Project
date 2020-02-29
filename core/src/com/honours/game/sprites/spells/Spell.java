@@ -38,13 +38,16 @@ public class Spell {
 	
 	private boolean canBeCasted = true;
 	private float couldownTimer = 0;
+	
 	private int teamId;
+	private int spellId;
+
 	
 	private Array<SpellGraphicBehaviour> listActiveSpells = new Array<SpellGraphicBehaviour>(false, 5);
 	private Array<SpellGraphicBehaviour> listSpellsToDestroy = new Array<SpellGraphicBehaviour>(false, 5);
-	
 
-	public Spell(float range, float couldown, SpellGraphicBehaviour spellBehaviour, SpellEffect effect) {
+	public Spell(int spellId, float range, float couldown, SpellGraphicBehaviour spellBehaviour, SpellEffect effect) {
+		this.spellId = spellId;
 		this.range = range;
 		this.couldown = couldown;
 		spellBehaviour.setSpell(this);
@@ -52,20 +55,22 @@ public class Spell {
 		this.effect = effect;
 	}
 
-	public Spell(float range, float couldown, float basicDamage) {
+	public Spell(int spellId, float range, float couldown, float basicDamage) {
+		this.spellId = spellId;
 		this.range = range;
 		this.couldown = couldown;
 		this.basicDamage = basicDamage;
 	}
 	
-	public Spell(float range, float couldown) {
+	public Spell(int spellId,float range, float couldown) {
+		this.spellId = spellId;
 		this.range = range;
 		this.couldown = couldown;
 		this.basicDamage = 0;
 	}
 	
 	public Spell(Spell spell) {
-		this(spell.getRange(), spell.getCouldown(), spell.getBasicDamage());
+		this(spell.getSpellId(), spell.getRange(), spell.getCouldown(), spell.getBasicDamage());
 		setSpellBehaviour(spell.getSpellBehaviour().clone());
 		setEffect(spell.getEffect().clone());
 		setType(spell.getType());
@@ -237,6 +242,10 @@ public class Spell {
 	
 	public void setBasicDamage(float basicDamage) {
 		this.basicDamage = basicDamage;
+	}
+	
+	public int getSpellId() {
+		return spellId;
 	}
 	
 	@Override

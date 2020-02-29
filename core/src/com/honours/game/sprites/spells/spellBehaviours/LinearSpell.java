@@ -9,11 +9,11 @@ import com.honours.game.tools.BodyHelper;
 public class LinearSpell extends SpellGraphicBehaviour {
 	
 	public static final float STATIC_SPELL = 0;
-	public static final float TURTLE_SPEED = 1;
-	public static final float HUMAN_SPEED = 2;
-	public static final float FOX_SPEED = 3;
-	public static final float CHEETAH_SPEED = 5;
-	public static final float GOD_SPEED = 8;
+	public static final float TURTLE_SPEED = 0.5f;
+	public static final float HUMAN_SPEED = 0.6f;
+	public static final float FOX_SPEED = 0.8f;
+	public static final float CHEETAH_SPEED = 1;
+	public static final float GOD_SPEED = 1.5f;
 
 	private float movementSpeed = 1;
 	private boolean destroyedWhenTouchTeamMate;

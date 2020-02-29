@@ -1,6 +1,5 @@
 package com.honours.game.tools;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -70,6 +69,6 @@ public class BodyHelper {
 	}
 	
 	public static boolean iswayPointReached(Vector2 bodyPos, Vector2 destination, float movementSpeed) {
-		return Math.abs(destination.x - bodyPos.x)<= movementSpeed * Gdx.graphics.getDeltaTime() && Math.abs(destination.y - bodyPos.y) <= movementSpeed * Gdx.graphics.getDeltaTime();
+		return Math.abs(destination.x - bodyPos.x)<= 0.1 && Math.abs(destination.y - bodyPos.y) <= 0.1;
 	}
 }

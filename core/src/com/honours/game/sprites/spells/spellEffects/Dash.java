@@ -27,12 +27,11 @@ public class Dash extends SpellEffect {
 
 	@Override
 	public void update(float deltaTime, Player player) {
-		if (player.isWayPointNotReached() && player.getBody().getLinearVelocity().equals(playerVelocity)) {
-			return;
+		if (!player.isWayPointNotReached() && !player.getBody().getLinearVelocity().equals(playerVelocity)) {
+			player.isRooted(false);
+			player.removeLongTermEffect(this);
+			spellGraphicBehaviour.destroySpell();
 		}
-		player.isRooted(false);
-		player.removeLongTermEffect(this);
-		spellGraphicBehaviour.destroySpell();
 	}
 	
 	public float getBonusMovementSpeed() {

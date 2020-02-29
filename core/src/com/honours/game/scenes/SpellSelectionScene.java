@@ -5,6 +5,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -139,6 +140,16 @@ public class SpellSelectionScene implements Disposable {
 				spellPlayer = new Array<Spell>();
 				spellPlayer.add(spells.get(0));
 			}
+			
+			@Override
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Hand);
+			}
+			
+			@Override
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
+			}
 		});
 		
 		
@@ -196,11 +207,14 @@ public class SpellSelectionScene implements Disposable {
 				@Override
 				public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 					dialog.text(spell.toString());
+					Gdx.graphics.setSystemCursor(SystemCursor.Hand);
 				}
 				
 				@Override
 				public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
 					dialog.getContentTable().clear();
+					Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
+
 				}
 				
 			});

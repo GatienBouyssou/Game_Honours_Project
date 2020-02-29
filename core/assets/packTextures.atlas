@@ -1,12 +1,12 @@
 
-pack.png
+packTextures.png
 size: 1024,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 Bubble
   rotate: false
-  xy: 757, 129
+  xy: 945, 180
   size: 66, 66
   orig: 66, 66
   offset: 0, 0
@@ -46,6 +46,13 @@ fireColumn
   orig: 111, 113
   offset: 0, 0
   index: -1
+fireHalo
+  rotate: false
+  xy: 757, 125
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
 fireRay
   rotate: false
   xy: 2, 210
@@ -69,42 +76,42 @@ plantRay
   index: -1
 playerAI
   rotate: false
-  xy: 873, 182
+  xy: 467, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 playerAIHeal
   rotate: false
-  xy: 939, 182
+  xy: 533, 74
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 playerAIHurt
   rotate: false
-  xy: 467, 68
+  xy: 467, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 playerHuman
   rotate: false
-  xy: 533, 74
+  xy: 533, 8
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 playerHumanHeal
   rotate: false
-  xy: 467, 2
+  xy: 599, 74
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 playerHumanHurt
   rotate: false
-  xy: 533, 8
+  xy: 599, 8
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -139,8 +146,15 @@ wallWater
   index: -1
 waterBall
   rotate: false
-  xy: 599, 104
+  xy: 665, 110
   size: 49, 34
   orig: 49, 34
+  offset: 0, 0
+  index: -1
+waterShield
+  rotate: false
+  xy: 873, 176
+  size: 70, 70
+  orig: 70, 70
   offset: 0, 0
   index: -1
