@@ -15,11 +15,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.honours.AI.AIManager;
 import com.honours.game.HonoursGame;
+import com.honours.game.player.PlayerType;
+import com.honours.game.player.spells.Spell;
+import com.honours.game.player.spells.SpellCreator;
 import com.honours.game.scenes.ArenaInformations;
 import com.honours.game.screens.ArenaGameScreen;
-import com.honours.game.sprites.spells.Spell;
-import com.honours.game.sprites.spells.SpellCreator;
 import com.honours.game.tools.PlayerContactListener;
 import com.honours.game.world.Box2DWorldCreator;
 
@@ -45,11 +47,12 @@ public class ArenaGameManager implements InputProcessor {
 
 	public static List<Integer> keyForSpells = Arrays.asList(Input.Keys.SPACE,Input.Keys.Q,Input.Keys.W,Input.Keys.E,Input.Keys.R);
 
-		
 	private float gameTime = 0;
 		
 	private static boolean gameOver = false;
 
+	private static AIManager aiManager;
+	
 	public ArenaGameManager(ArenaGameScreen screen) {
 		this.camera = screen.getCamera();
         // creating the world
@@ -68,25 +71,27 @@ public class ArenaGameManager implements InputProcessor {
 		HonoursGame game = screen.getGame();
 		TextureAtlas textureAtlas = game.getTextureAtlas();
 		
-		Array<Spell> spells = SpellCreator.duplicateListOfSpell(game.getSpellHumans());
-		teamHuman.addNewPlayer(worldCreator.getRandomSpawnT1(), textureAtlas, "Human", spells);
-
-		spells = SpellCreator.duplicateListOfSpell(game.getListOfSpellsAvailable());
-		teamAI.addNewPlayer(worldCreator.getRandomSpawnT2(), textureAtlas, "AI", spells);
+		teamHuman.addNewPlayer(worldCreator.getRandomSpawnT1(), textureAtlas, "Human", game.getSpellHumans(), PlayerType.Human);
+		teamAI.addNewPlayer(worldCreator.getRandomSpawnT2(), textureAtlas, "AI", game.getSpellAI(), PlayerType.AI);
+		
 		teams.add(teamHuman);
 		teams.add(teamAI);
+		
 		arenaInf = new ArenaInformations(game.getBatch(), Arrays.asList(teamHuman, teamAI), gameTime);
+		
+		aiManager = new AIManager(world, teams);
 	}
 
 	public void update(float deltaTime) {
 		world.step(1/60f, 6, 2);
-    	this.gameTime += deltaTime;
-    	for (Team team : teams) {
-			team.updatePlayers(deltaTime);
-			team.updatePointOfView();
+    	this.gameTime += deltaTime; 
+		teams.get(TEAM_HUMAN).update(deltaTime, teams.get(TEAM_AI));
+		teams.get(TEAM_AI).update(deltaTime, teams.get(TEAM_HUMAN));
+		if (!gameOver) {
+			arenaInf.update(teams.get(TEAM_HUMAN).getPlayer(MAIN_PLAYER_INDEX), gameTime); 
+			aiManager.update();		
 		}
-    	arenaInf.update(teams.get(TEAM_HUMAN).getPlayer(MAIN_PLAYER_INDEX), gameTime);
-    	
+		
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -95,9 +100,7 @@ public class ArenaGameManager implements InputProcessor {
 		
         batch.begin();
         teams.get(TEAM_HUMAN).draw(batch);
-        for (int i = 1; i < teams.size(); i++) {
-        	teams.get(i).drawPlayerAndSpellsIfInLight(batch, teams.get(TEAM_HUMAN));
-		}
+        teams.get(TEAM_AI).drawPlayerAndSpellsIfInLight(batch);
         batch.end();
         
         boxRenderer.render(world, camera.combined);
@@ -142,7 +145,7 @@ public class ArenaGameManager implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (button == Input.Buttons.LEFT) {
+		if (button == Input.Buttons.RIGHT) {
 			Vector3 destInWorld = camera.unproject(new Vector3(screenX, screenY, 0));
 			teams.get(TEAM_HUMAN).playerMoveTo(MAIN_PLAYER_INDEX, destInWorld.x, destInWorld.y);
 		}
@@ -176,14 +179,16 @@ public class ArenaGameManager implements InputProcessor {
 		boxRenderer.dispose();
 		world.dispose();
 		arenaInf.dispose();
+		aiManager.dispose();
 	}
 
 	public static void playerIsDead(int teamId, int playerId) {
 		Team team = teams.get(teamId);
+		aiManager.playerDies(team.getPlayer(playerId));
 		team.removePlayer(playerId);
 		if (team.hasLost()) {
 			gameOver = true;			
-		}
+		}	
 	}
 	
 	public boolean isGameOver() {

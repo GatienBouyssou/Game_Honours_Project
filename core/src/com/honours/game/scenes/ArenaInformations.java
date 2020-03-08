@@ -18,10 +18,10 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.honours.game.manager.ArenaGameManager;
 import com.honours.game.manager.Team;
+import com.honours.game.player.Player;
 import com.honours.game.scenes.ui.LabelCreator;
 import com.honours.game.scenes.ui.TableCreator;
 import com.honours.game.screens.ArenaGameScreen;
-import com.honours.game.sprites.Player;
 import com.honours.game.tools.Matrix;
 
 public class ArenaInformations implements Disposable {

@@ -56,7 +56,8 @@ project(":core") {
 
 
     dependencies {
-      	compile "org.elasticsearch.client:transport:$elasticVersion"
+      	compile 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.6.0'
+      	compile 'com.google.code.gson:gson:2.8.5'
     	compile "com.badlogicgames.box2dlights:box2dlights:1.5"
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"

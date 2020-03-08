@@ -36,9 +36,13 @@ public class PlayerSightManager {
 	}	
 	
 	public static boolean isBodySeen(World world, Vector2 playerPosition, Vector2 observatorPosition) {
-		if (playerPosition.dst(observatorPosition) > MAX_LENGTH_SIGHT) {
+		float dstToObject = playerPosition.dst(observatorPosition);
+		if (dstToObject > MAX_LENGTH_SIGHT) {
 			return false;
+		} else if (dstToObject <= 0){
+			return true;
 		}
+		
 		isBodySeen=true;
 		world.rayCast(callback, playerPosition, observatorPosition);
 		countOfObstacle = 0;

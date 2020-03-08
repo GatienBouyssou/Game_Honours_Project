@@ -4,16 +4,13 @@
 
 package com.honours.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
+import com.honours.game.player.spells.Spell;
+import com.honours.game.player.spells.SpellCreator;
 import com.honours.game.screens.TitleScreen;
-import com.honours.game.sprites.spells.Spell;
-import com.honours.game.sprites.spells.SpellCreator;
 
 public class HonoursGame extends Game 
 {
@@ -27,8 +24,9 @@ public class HonoursGame extends Game
     public static final int VIRTUAL_HEIGHT = 16;
     public static final int FRAME_WIDTH = 32;
     
-    private Array<Spell> ListOfSpellsAvailable;
+    private Array<Spell> listOfSpellsAvailable;
     private Array<Spell> spellHumans;
+    private Array<Spell> spellAI = new Array<>();
     private TextureAtlas textureAtlas;
     
     public void create() {    
@@ -36,8 +34,12 @@ public class HonoursGame extends Game
         setScreen(new TitleScreen(this));
         textureAtlas = new TextureAtlas("packTextures.atlas");
         SpellCreator spellCreator = new SpellCreator(textureAtlas);
-        ListOfSpellsAvailable = spellCreator.getListOfSpellCreated();
-        
+        listOfSpellsAvailable = spellCreator.getListOfSpellCreated();
+        spellAI.add(new Spell(listOfSpellsAvailable.get(0)));
+        spellAI.add(new Spell(listOfSpellsAvailable.get(1)));
+        spellAI.add(new Spell(listOfSpellsAvailable.get(3)));
+        spellAI.add(new Spell(listOfSpellsAvailable.get(8)));
+        spellAI.add(new Spell(listOfSpellsAvailable.get(12)));
     }
     
     public void dispose() {
@@ -54,11 +56,15 @@ public class HonoursGame extends Game
     }
 
 	public Array<Spell> getListOfSpellsAvailable() {
-		return ListOfSpellsAvailable;
+		return listOfSpellsAvailable;
 	}
 
+	public int nbrOfSpellsAvailable() {
+		return listOfSpellsAvailable.size;
+	}
+	
 	public void setListOfSpellsAvailable(Array<Spell> listOfSpellsAvailable) {
-		ListOfSpellsAvailable = listOfSpellsAvailable;
+		this.listOfSpellsAvailable = listOfSpellsAvailable;
 	}
 	
 	public TextureAtlas getTextureAtlas() {
@@ -67,6 +73,10 @@ public class HonoursGame extends Game
        
 	public Array<Spell> getSpellHumans() {
 		return spellHumans;
+	}
+	
+	public Array<Spell> getSpellAI() {
+		return spellAI;
 	}
 	
 	public void setSpellHumans(Array<Spell> spellHumans) {

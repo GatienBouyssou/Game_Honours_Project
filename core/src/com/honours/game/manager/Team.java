@@ -14,8 +14,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.honours.game.sprites.Player;
-import com.honours.game.sprites.spells.Spell;
+import com.honours.game.player.Player;
+import com.honours.game.player.PlayerType;
+import com.honours.game.player.spells.Spell;
 import com.honours.game.tools.PlayerSightManager;
 
 import box2dLight.RayHandler;
@@ -49,22 +50,27 @@ public class Team {
 		}
 		return false;
 	}
-	
-	public void updatePlayers(float deltaTime) {		
-		for (int i = 0; i < listOfPlayersAlive.size(); i++) {
-			mapOfPlayers.get(listOfPlayersAlive.get(i)).update(deltaTime);
-		}
-	}
-	
 		
-	public void addNewPlayer(Vector2 spawnPoint, TextureAtlas atlas, String TypeOfPlayer, Array<Spell> listOfSpells) {
+	public void addNewPlayer(Vector2 spawnPoint, TextureAtlas atlas, String TypeOfPlayer, Array<Spell> listOfSpells, PlayerType playerType) {
 		List<TextureRegion> regions = new ArrayList<TextureRegion>();
 		for (String nameRegion : nameRegions) {
 			regions.add(new TextureRegion(atlas.findRegion("player"+TypeOfPlayer+nameRegion)));
 		}
-		Player player = new Player(world, spawnPoint, regions, listOfSpells, rayHandler, teamId, listOfPlayersAlive.size());
+		Player player = new Player(world, spawnPoint, regions, listOfSpells, 
+				rayHandler, teamId, listOfPlayersAlive.size(), playerType);
 		listOfPlayersAlive.add(player.getId());
 		mapOfPlayers.put(player.getId(), player);
+	}
+	
+	public void update(float deltaTime, Team team) {
+		updatePlayers(deltaTime, team);
+		updatePointOfView();
+	}
+	
+	public void updatePlayers(float deltaTime, Team team) {		
+		for (int i = 0; i < listOfPlayersAlive.size(); i++) {
+			mapOfPlayers.get(listOfPlayersAlive.get(i)).update(deltaTime, team);
+		}
 	}
 	
 	public void updatePointOfView() {
@@ -76,16 +82,18 @@ public class Team {
 			mapOfPlayers.get(playerId).draw(batch);
 		}
 	}
+	
+	public void drawPlayerAndSpellsIfInLight(SpriteBatch batch) {
+		for (int playerId : listOfPlayersAlive) {
+			mapOfPlayers.get(playerId).drawPlayerAndSpellsIfInLight(batch);
+		}
+	}
+	
 
 	public void renderLight() {
 		rayHandler.render();
 	}
 	
-	public void drawPlayerAndSpellsIfInLight(SpriteBatch batch, Team team) {
-		for (int playerId : listOfPlayersAlive) {
-			mapOfPlayers.get(playerId).drawPlayerAndSpellsIfInLight(batch, team);
-		}
-	}
 	
 	public boolean detectsBody(Vector2 bodyPosition) {
 		for (Integer playerId : listOfPlayersAlive) {

@@ -7,9 +7,9 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.honours.game.HonoursGame;
-import com.honours.game.sprites.Player;
-import com.honours.game.sprites.spells.Spell;
-import com.honours.game.sprites.spells.spellEffects.Invisibility;
+import com.honours.game.player.Player;
+import com.honours.game.player.spells.Spell;
+import com.honours.game.player.spells.spellEffects.Invisibility;
 
 public class PlayerContactListener implements ContactListener{
 

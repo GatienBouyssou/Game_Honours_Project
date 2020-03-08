@@ -1,23 +1,15 @@
 package com.honours.AI.CBRSytem;
 
-import java.util.List;
-
-import com.badlogic.gdx.physics.box2d.World;
-import com.honours.game.manager.Team;
-import com.honours.game.sprites.Player;
+import com.google.gson.Gson;
+import com.honours.elasticsearch.model.state.State;
+import com.honours.game.player.Player;
 
 public class CBRSytem {
-	private World world;
-	private List<Team> teams;
 	
-	public CBRSytem(World world, List<Team> teams) {
-		super();
-		this.world = world;
-		this.teams = teams;
-	}
-	
-	public void query(Player player) {
-		
+	public static RetrieveQueryResponse retrieve(Player player, State state) {
+		Gson gson = new Gson();
+		String stateJson = gson.toJson(state);
+		return new RetrieveQueryResponse(player, state, null);
 	}
 	
 }

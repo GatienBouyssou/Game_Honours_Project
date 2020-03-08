@@ -27,12 +27,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.honours.game.HonoursGame;
 import com.honours.game.manager.ArenaGameManager;
+import com.honours.game.player.spells.Spell;
+import com.honours.game.player.spells.spellBonus.SpellBonus;
 import com.honours.game.scenes.ui.LabelCreator;
 import com.honours.game.scenes.ui.TableCreator;
 import com.honours.game.scenes.ui.UIObjectCreator;
 import com.honours.game.screens.ArenaGameScreen;
-import com.honours.game.sprites.spells.Spell;
-import com.honours.game.sprites.spells.spellBonus.SpellBonus;
 
 public class SpellSelectionScene implements Disposable {
 	private static final int ROW_HEIGHT = 100;

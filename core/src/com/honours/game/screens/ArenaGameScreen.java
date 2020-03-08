@@ -70,6 +70,13 @@ public class ArenaGameScreen extends ScreenAdapter
     	tiledMapRenderer.setView(camera);
     }
 
+	public void gameOver() {
+		game.setScreen(new EndScreen(game));
+		dispose();
+	}
+
+    
+    
 	public void render(final float delta) {
         update(delta);
 		
@@ -79,10 +86,8 @@ public class ArenaGameScreen extends ScreenAdapter
         tiledMapRenderer.render();
         
         arenaGameManager.render(game.getBatch());
-        if (arenaGameManager.isGameOver()) {
-			game.setScreen(new EndScreen(game));
-			dispose();
-        }
+        if (arenaGameManager.isGameOver()) 
+    		gameOver();
     }
     
     public void hide() {
