@@ -103,6 +103,12 @@ public class Team {
 		return false;
 	}
 	
+	public void giveManaBonus(float manaBonus) {
+		for (Integer playerId : listOfPlayersAlive) {
+			mapOfPlayers.get(playerId).addManaBonus(manaBonus);
+		}
+	}
+	
 	public List<Integer> getListOfPlayersAlive() {
 		return listOfPlayersAlive;
 	}

@@ -15,6 +15,12 @@ import com.honours.game.player.spells.type.Element;
 import com.honours.game.player.spells.type.SpellType;
 
 public class Spell {
+	public static final float BASIC_MANA_COST = 5;
+	public static final float LOW_MANA_COST = 10;
+	public static final float MEDIUM_MANA_COST = 20;
+	public static final float HIGH_MANA_COST = 30;
+	
+	
 	public static final float SHORT_RANGE = 1;
 	public static final float MEDIUM_RANGE = 5;
 	public static final float LONG_RANGE = 10;
@@ -24,7 +30,7 @@ public class Spell {
 	public static final float MEDIUM_COULDOWN = 5;
 	public static final float LONG_COULDOWN = 10;
 			
-	private float manaCost = SHORT_RANGE;  
+	private float manaCost;  
 	private float range = SHORT_RANGE;  
 	private float couldown = SHORT_COULDOWN;
 	
@@ -43,34 +49,27 @@ public class Spell {
 	private Array<SpellGraphicBehaviour> listActiveSpells = new Array<SpellGraphicBehaviour>(false, 5);
 	private Array<SpellGraphicBehaviour> listSpellsToDestroy = new Array<SpellGraphicBehaviour>(false, 5);
 
-	public Spell(int spellId, float range, float couldown, SpellGraphicBehaviour spellBehaviour, SpellEffect effect) {
-		this.spellId = spellId;
-		this.range = range;
-		this.couldown = couldown;
-		spellBehaviour.setSpell(this);
-		this.spellBehaviour = spellBehaviour;
-		this.effect = effect;
+	public Spell(int spellId, float range, float couldown, float basicDamage, float manaCost) {
+		setUpSpell(spellId, range, couldown, basicDamage, manaCost);
 	}
-
-	public Spell(int spellId, float range, float couldown, float basicDamage) {
+	
+	public Spell(int spellId,float range, float couldown, float manaCost) {
+		setUpSpell(spellId, range, couldown, 0, manaCost);
+	}
+	
+	public Spell(Spell spell) {
+		this(spell.getSpellId(), spell.getRange(), spell.getCouldown(), spell.getBasicDamage(), spell.getManaCost());
+		setSpellBehaviour(spell.getSpellBehaviour().clone());
+		setEffect(spell.getEffect().clone());
+		setType(spell.getType());
+	}
+	
+	private void setUpSpell(int spellId, float range, float couldown, float basicDamage, float manaCost) {
 		this.spellId = spellId;
 		this.range = range;
 		this.couldown = couldown;
 		this.basicDamage = basicDamage;
-	}
-	
-	public Spell(int spellId,float range, float couldown) {
-		this.spellId = spellId;
-		this.range = range;
-		this.couldown = couldown;
-		this.basicDamage = 0;
-	}
-	
-	public Spell(Spell spell) {
-		this(spell.getSpellId(), spell.getRange(), spell.getCouldown(), spell.getBasicDamage());
-		setSpellBehaviour(spell.getSpellBehaviour().clone());
-		setEffect(spell.getEffect().clone());
-		setType(spell.getType());
+		this.manaCost = manaCost;
 	}
 	
 	public void castSpell(Player player, World world, Vector2 destination) {
@@ -106,7 +105,7 @@ public class Spell {
 	public void applyEffectToPlayer(Player player, Body body) {
 		effect.applyEffectToPlayer(player, teamId);
 		type.applyEffect(player, teamId);
-		if (player.getTeamId() !=  teamId) {
+		if (player.getTeamId() !=  teamId && basicDamage > 0) {
 			player.damagePlayer(basicDamage);
 		}
 		if (spellBehaviour.isDestroyedWhenTouch(player, teamId)) {
@@ -249,6 +248,10 @@ public class Spell {
 	
 	public Array<SpellGraphicBehaviour> getListActiveSpells() {
 		return listActiveSpells;
+	}
+	
+	public float getManaCost() {
+		return manaCost;
 	}
 	
 	@Override

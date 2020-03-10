@@ -103,12 +103,10 @@ public class AIManager {
 				break;
 		}
 		player.moveTo(playerPos);
-		player.castSpell(4, opponentPlayerPos);
-//		Array<Integer> spellsIds = action.getSpellId();
-//		System.out.println(spellsIds);
-//		for (Integer spellId : spellsIds) {
-//			player.castSpell(spellId, opponentPlayerPos);
-//		}
+		Array<Integer> spellsIds = action.getSpellId();
+		for (Integer spellId : spellsIds) {
+			player.castSpell(spellId, opponentPlayerPos);
+		}
 	}
 
 	private Player getOpponent(int teamId) {

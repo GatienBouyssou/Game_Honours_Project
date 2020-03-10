@@ -18,9 +18,9 @@ public class ManaChanger extends SpellEffect {
 	public void applyEffectToPlayer(Player player, int teamId) {
 		
 		if (player.getTeamId() == teamId) {
-			player.setAmountOfMana(player.getAmountOfMana() + amountManaChanged);
+			player.addManaBonus(amountManaChanged);
 		} else if (player.getTeamId()!=teamId) {
-			player.setAmountOfMana(player.getAmountOfMana() - amountManaChanged);
+			player.manaDrained(amountManaChanged);
 		}
 	}
 

@@ -29,12 +29,13 @@ import box2dLight.RayHandler;
 
 public class Player extends Sprite {
 
+	private static final int MAX_MANA_AMOUNT = 100;
 	public static final float MOVEMENT_SPEED = 0.5f;
 	private PlayerType playerType;
 	public static final float STATE_ANIMATION_DURATION = 0.5f;	
 	
 	private float healthPoints = 100;
-	private float amountOfMana = 100;
+	private float amountOfMana = MAX_MANA_AMOUNT;
 
 	public static float SIZE_CHARACTER;
 	private Body body;
@@ -225,8 +226,22 @@ public class Player extends Sprite {
 		return amountOfMana;
 	}
 
-	public void setAmountOfMana(float f) {
-		this.amountOfMana = f;
+	public void addManaBonus(float manaBonus) {
+		if (amountOfMana + manaBonus > MAX_MANA_AMOUNT)
+			setAmountOfMana(MAX_MANA_AMOUNT);
+		else
+			setAmountOfMana(amountOfMana + manaBonus);
+	}
+	
+	public void manaDrained(float manaRemoved) {
+		if (amountOfMana - manaRemoved < 0)
+			setAmountOfMana(0);
+		else
+			setAmountOfMana(amountOfMana - manaRemoved);
+	}
+	
+	public void setAmountOfMana(float amountMana) {
+		this.amountOfMana = amountMana;
 		ArenaInformations.updatePlayerMana(teamId, playerId, amountOfMana);
 	}
 	

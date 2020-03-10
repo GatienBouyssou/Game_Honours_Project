@@ -44,7 +44,8 @@ public class ArenaGameManager implements InputProcessor {
 	private static List<Team> teams = new ArrayList<Team>();
 	
 	private ArenaInformations arenaInf;
-
+	private ManaRefiler manaRefiler;
+	
 	public static List<Integer> keyForSpells = Arrays.asList(Input.Keys.SPACE,Input.Keys.Q,Input.Keys.W,Input.Keys.E,Input.Keys.R);
 
 	private float gameTime = 0;
@@ -78,7 +79,7 @@ public class ArenaGameManager implements InputProcessor {
 		teams.add(teamAI);
 		
 		arenaInf = new ArenaInformations(game.getBatch(), Arrays.asList(teamHuman, teamAI), gameTime);
-		
+		manaRefiler = new ManaRefiler(ManaRefiler.BASIC_MANA_BONUS);
 		aiManager = new AIManager(world, teams);
 	}
 
@@ -87,6 +88,7 @@ public class ArenaGameManager implements InputProcessor {
     	this.gameTime += deltaTime; 
 		teams.get(TEAM_HUMAN).update(deltaTime, teams.get(TEAM_AI));
 		teams.get(TEAM_AI).update(deltaTime, teams.get(TEAM_HUMAN));
+		manaRefiler.update(gameTime, teams);
 		if (!gameOver) {
 			arenaInf.update(teams.get(TEAM_HUMAN).getPlayer(MAIN_PLAYER_INDEX), gameTime); 
 			aiManager.update();		

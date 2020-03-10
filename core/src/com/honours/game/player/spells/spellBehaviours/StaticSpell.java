@@ -98,7 +98,7 @@ public class StaticSpell extends SpellGraphicBehaviour {
 			isNotActive = false;
 			setRegion(activeRegion);
 		} else if (collisionNotChecked && !isSensor && currentLifeTime > 0.5) {
-			body.setType(BodyType.KinematicBody);
+			body.setType(BodyType.StaticBody);
 			body.setTransform(destination, (float) Math.toRadians(angle));
 			collisionNotChecked = false;
 		} else if(currentLifeTime >= activityTime) {
