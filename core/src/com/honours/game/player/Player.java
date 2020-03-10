@@ -145,8 +145,8 @@ public class Player extends Sprite {
 				}
 			}
   		}
-		for (Spell spell : listOfSpells) {
-			spell.update(deltaTime, team);
+		for (int i = 0; i < listOfSpells.size; i++) {
+			listOfSpells.get(i).update(deltaTime, team);
 		}
 				
 		if (wayPointNotReached && BodyHelper.iswayPointReached(body.getPosition(), destination, currentMovementSpeed)) {

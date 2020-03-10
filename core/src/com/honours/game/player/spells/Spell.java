@@ -124,8 +124,8 @@ public class Spell {
 			instanceToDestroy.destroySpell();
 			listSpellsToDestroy.removeValue(instanceToDestroy, true);
 		}
-		for (SpellGraphicBehaviour spellGraphicBehaviour : listActiveSpells) {
-			spellGraphicBehaviour.update(deltaTime, team);
+		for (int i = 0; i < listActiveSpells.size; i++) {
+			listActiveSpells.get(i).update(deltaTime, team);
 		}
 		if (!canBeCasted) {
 			couldownTimer -= deltaTime;

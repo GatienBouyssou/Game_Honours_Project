@@ -81,6 +81,7 @@ public class ArenaGameManager implements InputProcessor {
 		arenaInf = new ArenaInformations(game.getBatch(), Arrays.asList(teamHuman, teamAI), gameTime);
 		manaRefiler = new ManaRefiler(ManaRefiler.BASIC_MANA_BONUS);
 		aiManager = new AIManager(world, teams);
+		aiManager.run();
 	}
 
 	public void update(float deltaTime) {
@@ -91,9 +92,7 @@ public class ArenaGameManager implements InputProcessor {
 		manaRefiler.update(gameTime, teams);
 		if (!gameOver) {
 			arenaInf.update(teams.get(TEAM_HUMAN).getPlayer(MAIN_PLAYER_INDEX), gameTime); 
-			aiManager.update();		
 		}
-		
 	}
 	
 	public void render(SpriteBatch batch) {

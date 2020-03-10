@@ -6,8 +6,9 @@ import java.util.concurrent.CompletableFuture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.honours.AI.CBRSytem.CBRSytem;
-import com.honours.elasticsearch.model.Case;
 import com.honours.elasticsearch.model.action.Action;
 import com.honours.elasticsearch.model.action.ActionMove;
 import com.honours.elasticsearch.model.state.PlayerNotVisibleState;
@@ -24,10 +25,11 @@ public class AIManager {
 	private World world;
 	private Array<Player> inGamePlayers= new Array<>(2);
 	private Array<Player> monitoredPlayers = new Array<>(2);
+	private Timer timer;
 	
 	public AIManager(World world, List<Team> allTheTeams) {
 		this.world = world;
-		
+		timer = new Timer();
 		for (Team team : allTheTeams) {
 			List<Integer> playersAlive = team.getListOfPlayersAlive();
 			for (Integer playerId : playersAlive) {
@@ -39,6 +41,15 @@ public class AIManager {
 			}
 		}
 		
+	}
+	
+	public void run() {
+		timer.scheduleTask(new Task() {
+			@Override
+			public void run() {
+				update();
+			}
+		}, 0, 0.5f);
 	}
 	
 	public void update() {
@@ -123,8 +134,12 @@ public class AIManager {
 		inGamePlayers.removeValue(player, true);
 	}
 
+	public void restart() {
+		timer.stop();
+		timer.start();
+	}
+	
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+		timer.stop();
 	}
 }
