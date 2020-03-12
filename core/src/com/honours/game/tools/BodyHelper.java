@@ -69,6 +69,9 @@ public class BodyHelper {
 	}
 	
 	public static boolean iswayPointReached(Vector2 bodyPos, Vector2 destination, float movementSpeed) {
+		if (destination == null || bodyPos == null) {
+			return false;
+		}
 		return Math.abs(destination.x - bodyPos.x)<= 0.1 && Math.abs(destination.y - bodyPos.y) <= 0.1;
 	}
 }

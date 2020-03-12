@@ -27,7 +27,7 @@ public class Action {
 	}
 	
 	private static Array<Integer> getRandomSpellsToCast(Player player) {
-		Array<Integer> spellsToCast = getSpellsIds(player);	
+		Array<Integer> spellsToCast = getSpellsIndeces(player);	
 		int randomSize = getRandomBellow(spellsToCast.size);		
 		while (spellsToCast.size > randomSize) {
 			spellsToCast.removeIndex(getRandomBellow(spellsToCast.size));			
@@ -35,11 +35,11 @@ public class Action {
 		return spellsToCast;
 	}
 
-	private static Array<Integer> getSpellsIds(Player player) {
+	private static Array<Integer> getSpellsIndeces(Player player) {
 		Array<Integer> spellsToCast = new Array<Integer>();
 		Array<Spell> spellsAvailable = player.getListOfSpells();
 		for (int i = 0; i < spellsAvailable.size; i++) {
-			spellsToCast.add(spellsAvailable.get(i).getSpellId());
+			spellsToCast.add(i);
 		}
 		return spellsToCast;
 	}

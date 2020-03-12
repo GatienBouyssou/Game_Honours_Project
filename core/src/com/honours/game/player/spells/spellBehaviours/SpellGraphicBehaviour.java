@@ -85,6 +85,10 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 	}
 		
 	public void update(float deltaTime, Team team) {
+		if (body == null) {
+			System.out.println("nulllllllll");
+			System.out.println(this);
+		}
 		this.isVisible(team.detectsBody(body.getPosition()));
 	}
 

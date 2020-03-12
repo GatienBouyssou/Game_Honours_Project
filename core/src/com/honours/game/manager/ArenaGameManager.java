@@ -86,7 +86,8 @@ public class ArenaGameManager implements InputProcessor {
 
 	public void update(float deltaTime) {
 		world.step(1/60f, 6, 2);
-    	this.gameTime += deltaTime; 
+		this.gameTime += deltaTime;
+		aiManager.resolvePendingActions();
 		teams.get(TEAM_HUMAN).update(deltaTime, teams.get(TEAM_AI));
 		teams.get(TEAM_AI).update(deltaTime, teams.get(TEAM_HUMAN));
 		manaRefiler.update(gameTime, teams);
@@ -194,6 +195,17 @@ public class ArenaGameManager implements InputProcessor {
 	
 	public boolean isGameOver() {
 		return gameOver;
+	}
+
+	public Team getLastTeamStanding() {
+		for (Team team : teams) {
+			if (team.hasLost()) {
+				continue;
+			} else {
+				return team;
+			}
+		}
+		return null;
 	}
 
 }

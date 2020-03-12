@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.honours.AI.CBRSytem.CBRSytem;
 import com.honours.elasticsearch.model.action.Action;
 import com.honours.elasticsearch.model.action.ActionMove;
+import com.honours.elasticsearch.model.action.PlayerActionPair;
 import com.honours.elasticsearch.model.state.PlayerNotVisibleState;
 import com.honours.elasticsearch.model.state.PlayerVisibleState;
 import com.honours.elasticsearch.model.state.State;
@@ -20,12 +21,13 @@ import com.honours.game.player.PlayerType;
 import com.honours.game.tools.VectorUtil;
 
 public class AIManager {
-	private static final int DEPLACEMENT_UNIT = 5;
-	private static final float DIAGONAL_UNIT = (float) Math.sqrt(Math.pow(DEPLACEMENT_UNIT, 2));
+
 	private World world;
 	private Array<Player> inGamePlayers= new Array<>(2);
 	private Array<Player> monitoredPlayers = new Array<>(2);
 	private Timer timer;
+	
+	private Array<PlayerActionPair> pendingActions = new Array<>();
 	
 	public AIManager(World world, List<Team> allTheTeams) {
 		this.world = world;
@@ -74,59 +76,18 @@ public class AIManager {
 				} else {
 					action = retrieveQueryResponse.getResponseCase().getAction();
 				}
-				applyAction(player, action);
+				pendingActions.add(new PlayerActionPair(player, action));
 			});
 		}
 	}
 	
-	private void applyAction(Player player, Action action) {
-		ActionMove actionMove = action.getMoveDestination();
-		Player opponentPlayer = getOpponent(player.getTeamId());
-		Vector2 playerPos = new Vector2(player.getBodyPosition());
-		Vector2 opponentPlayerPos = opponentPlayer.getBodyPosition();
-		switch (actionMove) {
-			case NORTH:
-				playerPos.add(0, DEPLACEMENT_UNIT);
-				break;
-			case NORTH_EAST:
-				playerPos.add(DIAGONAL_UNIT, DIAGONAL_UNIT);
-				break;
-			case NORTH_WEST:
-				playerPos.add(-DIAGONAL_UNIT, DIAGONAL_UNIT);
-				break;
-			case SOUTH:
-				playerPos.add(0, -DEPLACEMENT_UNIT);
-				break;
-			case SOUTH_EAST:
-				playerPos.add(DIAGONAL_UNIT, -DIAGONAL_UNIT);
-				break;
-			case SOUTH_WEST:
-				playerPos.add(-DIAGONAL_UNIT, -DIAGONAL_UNIT);
-				break;
-			case EAST:
-				playerPos.add(DEPLACEMENT_UNIT, 0);
-				break;
-			case WEST:
-				playerPos.add(-DEPLACEMENT_UNIT, 0);
-				break;
-			case TOWARD_ENEMY:
-				playerPos = VectorUtil.changeMagnitudeVector(playerPos, opponentPlayerPos, DEPLACEMENT_UNIT);
-				break;
-		}
-		player.moveTo(playerPos);
-		Array<Integer> spellsIds = action.getSpellId();
-		for (Integer spellId : spellsIds) {
-			player.castSpell(spellId, opponentPlayerPos);
-		}
-	}
-
-	private Player getOpponent(int teamId) {
-		for (Player player : inGamePlayers) {
-			if (player.getTeamId() != teamId) {
-				return player;
+	public void resolvePendingActions() {
+		if (pendingActions.size != 0) {
+			for (PlayerActionPair playerActionPair : pendingActions) {
+				playerActionPair.resolveAction(inGamePlayers);
 			}
+			pendingActions = new Array<>(4);
 		}
-		return null;
 	}
 
 	public void playerDies(Player player) {

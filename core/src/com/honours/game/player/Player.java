@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntMap;
 import com.honours.game.HonoursGame;
 import com.honours.game.manager.ArenaGameManager;
 import com.honours.game.manager.Team;
@@ -21,6 +22,7 @@ import com.honours.game.player.spells.Spell;
 import com.honours.game.player.spells.spellEffects.SpellEffect;
 import com.honours.game.scenes.ArenaInformations;
 import com.honours.game.tools.BodyHelper;
+import com.honours.game.tools.ModulableBar;
 import com.honours.game.tools.States;
 import com.honours.game.tools.UnitConverter;
 
@@ -30,12 +32,16 @@ import box2dLight.RayHandler;
 public class Player extends Sprite {
 
 	private static final int MAX_MANA_AMOUNT = 100;
+	private static final int MAX_HEATH_AMOUNT = 100;
 	public static final float MOVEMENT_SPEED = 0.5f;
 	private PlayerType playerType;
 	public static final float STATE_ANIMATION_DURATION = 0.5f;	
 	
-	private float healthPoints = 100;
+	private float healthPoints = MAX_HEATH_AMOUNT;
 	private float amountOfMana = MAX_MANA_AMOUNT;
+	
+	private ModulableBar healthBar;
+	private ModulableBar manaBar;
 
 	public static float SIZE_CHARACTER;
 	private Body body;
@@ -46,7 +52,8 @@ public class Player extends Sprite {
 	private Vector2 velocity = new Vector2();
 	private float currentMovementSpeed = MOVEMENT_SPEED;
 	
-	private Array<Spell> listOfSpells;
+	private IntMap<Spell> mapIdSpell;
+	private Array<Integer> listOfSpellId;
 
 	private PointLight playerSight;
 	
@@ -70,34 +77,55 @@ public class Player extends Sprite {
 
 	public Player(World world, Vector2 startingPosition, List<TextureRegion> listRegion, Array<Spell> listOfSpells, RayHandler rayHandler,int teamId, int playerId, PlayerType playerType) {
 		super(listRegion.get(0));
+		setGraphicalPartPlayer(startingPosition, listRegion);
+		createPlayer(world, startingPosition, listOfSpells, rayHandler, teamId, playerId, playerType);
+		
+	}
+
+	private void setGraphicalPartPlayer(Vector2 startingPosition, List<TextureRegion> listRegion) {
+		healthBar = new ModulableBar("dark_red", 0, SIZE_CHARACTER + 0.5f + ModulableBar.BASIC_HEIGHT);
+		manaBar = new ModulableBar("light_blue", 0, SIZE_CHARACTER + 0.5f);		
+		
 		playerNormal = listRegion.get(0);
 		playerHealing = listRegion.get(1);
 		playerHurt = listRegion.get(2);
+		
 		SIZE_CHARACTER = UnitConverter.toPPM(playerNormal.getRegionWidth()/2);
+		
 		float widthSprite = UnitConverter.toPPM(playerNormal.getRegionWidth());
 		float heightSprite = UnitConverter.toPPM(playerNormal.getRegionHeight());
 		setBounds(startingPosition.x - widthSprite/2, startingPosition.y-heightSprite/2, widthSprite, heightSprite);
 		setRegion(playerNormal);
-		createPlayer(world, startingPosition, listOfSpells, rayHandler, teamId, playerId, playerType);
-		
 	}
 	
 	private void createPlayer(World world, Vector2 startingPosition, Array<Spell> listOfSpells,
 			RayHandler rayHandler, int teamId, int playerId, PlayerType playerType) {
+		initPlayerVar(world, listOfSpells, teamId, playerId, playerType);
+		createPlayerBody(startingPosition);	
+		
+        createLight(rayHandler);
+	}
+
+	private void initPlayerVar(World world, Array<Spell> listOfSpells, int teamId, int playerId,
+			PlayerType playerType) {
 		this.playerId = playerId;
 		this.teamId = teamId;
 		this.playerType = playerType;
 		this.world = world;
-		this.listOfSpells = listOfSpells;
 		this.listOfLongTermEffect = new ArrayList<SpellEffect>();
+		this.listOfSpellId = new Array<Integer>(listOfSpells.size);
+		this.mapIdSpell = new IntMap<>(listOfSpells.size);
 		for (Spell spell : listOfSpells) {
 			spell.setTeamId(teamId);
+			int spellId = spell.getSpellId();
+			listOfSpellId.add(spellId);
+			mapIdSpell.put(spellId, spell);
 		}
-		create(startingPosition);	
-		
+	}
+
+	private void createLight(RayHandler rayHandler) {
 		Vector2 bodyPos = body.getPosition();
-		 
-        playerSight = new PointLight(rayHandler, 50,Color.BLACK, 15, bodyPos.x, bodyPos.y);
+		playerSight = new PointLight(rayHandler, 50,Color.BLACK, 15, bodyPos.x, bodyPos.y);
 		playerSight.attachToBody(body);	
 		Filter filter = new Filter();
 		filter.categoryBits = HonoursGame.LIGHT_BIT;
@@ -105,7 +133,7 @@ public class Player extends Sprite {
 		playerSight.setContactFilter(filter);
 	}
 
-	private void create(Vector2 startingPosition) {
+	private void createPlayerBody(Vector2 startingPosition) {
 		this.body = BodyHelper.createBody(world, startingPosition, BodyType.DynamicBody);
 		Filter filter = BodyHelper.createFilter(HonoursGame.PLAYER_BIT, (short)0, (short)(HonoursGame.WORLD_BIT | HonoursGame.SPELL_BIT | HonoursGame.LIGHT_BIT));		
 		BodyHelper.createFixture(body, this, BodyHelper.createCircleShape(SIZE_CHARACTER), filter, false);
@@ -114,9 +142,10 @@ public class Player extends Sprite {
 	public void drawPlayerAndSpellsIfInLight(SpriteBatch batch) {
 		if(isVisible && isVisibleOtherTeam) {
 			super.draw(batch);
+			drawBars(batch);
 		}
-		for (Spell spell : listOfSpells) {
-			spell.drawIfInLight(batch);
+		for (Integer spellId : listOfSpellId) {
+			mapIdSpell.get(spellId).drawIfInLight(batch);
 		}
 	}
 	
@@ -124,11 +153,17 @@ public class Player extends Sprite {
 	public void draw(Batch batch) {
 		if (isVisible) {
 			super.draw(batch);
+			drawBars(batch);
 		}
 		
-		for (Spell spell : listOfSpells) {
-			spell.draw(batch);
+		for (Integer spellId : listOfSpellId) {
+			mapIdSpell.get(spellId).draw(batch);
 		}
+	}
+
+	private void drawBars(Batch batch) {
+		healthBar.draw(batch);
+		manaBar.draw(batch);
 	}
 
     public void update(float deltaTime, Team team) { 
@@ -145,8 +180,8 @@ public class Player extends Sprite {
 				}
 			}
   		}
-		for (int i = 0; i < listOfSpells.size; i++) {
-			listOfSpells.get(i).update(deltaTime, team);
+    	for (Integer spellId : listOfSpellId) {
+			mapIdSpell.get(spellId).update(deltaTime, team);
 		}
 				
 		if (wayPointNotReached && BodyHelper.iswayPointReached(body.getPosition(), destination, currentMovementSpeed)) {
@@ -160,6 +195,9 @@ public class Player extends Sprite {
 			listOfLongTermEffect.get(i).update(deltaTime, this);
 		}
     	setVisibleOtherTeam(team.detectsBody(body.getPosition()));
+    	
+    	healthBar.update(getBodyPosition());
+    	manaBar.update(getBodyPosition());
 	}
   
 	public void moveTo(Vector2 destination) {
@@ -182,9 +220,13 @@ public class Player extends Sprite {
 		}		
 	}
 	
-	public void castSpell(int spellIndex, Vector2 destination) {
+	public void castSpellAtIndex(int spellIndex, Vector2 destination) {
+		castSpellWithId(listOfSpellId.get(spellIndex), destination);
+	}
+	
+	public void castSpellWithId(int spellId, Vector2 destination) {
 		if (!isSilenced) {
-			listOfSpells.get(spellIndex).castSpell(this, world, destination);
+			mapIdSpell.get(spellId).castSpell(this, world, destination);
 		}
 	}
 
@@ -201,8 +243,7 @@ public class Player extends Sprite {
 	}
 
 	public void damagePlayer(float damages) {
-		this.healthPoints -= damages;
-		ArenaInformations.updatePlayerHealth(teamId, playerId, healthPoints);
+		setHealthPoints(healthPoints - damages);
 		if (healthPoints <= 0) {
 			currentState = States.DEAD;
 		} else {
@@ -212,14 +253,14 @@ public class Player extends Sprite {
 	}
 	
 	public void healPlayer(float heal) {
-		this.healthPoints += heal;
-		ArenaInformations.updatePlayerHealth(teamId, playerId, healthPoints);
+		setHealthPoints(healthPoints + heal);
 		currentState = States.HEALING;
 		setRegion(playerHealing);
 	}
 	public void setHealthPoints(float healthPoints) {
 		this.healthPoints = healthPoints;
 		ArenaInformations.updatePlayerHealth(teamId, playerId, healthPoints);
+		healthBar.setWidthDisplayed(healthPoints/MAX_HEATH_AMOUNT);
 	}
 
 	public float getAmountOfMana() {
@@ -243,15 +284,15 @@ public class Player extends Sprite {
 	public void setAmountOfMana(float amountMana) {
 		this.amountOfMana = amountMana;
 		ArenaInformations.updatePlayerMana(teamId, playerId, amountOfMana);
+		manaBar.setWidthDisplayed(amountMana/MAX_MANA_AMOUNT);
 	}
-	
 
 	public Array<Spell> getListOfSpells() {
-		return this.listOfSpells;
+		return mapIdSpell.values().toArray();
 	}
 
 	public float getSpellCouldown(int i) {
-		return listOfSpells.get(i).getTimeRemainingForSpell();
+		return mapIdSpell.get(listOfSpellId.get(i)).getTimeRemainingForSpell();
 	}
 
 	public int getTeamId() {
@@ -324,5 +365,9 @@ public class Player extends Sprite {
 	
 	public boolean isWayPointNotReached() {
 		return wayPointNotReached;
+	}
+	
+	public TextureRegion getPlayerHealing() {
+		return playerHealing;
 	}
 }

@@ -134,7 +134,10 @@ public class SpellSelectionScene implements Disposable {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				for (int i = 1; i < spellSelected.size; i++) {
-					spellSelected.get(i).removeActor(spellSelected.get(i).getChild(0));
+					Stack cell = spellSelected.get(i);
+					if (cell.getChildren().size > 1) {						
+						cell.removeActor(cell.getChild(0));
+					}
 				}
 				nbrSpellSelected=1;
 				spellPlayer = new Array<Spell>();

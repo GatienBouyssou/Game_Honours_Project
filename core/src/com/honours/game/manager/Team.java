@@ -126,7 +126,7 @@ public class Team {
 	}
 	
 	public void playerCastSpell(int playerId, int spellIndex, Vector2 destination) {
-		mapOfPlayers.get(playerId).castSpell(spellIndex, destination);
+		mapOfPlayers.get(playerId).castSpellAtIndex(spellIndex, destination);
 	}
 	
 	public void playerMoveTo(int playerId, float x, float y) {

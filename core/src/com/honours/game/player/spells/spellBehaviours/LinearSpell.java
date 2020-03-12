@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.honours.game.manager.Team;
 import com.honours.game.player.Player;
 import com.honours.game.tools.BodyHelper;
+import com.honours.game.tools.VectorUtil;
 
 public class LinearSpell extends SpellGraphicBehaviour {
 	
@@ -41,6 +42,7 @@ public class LinearSpell extends SpellGraphicBehaviour {
 	public LinearSpell(LinearSpell linearSpell) {
 		super(linearSpell);
 		this.movementSpeed = linearSpell.getMovementSpeed();
+		this.destination = linearSpell.getDestination();
 	}
 	
 	@Override
@@ -61,15 +63,7 @@ public class LinearSpell extends SpellGraphicBehaviour {
 	public void castSpell(Player player, World world, Vector2 destination) {
 		createSpell(player, world, destination);
 		Vector2 bodyPosition = player.getBodyPosition();
-		if (!spell.playerIsInRange(bodyPosition, destination)) {
-			Vector2 vectorDir = new Vector2(destination.x - bodyPosition.x, destination.y - bodyPosition.y);
-			vectorDir.nor();
-			vectorDir.x = vectorDir.x * spell.getRange() + bodyPosition.x;
-			vectorDir.y = vectorDir.y * spell.getRange() + bodyPosition.y;
-			this.destination = vectorDir;
-		} else {
-			this.destination = destination;
-		}	
+		this.destination = VectorUtil.changeMagnitudeVector(bodyPosition, destination, spell.getRange());
 		setBodyVelocity();
 	}
 	
@@ -88,6 +82,10 @@ public class LinearSpell extends SpellGraphicBehaviour {
 		return movementSpeed;
 	}
 
+	public Vector2 getDestination() {
+		return destination;
+	}
+	
 	@Override
 	public boolean isDestroyedWhenTouch(Player player, int teamId) {
 		boolean fromTheSameTeam = (player.getTeamId() == teamId);

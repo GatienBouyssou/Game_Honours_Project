@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.honours.game.HonoursGame;
 import com.honours.game.manager.ArenaGameManager;
+import com.honours.game.manager.Team;
 import com.honours.game.tools.UnitConverter;
 
 public class ArenaGameScreen extends ScreenAdapter
@@ -71,7 +72,8 @@ public class ArenaGameScreen extends ScreenAdapter
     }
 
 	public void gameOver() {
-		game.setScreen(new EndScreen(game));
+		Team lastTeam = arenaGameManager.getLastTeamStanding();
+		game.setScreen(new EndScreen(game, lastTeam));
 		dispose();
 	}
 
