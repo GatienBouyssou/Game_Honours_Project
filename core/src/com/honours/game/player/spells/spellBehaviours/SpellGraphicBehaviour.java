@@ -89,7 +89,7 @@ public abstract class SpellGraphicBehaviour extends Sprite {
 			System.out.println("nulllllllll");
 			System.out.println(this);
 		}
-		this.isVisible(team.detectsBody(body.getPosition()));
+		this.isVisible(team.detectsBody(body));
 	}
 
 	public Spell getSpell() {

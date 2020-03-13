@@ -36,9 +36,9 @@ public class HonoursGame extends Game
         SpellCreator spellCreator = new SpellCreator(textureAtlas);
         listOfSpellsAvailable = spellCreator.getListOfSpellCreated();
         spellAI.add(new Spell(listOfSpellsAvailable.get(0)));
-        spellAI.add(new Spell(listOfSpellsAvailable.get(1)));
-        spellAI.add(new Spell(listOfSpellsAvailable.get(3)));
-        spellAI.add(new Spell(listOfSpellsAvailable.get(8)));
+        spellAI.add(new Spell(listOfSpellsAvailable.get(5)));
+        spellAI.add(new Spell(listOfSpellsAvailable.get(10)));
+        spellAI.add(new Spell(listOfSpellsAvailable.get(11)));
         spellAI.add(new Spell(listOfSpellsAvailable.get(12)));
     }
     

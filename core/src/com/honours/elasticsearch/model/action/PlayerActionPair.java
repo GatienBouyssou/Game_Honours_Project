@@ -68,7 +68,6 @@ public class PlayerActionPair {
 				break;
 		}
 		player.moveTo(playerPos);
-		
 		Array<Integer> spellsIds = action.getSpellId();
 		for (Integer spellId : spellsIds) {
 			player.castSpellAtIndex(spellId, opponentPlayerPos);

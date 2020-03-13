@@ -42,7 +42,6 @@ public class AIManager {
 				}
 			}
 		}
-		
 	}
 	
 	public void run() {

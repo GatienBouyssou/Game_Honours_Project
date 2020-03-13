@@ -194,7 +194,7 @@ public class Player extends Sprite {
     	for (int i = 0; i < listOfLongTermEffect.size(); i++) {
 			listOfLongTermEffect.get(i).update(deltaTime, this);
 		}
-    	setVisibleOtherTeam(team.detectsBody(body.getPosition()));
+    	setVisibleOtherTeam(team.detectsBody(body));
     	
     	healthBar.update(getBodyPosition());
     	manaBar.update(getBodyPosition());

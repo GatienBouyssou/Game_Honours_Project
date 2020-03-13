@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -95,9 +96,9 @@ public class Team {
 	}
 	
 	
-	public boolean detectsBody(Vector2 bodyPosition) {
+	public boolean detectsBody(Body body) {
 		for (Integer playerId : listOfPlayersAlive) {
-			if (PlayerSightManager.isBodySeen(world, mapOfPlayers.get(playerId).getBodyPosition(), bodyPosition)) 
+			if (PlayerSightManager.isBodySeen(world, mapOfPlayers.get(playerId).getBodyPosition(), body)) 
 				return true;
 		}
 		return false;

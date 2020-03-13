@@ -105,7 +105,7 @@ public class ArenaGameManager implements InputProcessor {
         teams.get(TEAM_AI).drawPlayerAndSpellsIfInLight(batch);
         batch.end();
         
-        boxRenderer.render(world, camera.combined);
+//        boxRenderer.render(world, camera.combined);
         
         
         batch.setProjectionMatrix(arenaInf.getStage().getCamera().combined);
