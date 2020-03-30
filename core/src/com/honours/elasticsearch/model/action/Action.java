@@ -3,6 +3,7 @@ package com.honours.elasticsearch.model.action;
 import java.util.Random;
 
 import com.badlogic.gdx.utils.Array;
+import com.google.gson.Gson;
 import com.honours.game.player.Player;
 import com.honours.game.player.spells.Spell;
 
@@ -62,5 +63,9 @@ public class Action {
 
 	public void setSpellId(Array<Integer> spellIds) {
 		this.spellIds = spellIds;
+	}
+
+	public String toJson(Gson gson) {
+		return gson.toJson(this);
 	}
 }

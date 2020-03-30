@@ -3,22 +3,17 @@ package com.honours.AI;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.honours.AI.CBRSytem.CBRSytem;
 import com.honours.elasticsearch.model.action.Action;
-import com.honours.elasticsearch.model.action.ActionMove;
 import com.honours.elasticsearch.model.action.PlayerActionPair;
-import com.honours.elasticsearch.model.state.PlayerNotVisibleState;
-import com.honours.elasticsearch.model.state.PlayerVisibleState;
 import com.honours.elasticsearch.model.state.State;
 import com.honours.game.manager.Team;
 import com.honours.game.player.Player;
 import com.honours.game.player.PlayerType;
-import com.honours.game.tools.VectorUtil;
 
 public class AIManager {
 
@@ -56,18 +51,7 @@ public class AIManager {
 	public void update() {
 		for (Player player : monitoredPlayers) {
 			CompletableFuture.supplyAsync(() -> {
-				State state = new State();
-				state.addPlayerState(player);
-				for (Player iGplayer : inGamePlayers) {
-					if (iGplayer != player) {
-						if (iGplayer.isVisibleOtherTeam()) {
-							state.addPlayerState(new PlayerVisibleState(iGplayer));
-						} else {
-							state.addPlayerState(new PlayerNotVisibleState(iGplayer));
-						}
-					}
-				}
-				return CBRSytem.retrieve(player, state);
+				return CBRSytem.retrieve(player, new State(player, inGamePlayers));
 			}).thenAccept(retrieveQueryResponse -> {
 				Action action;
 				if (retrieveQueryResponse.getResponseCase() == null) {

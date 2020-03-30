@@ -1,18 +1,18 @@
 package com.honours.elasticsearch.model.state;
 
 import com.badlogic.gdx.math.Vector2;
-import com.honours.game.player.spells.Spell;
+import com.google.gson.annotations.Expose;
 import com.honours.game.player.spells.type.Element;
 
 public class SpellState {
 	private int spellId;
-	private Vector2 spellPosition;
+	private float[] spellPosition;
 	private Element spellElement;
 	
 	public SpellState(int spellId, Vector2 position, Element element) {
 		super();
 		this.spellId = spellId;
-		this.spellPosition = position;
+		setSpellPosition(position);
 		this.spellElement = element;
 	}
 
@@ -24,12 +24,12 @@ public class SpellState {
 		this.spellId = spellId;
 	}
 
-	public Vector2 getSpellPosition() {
+	public float[] getSpellPosition() {
 		return spellPosition;
 	}
 
 	public void setSpellPosition(Vector2 spellPosition) {
-		this.spellPosition = spellPosition;
+		this.spellPosition = new float[] {spellPosition.x, spellPosition.y};
 	}
 
 	public Element getSpellElement() {

@@ -5,10 +5,8 @@ import com.honours.elasticsearch.model.state.State;
 import com.honours.game.player.Player;
 
 public class CBRSytem {
-	
 	public static RetrieveQueryResponse retrieve(Player player, State state) {
-		Gson gson = new Gson();
-		String stateJson = gson.toJson(state);
+		System.out.println(state.toJson(new Gson()));
 		return new RetrieveQueryResponse(player, state, null);
 	}
 	

@@ -123,7 +123,7 @@ public class SpellCreator {
 		
 		region = new TextureRegion(textureAtlas.findRegion("Champ"));
 		spell = new Spell(listOfSpellCreated.size, Spell.LONG_RANGE, Spell.MEDIUM_COULDOWN, 5, Spell.MEDIUM_MANA_COST);
-		spell.setSpellBehaviour(new StaticSpell(shadowBush, region, 5, true, false));
+		spell.setSpellBehaviour(new StaticSpell(shadowBush, region, 0.4f, 0.4f, 5, true, false));
 		spell.setEffect(new Slow(0.3f, 5));
 		spell.setType(mapNameToType.get(PLANT));
 		listOfSpellCreated.add(spell);
@@ -137,7 +137,7 @@ public class SpellCreator {
 
 		region = new TextureRegion(textureAtlas.findRegion("Bush"));
 		spell = new Spell(listOfSpellCreated.size, Spell.MEDIUM_RANGE, Spell.MEDIUM_COULDOWN, Spell.LOW_MANA_COST);
-		spell.setSpellBehaviour(new StaticSpell(shadowBush, region, 5, true, false));
+		spell.setSpellBehaviour(new StaticSpell(shadowBush, region, 1.5f,1.5f, 5, true, false));
 		spell.setEffect(new Invisibility());
 		spell.setType(mapNameToType.get(PLANT));
 		listOfSpellCreated.add(spell);

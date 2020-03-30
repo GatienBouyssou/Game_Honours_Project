@@ -27,8 +27,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.honours.elasticsearch.model.Case;
 import com.honours.elasticsearch.model.state.PlayerState;
+import com.honours.elasticsearch.model.state.State;
 
 public class ElasticCaseManager {
+	
+	public static void retrieve(State state) {
+		SearchRequest searchRequest = new SearchRequest(); 
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
+		searchSourceBuilder.query(QueryBuilders.matchAllQuery()); 
+		searchRequest.source(searchSourceBuilder); 
+	}
 	
 	public static void getCases() {
 		Request request = new Request("GET", "/customer/_doc/1");

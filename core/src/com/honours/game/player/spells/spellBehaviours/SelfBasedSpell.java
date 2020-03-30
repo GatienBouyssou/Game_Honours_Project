@@ -37,7 +37,13 @@ public abstract class SelfBasedSpell extends SpellGraphicBehaviour {
 
 	@Override
 	public void update(float deltaTime, Team team) {
-		super.update(deltaTime, team);
+		try {
+			Player player = (Player) body.getFixtureList().get(0).getUserData();
+			this.isVisible(player.isVisible() && player.isVisibleOtherTeam());
+		}catch (Exception e) {
+			System.out.println("Error the body of selfSpell is not the player");
+			e.printStackTrace();
+		}
 		setPosition(body.getPosition().x - widthSprite/2, body.getPosition().y-heightSprite/2);
 	}
 
