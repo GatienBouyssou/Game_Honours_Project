@@ -4,10 +4,14 @@
 
 package com.honours.game;
 
+import java.io.IOException;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
+import com.honours.elasticsearch.CasebaseModel;
+import com.honours.elasticsearch.ClientManager;
 import com.honours.game.player.spells.Spell;
 import com.honours.game.player.spells.SpellCreator;
 import com.honours.game.screens.TitleScreen;
@@ -28,8 +32,17 @@ public class HonoursGame extends Game
     private Array<Spell> spellHumans;
     private Array<Spell> spellAI = new Array<>();
     private TextureAtlas textureAtlas;
+	private boolean userHaveInternet = true;
     
     public void create() {    
+    	try {
+			CasebaseModel.doesCasebaseExists();
+			CasebaseModel.doesScriptExist();
+		} catch (IOException e) {
+			userHaveInternet = false;
+			ClientManager.close();
+		}
+    	
         this.batch = new SpriteBatch();
         setScreen(new TitleScreen(this));
         textureAtlas = new TextureAtlas("packTextures.atlas");
@@ -45,6 +58,7 @@ public class HonoursGame extends Game
     public void dispose() {
     	super.dispose();
         this.batch.dispose();
+        ClientManager.close();
     }
     
     public void render() {
@@ -77,6 +91,10 @@ public class HonoursGame extends Game
 	
 	public Array<Spell> getSpellAI() {
 		return spellAI;
+	}
+	
+	public boolean doesUserHaveInternet() {
+		return userHaveInternet;
 	}
 	
 	public void setSpellHumans(Array<Spell> spellHumans) {

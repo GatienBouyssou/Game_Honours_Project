@@ -34,41 +34,17 @@ public class PlayerActionPair {
 	}
 	
 	public void resolveAction(Array<Player> inGamePlayers) {
-		ActionMove actionMove = action.getMoveDestination();
+		ActionDirection actionMove = action.getMoveDestination();
 		Player opponentPlayer = getOpponent(player.getTeamId(), inGamePlayers);
 		Vector2 playerPos = new Vector2(player.getBodyPosition());
 		Vector2 opponentPlayerPos = new Vector2(opponentPlayer.getBodyPosition());
-		switch (actionMove) {
-			case NORTH:
-				playerPos.add(0, DEPLACEMENT_UNIT);
-				break;
-			case NORTH_EAST:
-				playerPos.add(DIAGONAL_UNIT, DIAGONAL_UNIT);
-				break;
-			case NORTH_WEST:
-				playerPos.add(-DIAGONAL_UNIT, DIAGONAL_UNIT);
-				break;
-			case SOUTH:
-				playerPos.add(0, -DEPLACEMENT_UNIT);
-				break;
-			case SOUTH_EAST:
-				playerPos.add(DIAGONAL_UNIT, -DIAGONAL_UNIT);
-				break;
-			case SOUTH_WEST:
-				playerPos.add(-DIAGONAL_UNIT, -DIAGONAL_UNIT);
-				break;
-			case EAST:
-				playerPos.add(DEPLACEMENT_UNIT, 0);
-				break;
-			case WEST:
-				playerPos.add(-DEPLACEMENT_UNIT, 0);
-				break;
-			case TOWARD_ENEMY:
-				playerPos = VectorUtil.changeMagnitudeVector(playerPos, opponentPlayerPos, DEPLACEMENT_UNIT);
-				break;
+		if(actionMove == ActionDirection.TOWARD_ENEMY) {
+			playerPos = VectorUtil.changeMagnitudeVector(playerPos, opponentPlayerPos, DEPLACEMENT_UNIT);
+		} else {
+			playerPos.add(new Vector2(actionMove.getDirValue()).scl(5));
 		}
 		player.moveTo(playerPos);
-		Array<Integer> spellsIds = action.getSpellId();
+		Integer[] spellsIds = action.getSpellId();
 		for (Integer spellId : spellsIds) {
 			player.castSpellAtIndex(spellId, opponentPlayerPos);
 		}

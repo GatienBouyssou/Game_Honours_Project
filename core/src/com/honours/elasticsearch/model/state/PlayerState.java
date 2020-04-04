@@ -10,7 +10,7 @@ public class PlayerState {
 	protected int teamId;
 	protected int playerId;
 	
-	protected float heathPoints;
+	protected float healthPoints;
 	protected float manaPoints;
 	
 	protected SpellState[] listSpellState;
@@ -28,7 +28,7 @@ public class PlayerState {
 	protected void createPlayerState(Player player) {
 		this.teamId = player.getTeamId();
 		this.playerId = player.getId();
-		this.heathPoints = player.getHealthPoints();
+		this.healthPoints = player.getHealthPoints();
 		this.manaPoints = player.getAmountOfMana();
 		
 		setPlayerVisibleAttributes(player);	
@@ -97,12 +97,12 @@ public class PlayerState {
 		this.listSpellState = listSpellState;
 	}
 	
-	public float getHeathPoints() {
-		return heathPoints;
+	public float getHealthPoints() {
+		return healthPoints;
 	}
 
-	public void setHeathPoints(float heathPoints) {
-		this.heathPoints = heathPoints;
+	public void setHealthPoints(float heathPoints) {
+		this.healthPoints = heathPoints;
 	}
 
 	public float getManaPoints() {

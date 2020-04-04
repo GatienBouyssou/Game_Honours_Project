@@ -21,7 +21,7 @@ public class PlayerNotVisibleState extends PlayerState {
 	@Override
 	protected void setPlayerVisibleAttributes(Player player) {
 		setPlayerPosition(new Vector2(-1,-1));
-		this.isVisible = player.isVisibleOtherTeam();	
+		this.isVisible = false;	
 	}
 
 	@Override

@@ -8,21 +8,29 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.honours.AI.CBRSytem.CBRSytem;
+import com.honours.elasticsearch.CasebaseModel;
+import com.honours.elasticsearch.model.Case;
 import com.honours.elasticsearch.model.action.Action;
 import com.honours.elasticsearch.model.action.PlayerActionPair;
 import com.honours.elasticsearch.model.state.State;
+import com.honours.elasticsearch.tools.CaseIdQValuePair;
 import com.honours.game.manager.Team;
 import com.honours.game.player.Player;
 import com.honours.game.player.PlayerType;
 
 public class AIManager {
 
+	public static final float GAMMA = 0.6f;
+	public static final float ALPHA = 0.5f;
+	
 	private World world;
 	private Array<Player> inGamePlayers= new Array<>(2);
 	private Array<Player> monitoredPlayers = new Array<>(2);
 	private Timer timer;
 	
 	private Array<PlayerActionPair> pendingActions = new Array<>();
+	
+	private Array<CaseIdQValuePair> caseIdQValPlairs = new Array<>(CBRSytem.REFRESH_RATE);
 	
 	public AIManager(World world, List<Team> allTheTeams) {
 		this.world = world;
@@ -56,8 +64,9 @@ public class AIManager {
 				Action action;
 				if (retrieveQueryResponse.getResponseCase() == null) {
 					action = Action.generateAction(player);
+					CasebaseModel.retainCase(new Case(retrieveQueryResponse.getInitialState(), action, 0));
 				} else {
-					action = retrieveQueryResponse.getResponseCase().getAction();
+					action = retrieveQueryResponse.getResponseCase().getAction();	
 				}
 				pendingActions.add(new PlayerActionPair(player, action));
 			});

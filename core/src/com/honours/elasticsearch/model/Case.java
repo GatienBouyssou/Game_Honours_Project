@@ -5,13 +5,13 @@ import com.honours.elasticsearch.model.action.Action;
 import com.honours.elasticsearch.model.state.State;
 
 public class Case {
-	private State state;
+	private State State;
 	private Action action;
 	private float qValue;
 	
 	public Case(State state, Action action, float qValue) {
 		super();
-		this.state = state;
+		this.State = state;
 		this.action = action;
 		this.qValue = qValue;
 	}
@@ -20,19 +20,19 @@ public class Case {
 		Gson gson = new Gson();
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		sb.append(state.toJson(gson));
-		sb.append(action.toJson(gson));
+		sb.append(State.toJson(gson)).append(",");
+		sb.append("\"action\":").append(action.toJson(gson)).append(",");
 		sb.append("\"qValue\" : ").append(qValue);
 		sb.append("}");		
 		return sb.toString();
 	}
 
 	public State getState() {
-		return state;
+		return State;
 	}
 
 	public void setState(State state) {
-		this.state = state;
+		this.State = state;
 	}
 
 	public Action getAction() {

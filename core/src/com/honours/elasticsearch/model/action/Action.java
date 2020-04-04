@@ -8,23 +8,36 @@ import com.honours.game.player.Player;
 import com.honours.game.player.spells.Spell;
 
 public class Action {
-	private ActionMove movingDirection;
-	private Array<Integer> spellIds;
-	
-	public Action(ActionMove movingDirection, Array<Integer> spellIds) {
+	private ActionDirection movingDirection;
+
+	private Integer[] spellIds;
+	private ActionType actionType;
+	private ActionLength spellLength;
+	private ActionDirection spellDirection;
+		
+	public Action(ActionDirection movingDirection, Array<Integer> spellIds, ActionType actionType,
+			ActionLength spellLength, ActionDirection spellDirection) {
 		super();
 		this.movingDirection = movingDirection;
-		this.spellIds = spellIds;
-	}
-	
-	public static Action generateAction(Player player) {
-		return new Action(getRandomActionMove(), getRandomSpellsToCast(player));
+		try {			
+			this.spellIds = spellIds.toArray(Integer.class);
+		} catch (Exception e) {
+			
+		}
+		this.actionType = actionType;
+		this.spellLength = spellLength;
+		this.spellDirection = spellDirection;
 	}
 
-	private static ActionMove getRandomActionMove() {
-		ActionMove[] possibleMoves = ActionMove.values();
-		int random = getRandomBellow(possibleMoves.length);
-		return possibleMoves[random];
+	public static Action generateAction(Player player) {
+		return new Action(getRandomEnum(ActionDirection.class), getRandomSpellsToCast(player), getRandomEnum(ActionType.class), 
+				getRandomEnum(ActionLength.class), getRandomEnum(ActionDirection.class));
+	}
+
+	private static <T extends Enum<T>> T getRandomEnum(Class<T> enumType) {
+		T[] enumConstants = enumType.getEnumConstants();
+		int random = getRandomBellow(enumConstants.length);
+		return enumConstants[random];
 	}
 	
 	private static Array<Integer> getRandomSpellsToCast(Player player) {
@@ -49,20 +62,44 @@ public class Action {
 		return new Random().nextInt(nbrOfSpellsAvailable);
 	}
 
-	public ActionMove getMoveDestination() {
+	public ActionDirection getMoveDestination() {
 		return movingDirection;
 	}
 
-	public void setMoveDestination(ActionMove movingDirection) {
+	public void setMoveDestination(ActionDirection movingDirection) {
 		this.movingDirection = movingDirection;
 	}
 
-	public Array<Integer> getSpellId() {
+	public Integer[] getSpellId() {
 		return spellIds;
 	}
 
-	public void setSpellId(Array<Integer> spellIds) {
+	public void setSpellId(Integer[] spellIds) {
 		this.spellIds = spellIds;
+	}
+	
+	public ActionType getActionType() {
+		return actionType;
+	}
+
+	public void setActionType(ActionType actionType) {
+		this.actionType = actionType;
+	}
+
+	public ActionLength getSpellLength() {
+		return spellLength;
+	}
+
+	public void setSpellLength(ActionLength spellLength) {
+		this.spellLength = spellLength;
+	}
+
+	public ActionDirection getSpellDirection() {
+		return spellDirection;
+	}
+
+	public void setSpellDirection(ActionDirection spellDirection) {
+		this.spellDirection = spellDirection;
 	}
 
 	public String toJson(Gson gson) {
