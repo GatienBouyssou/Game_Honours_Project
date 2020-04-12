@@ -63,7 +63,7 @@ public class SpellCreator {
 		listOfSpellCreated.add(spell);
 		
 		region = new TextureRegion(textureAtlas.findRegion("fireColumn"));
-		spell = new Spell(listOfSpellCreated.size, Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN, 10, Spell.HIGH_MANA_COST);
+		spell = new Spell(listOfSpellCreated.size, Spell.MEDIUM_RANGE, Spell.LONG_COULDOWN, 15, Spell.HIGH_MANA_COST);
 		spell.setSpellBehaviour(new StaticSpell(shadowBush, region, 3, true, false));
 		spell.setEffect(new Burn(5, 2));
 		spell.setType(mapNameToType.get(FIRE));

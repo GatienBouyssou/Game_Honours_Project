@@ -11,4 +11,9 @@ public class VectorUtil {
 		vectorDir.y = vectorDir.y * magnitude + origin.y;
 		return vectorDir;
 	}
+	
+	public static void rotateVector(Vector2 vector, double angle) {
+		vector.x = (float) (Math.cos(angle) * vector.x - Math.sin(angle) * vector.y);
+		vector.y = (float) (Math.cos(angle) * vector.y + Math.sin(angle) * vector.x);
+	}
 }

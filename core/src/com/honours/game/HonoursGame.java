@@ -32,16 +32,17 @@ public class HonoursGame extends Game
     private Array<Spell> spellHumans;
     private Array<Spell> spellAI = new Array<>();
     private TextureAtlas textureAtlas;
-	private boolean userHaveInternet = true;
+	private boolean userHaveInternet = false;
     
     public void create() {    
-    	try {
-			CasebaseModel.doesCasebaseExists();
-			CasebaseModel.doesScriptExist();
-		} catch (IOException e) {
-			userHaveInternet = false;
-			ClientManager.close();
-		}
+//    	try {
+//			CasebaseModel.doesCasebaseExists();
+//			CasebaseModel.doesScriptQValueExist();
+//			CasebaseModel.doesScriptCosineExist();
+//		} catch (IOException e) {
+//			userHaveInternet = false;
+//			ClientManager.close();
+//		}
     	
         this.batch = new SpriteBatch();
         setScreen(new TitleScreen(this));
@@ -49,10 +50,10 @@ public class HonoursGame extends Game
         SpellCreator spellCreator = new SpellCreator(textureAtlas);
         listOfSpellsAvailable = spellCreator.getListOfSpellCreated();
         spellAI.add(new Spell(listOfSpellsAvailable.get(0)));
-        spellAI.add(new Spell(listOfSpellsAvailable.get(5)));
-        spellAI.add(new Spell(listOfSpellsAvailable.get(10)));
         spellAI.add(new Spell(listOfSpellsAvailable.get(11)));
-        spellAI.add(new Spell(listOfSpellsAvailable.get(12)));
+        spellAI.add(new Spell(listOfSpellsAvailable.get(2)));
+        spellAI.add(new Spell(listOfSpellsAvailable.get(6)));
+        spellAI.add(new Spell(listOfSpellsAvailable.get(1)));
     }
     
     public void dispose() {
@@ -61,8 +62,14 @@ public class HonoursGame extends Game
         ClientManager.close();
     }
     
+    
     public void render() {
-    	super.render();
+    	try {
+        	super.render();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
     }
     
     public SpriteBatch getBatch() {
@@ -93,7 +100,7 @@ public class HonoursGame extends Game
 		return spellAI;
 	}
 	
-	public boolean doesUserHaveInternet() {
+	public boolean userHaveInternet() {
 		return userHaveInternet;
 	}
 	

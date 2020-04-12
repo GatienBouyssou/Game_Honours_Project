@@ -16,7 +16,11 @@ public class DesktopLauncher {
     	config.setDecorated(true);
     	config.useVsync(true);		
     	config.setTitle("Game of the Year");
-    	  
-    	new Lwjgl3Application(new HonoursGame(), config);
+    	try {
+    		new Lwjgl3Application(new HonoursGame(), config);
+    	} catch (Exception e){
+    		e.printStackTrace();
+    	}
+    	
 	}
 }

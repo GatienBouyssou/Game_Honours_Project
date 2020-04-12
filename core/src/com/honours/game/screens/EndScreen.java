@@ -43,7 +43,7 @@ public class EndScreen extends ScreenAdapter
         table.row();
         table.add(LabelCreator.createLabel("Team " + (lastTeam.getId()+1) + " has won !"));
         int playerId = lastTeam.getListOfPlayersAlive().get(0);
-        texture = lastTeam.getPlayer(playerId).getPlayerHealing();
+        texture = lastTeam.getPlayerById(playerId).getPlayerHealing();
         stage.addActor(table);
     }
     

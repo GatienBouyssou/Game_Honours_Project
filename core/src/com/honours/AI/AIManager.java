@@ -1,36 +1,22 @@
 package com.honours.AI;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-import com.honours.AI.CBRSytem.CBRSytem;
-import com.honours.elasticsearch.CasebaseModel;
-import com.honours.elasticsearch.model.Case;
-import com.honours.elasticsearch.model.action.Action;
-import com.honours.elasticsearch.model.action.PlayerActionPair;
-import com.honours.elasticsearch.model.state.State;
-import com.honours.elasticsearch.tools.CaseIdQValuePair;
 import com.honours.game.manager.Team;
 import com.honours.game.player.Player;
 import com.honours.game.player.PlayerType;
 
-public class AIManager {
+public abstract class AIManager {
+	protected static final int EXPECTED_NUMBER_OF_PLAYERS = 2;
 
-	public static final float GAMMA = 0.6f;
-	public static final float ALPHA = 0.5f;
-	
-	private World world;
-	private Array<Player> inGamePlayers= new Array<>(2);
-	private Array<Player> monitoredPlayers = new Array<>(2);
-	private Timer timer;
-	
-	private Array<PlayerActionPair> pendingActions = new Array<>();
-	
-	private Array<CaseIdQValuePair> caseIdQValPlairs = new Array<>(CBRSytem.REFRESH_RATE);
+	public static final int REFRESH_RATE = 5;	
+	protected World world;
+	protected Array<Player> inGamePlayers= new Array<>(EXPECTED_NUMBER_OF_PLAYERS);	
+	protected Timer timer;
 	
 	public AIManager(World world, List<Team> allTheTeams) {
 		this.world = world;
@@ -38,52 +24,36 @@ public class AIManager {
 		for (Team team : allTheTeams) {
 			List<Integer> playersAlive = team.getListOfPlayersAlive();
 			for (Integer playerId : playersAlive) {
-				Player player = team.getPlayer(playerId);
+				Player player = team.getPlayerById(playerId);
 				inGamePlayers.add(player);
 				if (player.getPlayerType() == PlayerType.AI) {
-					monitoredPlayers.add(player);
+					buildMonitorePlayer(player);
 				}
 			}
 		}
 	}
+	
+	protected abstract void buildMonitorePlayer(Player player);
 	
 	public void run() {
 		timer.scheduleTask(new Task() {
 			@Override
 			public void run() {
-				update();
+				try {
+					update();
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				
 			}
 		}, 0, 0.5f);
 	}
 	
-	public void update() {
-		for (Player player : monitoredPlayers) {
-			CompletableFuture.supplyAsync(() -> {
-				return CBRSytem.retrieve(player, new State(player, inGamePlayers));
-			}).thenAccept(retrieveQueryResponse -> {
-				Action action;
-				if (retrieveQueryResponse.getResponseCase() == null) {
-					action = Action.generateAction(player);
-					CasebaseModel.retainCase(new Case(retrieveQueryResponse.getInitialState(), action, 0));
-				} else {
-					action = retrieveQueryResponse.getResponseCase().getAction();	
-				}
-				pendingActions.add(new PlayerActionPair(player, action));
-			});
-		}
-	}
+	public abstract void update();
 	
-	public void resolvePendingActions() {
-		if (pendingActions.size != 0) {
-			for (PlayerActionPair playerActionPair : pendingActions) {
-				playerActionPair.resolveAction(inGamePlayers);
-			}
-			pendingActions = new Array<>(4);
-		}
-	}
+	public abstract void resolvePendingActions();
 
 	public void playerDies(Player player) {
-		monitoredPlayers.removeValue(player, true);
 		inGamePlayers.removeValue(player, true);
 	}
 

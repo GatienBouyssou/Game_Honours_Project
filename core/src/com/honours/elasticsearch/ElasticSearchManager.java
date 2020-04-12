@@ -49,20 +49,9 @@ public class ElasticSearchManager {
 		return new IndexRequest(index).source(contentToInsert, XContentType.JSON);
 	}
 	
-	public static void insertCase(String index, String contentToInsert) {
+	public static String insertCase(String index, String contentToInsert) throws IOException {
 		IndexRequest request = createIndexRequest(index, contentToInsert);
-		ActionListener<IndexResponse> listener = new ActionListener<IndexResponse>() {
-			@Override
-			public void onResponse(IndexResponse response) {
-				System.out.println("inserted");
-			}
-			
-			@Override
-			public void onFailure(Exception e) {
-				System.out.println("Object not inserted");				
-			}
-		};
-		ClientManager.esClient().indexAsync(request, RequestOptions.DEFAULT, listener); 
+		return ClientManager.esClient().index(request, RequestOptions.DEFAULT).getId(); 
 	}
 	
 	public static void insertCases(String index, List<String> listofCases) {
@@ -82,6 +71,7 @@ public class ElasticSearchManager {
 			
 			@Override
 			public void onFailure(Exception e) {
+				e.printStackTrace();
 				System.out.println("Object not updated");				
 			}
 		};
@@ -97,7 +87,6 @@ public class ElasticSearchManager {
 		sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
 		
 		searchRequest.source(sourceBuilder);
-		
 		return ClientManager.esClient().search(searchRequest, RequestOptions.DEFAULT);
 	}
 	

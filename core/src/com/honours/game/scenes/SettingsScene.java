@@ -48,7 +48,7 @@ public class SettingsScene implements Disposable, InputProcessor {
 		stage = new Stage(viewport, batch);
 		
 		
-		Table table = TableCreator.setTableConfiguration(Align.left);
+		table = TableCreator.setTableConfiguration(Align.left);
 		TableCreator.createRow(table, Arrays.asList("Click on the key to update it."));
 		TableCreator.createRow(table, Arrays.asList("Spells", "Keys"));
 		
@@ -105,6 +105,9 @@ public class SettingsScene implements Disposable, InputProcessor {
 	public boolean keyTyped(char character) {
 		if (this.labelModified != null) {
 			String keyName = String.valueOf(Character.toUpperCase(character));
+			System.out.println(keyName);
+			System.out.println(Input.Keys.valueOf(keyName));
+			System.out.println(Input.Keys.SPACE);
 			if(keyName.equals(MODIFICATION_CHARACTER))
 				labelError.setText("Sorry, this key is used by the game and therefore you can't use it.");
 			else if(mapKeyNameIndex.containsKey(keyName))

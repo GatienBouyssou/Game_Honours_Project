@@ -51,7 +51,7 @@ public class PlayerActionPair {
 	}
 
 	
-	private Player getOpponent(int teamId, Array<Player> inGamePlayers) {
+	public static Player getOpponent(int teamId, Array<Player> inGamePlayers) {
 		for (Player player : inGamePlayers) {
 			if (player.getTeamId() != teamId) {
 				return player;

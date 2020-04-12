@@ -36,7 +36,7 @@ public class TitleScreen extends ScreenAdapter
         startTheGame.addListener(new ClickListener() {
             @Override 
             public void clicked(InputEvent event, float x, float y){
-            	game.setScreen(new SpellSelectionScreen(game));
+            	game.setScreen(new SpellSelectionScreen(game, false));
             }
         });
         TableCreator.createRowWithCell(table, Arrays.asList(startTheGame));
@@ -52,11 +52,22 @@ public class TitleScreen extends ScreenAdapter
         });
         TableCreator.createRowWithCell(table, Arrays.asList(settings));
 
+        TableCreator.createRow(table, Arrays.asList(""));
+        
+        Label tutorial = LabelCreator.createLabel("Tutorial", Color.ROYAL);
+        tutorial.addListener(new ClickListener() {
+            @Override 
+            public void clicked(InputEvent event, float x, float y){
+            	game.setScreen(new SpellSelectionScreen(game, true));
+            }
+        });
+        TableCreator.createRowWithCell(table, Arrays.asList(tutorial));
+        
         stage.addActor(table);
         
-        if (!game.doesUserHaveInternet()) {
+        if (!game.userHaveInternet()) {
 			table = TableCreator.setTableConfiguration(Align.bottom);
-			table.add(LabelCreator.createLabel("You don't have internet. You are going to play against a lower intelligence", 2, Color.RED));
+			table.add(LabelCreator.createLabel("Beware. You are going to play against a lower intelligence", 2, Color.RED));
 			stage.addActor(table);
 		}
     }

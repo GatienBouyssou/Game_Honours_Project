@@ -33,11 +33,9 @@ public class ArenaGameScreen extends ScreenAdapter
     private TiledMap map;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
     
-    private ArenaGameManager arenaGameManager;
-    
-    public ArenaGameScreen(final HonoursGame game) {
+    private ArenaGameManager arenaGameManager;    
+    public ArenaGameScreen(final HonoursGame game, boolean isTutorial) {
         this.game = game;
-        
         //loading the map
         TmxMapLoader maploader = new TmxMapLoader();
         map = maploader.load("RogueLikeMap.tmx");
@@ -58,11 +56,11 @@ public class ArenaGameScreen extends ScreenAdapter
         camera.setToOrtho(false, viewport.getWorldWidth(), viewport.getWorldHeight());
         camera.update();
         
-    	
+        arenaGameManager = new ArenaGameManager(this, isTutorial);
     }
     
     public void show() {
-    	arenaGameManager = new ArenaGameManager(this);
+    	arenaGameManager.gameStart();
     	Gdx.input.setInputProcessor(arenaGameManager);
     }
     
@@ -112,7 +110,7 @@ public class ArenaGameScreen extends ScreenAdapter
 	public Viewport getViewport() {
 		return viewport;
 	}
-
+	
 	@Override
 	public void dispose() {
 		map.dispose();

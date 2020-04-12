@@ -1,20 +1,24 @@
 package com.honours.elasticsearch.tools;
 
 public class CaseIdQValuePair {
-	private float qValue;
+	private float[] qValues;
 	private String caseId;
 
-	public CaseIdQValuePair(float qValue, String caseId) {
-		this.qValue = qValue;
+	public CaseIdQValuePair(float[] qValues, String caseId) {
+		this.qValues = qValues;
 		this.caseId = caseId;
 	}
 
-	public float getqValue() {
-		return qValue;
+	public float[] getqValues() {
+		return qValues;
+	}
+	
+	public float getqValue(int index) {
+		return qValues[index];
 	}
 
-	public void setqValue(float qValue) {
-		this.qValue = qValue;
+	public void setqValue(int index, float qValue) {
+		this.qValues[index] = qValue;
 	}
 
 	public String getCaseId() {

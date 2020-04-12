@@ -11,20 +11,29 @@ import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.ScriptQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.query.functionscore.ScriptScoreQueryBuilder;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
 
+import com.honours.elasticsearch.model.Case;
 import com.honours.elasticsearch.model.state.PlayerState;
 import com.honours.elasticsearch.model.state.SpellState;
 import com.honours.elasticsearch.model.state.State;
 
 
 public class StateQueryBuilder {
-	public static void buildStateQuery(BoolQueryBuilder geneQuery, State state) {
-		buildPlayerStateQuery(geneQuery, state.getPlayerStates()[0], "State.player0State");
-		buildPlayerStateQuery(geneQuery, state.getPlayerStates()[0], "State.player1State");
+	private static final int WEIGHT_QVAL = 1;
+
+	public static QueryBuilder buildStateQuery(State state, int playerIndex) {
+		PlayerState[] playerStates = state.getPlayerStates();
+		BoolQueryBuilder boolBuilder = QueryBuilders.boolQuery();
+		for (int i = 0; i < playerStates.length; i++) {			
+			buildPlayerStateQuery(boolBuilder, playerStates[i], 
+					buildPath(Case.STATE_FIELD, State.FIRST_PART_FIELDNAME + i + State.SECOND_PART_FIELDNAME));
+		}
+		return QueryBuilders.scriptScoreQuery(boolBuilder, buildQValueScript(playerIndex, WEIGHT_QVAL));
 	}
 	
 	public static void buildPlayerStateQuery(BoolQueryBuilder geneQuery, PlayerState playerState, String currentPath) {
@@ -81,4 +90,10 @@ public class StateQueryBuilder {
 		return QueryBuilders.scriptScoreQuery(QueryBuilders.matchAllQuery(), new Script(ScriptType.STORED, null, "cosineSimScript", params));
 	}
 	
+	public static Script buildQValueScript(int playerIndex, float weight) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("i", playerIndex);
+		params.put("weight", weight);
+		return new Script(ScriptType.STORED, null, "qValueScript", params);
+	}
 }

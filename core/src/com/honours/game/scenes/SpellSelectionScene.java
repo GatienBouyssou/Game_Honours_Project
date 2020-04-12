@@ -60,7 +60,11 @@ public class SpellSelectionScene implements Disposable {
 	private boolean errorIsShown = false;
 	private float timer = 0;
 	
-	public SpellSelectionScene(SpriteBatch batch, HonoursGame honoursGame) {
+	private boolean isTutorial;
+	
+	public SpellSelectionScene(SpriteBatch batch, HonoursGame honoursGame, boolean isTutorial) {
+		this.isTutorial = isTutorial;
+		
 		spellsBonus.add(new SpellBonus(0, 0, 0));
 		spellsBonus.add(new SpellBonus(-0.3f, -0.3f, 0));
 		spellsBonus.add(new SpellBonus(-0.1f, -0.1f, 0));
@@ -173,7 +177,7 @@ public class SpellSelectionScene implements Disposable {
 						newSpells.add(clonedSpell);
 					}
 					game.setSpellHumans(newSpells);
-					game.setScreen(new ArenaGameScreen(game));
+					game.setScreen(new ArenaGameScreen(game, isTutorial));
 				}
 			}
 		});

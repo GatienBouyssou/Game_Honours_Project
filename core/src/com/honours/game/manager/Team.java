@@ -52,13 +52,13 @@ public class Team {
 		return false;
 	}
 		
-	public void addNewPlayer(Vector2 spawnPoint, TextureAtlas atlas, String TypeOfPlayer, Array<Spell> listOfSpells, PlayerType playerType) {
+	public void addNewPlayer(Vector2 spawnPoint, TextureAtlas atlas, String TypeOfPlayer, Array<Spell> listOfSpells, PlayerType playerType, int playerId) {
 		List<TextureRegion> regions = new ArrayList<TextureRegion>();
 		for (String nameRegion : nameRegions) {
 			regions.add(new TextureRegion(atlas.findRegion("player"+TypeOfPlayer+nameRegion)));
 		}
 		Player player = new Player(world, spawnPoint, regions, listOfSpells, 
-				rayHandler, teamId, listOfPlayersAlive.size(), playerType);
+				rayHandler, teamId, playerId, playerType);
 		listOfPlayersAlive.add(player.getId());
 		mapOfPlayers.put(player.getId(), player);
 	}
@@ -118,6 +118,10 @@ public class Team {
 		return mapOfPlayers.get(listOfPlayersAlive.get(index));
 	}
 	
+	public Player getPlayerById(int playerId) {
+		return mapOfPlayers.get(playerId);
+	}
+	
 	public int getId() {
 		return teamId;
 	}
@@ -145,5 +149,9 @@ public class Team {
 
 	public void removePlayer(Integer playerId) {
 		listOfPlayersAlive.remove(playerId);
+	}
+
+	public int getSize() {
+		return this.listOfPlayersAlive.size();
 	}
 }

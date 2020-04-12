@@ -31,8 +31,8 @@ import box2dLight.RayHandler;
 
 public class Player extends Sprite {
 
-	private static final int MAX_MANA_AMOUNT = 100;
-	private static final int MAX_HEATH_AMOUNT = 100;
+	public static final int MAX_MANA_AMOUNT = 100;
+	public static final int MAX_HEATH_AMOUNT = 100;
 	public static final float MOVEMENT_SPEED = 0.5f;
 	private PlayerType playerType;
 	public static final float STATE_ANIMATION_DURATION = 0.5f;	
