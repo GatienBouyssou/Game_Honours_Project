@@ -30,7 +30,7 @@ public class SettingsScene implements Disposable, InputProcessor {
 	private static final String MODIFICATION_CHARACTER = "_";
 
 	private Stage stage;
-	
+	private List<Integer> keyForSpells;
 	private Map<String,Integer> mapKeyNameIndex = new HashMap<>();
 	private List<Label> listOfKeyLabel = new ArrayList<Label>();
 	private Label labelModified;
@@ -52,7 +52,7 @@ public class SettingsScene implements Disposable, InputProcessor {
 		TableCreator.createRow(table, Arrays.asList("Click on the key to update it."));
 		TableCreator.createRow(table, Arrays.asList("Spells", "Keys"));
 		
-		List<Integer> keyForSpells = ArenaGameManager.keyForSpells;
+		keyForSpells = ArenaGameManager.keyForSpells;
 		String key;
 		for (int i = 0; i < keyForSpells.size(); i++) {
 			key = Input.Keys.toString(keyForSpells.get(i));
@@ -92,6 +92,21 @@ public class SettingsScene implements Disposable, InputProcessor {
 			this.mapKeyNameIndex.remove(MODIFICATION_CHARACTER);
 			this.mapKeyNameIndex.put(keyName, index);
 		}
+		if (this.labelModified != null) {
+			String keyName = Input.Keys.toString(keycode);
+			if(keyName == null)
+				labelError.setText("Sorry, this key is not known by the game.");
+			else if(mapKeyNameIndex.containsKey(keyName))
+				labelError.setText("Sorry, this key is already used for another spell.");
+			else {
+				int index = mapKeyNameIndex.get(MODIFICATION_CHARACTER);
+				ArenaGameManager.keyForSpells.set(index, keycode);
+				mapKeyNameIndex.remove(MODIFICATION_CHARACTER);
+				mapKeyNameIndex.put(keyName, index);
+				listOfKeyLabel.get(index).setText(keyName);
+				labelModified = null;
+			}
+		}
 		return true;
 	}
 
@@ -103,24 +118,6 @@ public class SettingsScene implements Disposable, InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
-		if (this.labelModified != null) {
-			String keyName = String.valueOf(Character.toUpperCase(character));
-			System.out.println(keyName);
-			System.out.println(Input.Keys.valueOf(keyName));
-			System.out.println(Input.Keys.SPACE);
-			if(keyName.equals(MODIFICATION_CHARACTER))
-				labelError.setText("Sorry, this key is used by the game and therefore you can't use it.");
-			else if(mapKeyNameIndex.containsKey(keyName))
-				labelError.setText("Sorry, this key is already used for another spell.");
-			else {
-				int index = mapKeyNameIndex.get(MODIFICATION_CHARACTER);
-				ArenaGameManager.keyForSpells.set(index, Input.Keys.valueOf(keyName));
-				mapKeyNameIndex.remove(MODIFICATION_CHARACTER);
-				mapKeyNameIndex.put(keyName, index);
-				listOfKeyLabel.get(index).setText(keyName);
-				labelModified = null;
-			}
-		}
 		return true;
 	}
 
@@ -128,8 +125,7 @@ public class SettingsScene implements Disposable, InputProcessor {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		Vector3 coordinates = viewport.getCamera().unproject(new Vector3(screenX, screenY, 0));
 		Label label = (Label)table.hit(coordinates.x, coordinates.y, true);
-		
-		
+				
 		if(label!=null && mapKeyNameIndex.containsKey(label.getText().toString())) {
 			String keyName = label.getText().toString();
 			this.labelModified = label;
