@@ -15,7 +15,7 @@ public class SpellSelectionScreen extends ScreenAdapter {
 	SpellSelectionScene scene;
 	
 	public SpellSelectionScreen(HonoursGame game, boolean isTutorial) {
-		scene = new SpellSelectionScene(game.getBatch(), game, isTutorial);
+		scene = new SpellSelectionScene(game, isTutorial);
 	}
 	
 	public void render(float deltaTime) {
@@ -44,6 +44,5 @@ public class SpellSelectionScreen extends ScreenAdapter {
 	public void dispose() {
 		super.dispose();
 		scene.dispose();
-		System.out.println("dispose");
 	}
 }

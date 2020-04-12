@@ -14,7 +14,7 @@ public class SettingsScreen extends ScreenAdapter {
 	private SettingsScene settingsScene;
 	
 	public SettingsScreen(HonoursGame game) {
-		settingsScene = new SettingsScene(game.getBatch(), game);
+		settingsScene = new SettingsScene(game, this);
 	}
 	
 	public void show() {

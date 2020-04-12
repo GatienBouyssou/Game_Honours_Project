@@ -29,21 +29,22 @@ import com.honours.game.HonoursGame;
 import com.honours.game.manager.ArenaGameManager;
 import com.honours.game.player.spells.Spell;
 import com.honours.game.player.spells.spellBonus.SpellBonus;
+import com.honours.game.scenes.ui.DialogCreator;
 import com.honours.game.scenes.ui.LabelCreator;
 import com.honours.game.scenes.ui.TableCreator;
 import com.honours.game.scenes.ui.UIObjectCreator;
 import com.honours.game.screens.ArenaGameScreen;
+import com.honours.game.screens.SpellSelectionScreen;
 
 public class SpellSelectionScene implements Disposable {
+	private static final String INFO_TUTORIAL = "In this game you can select 4 spells. An additional spell is given and\ncan be considered as an auto-attack. "
+			+ "To select a spell click on it. \nTo see its description put your mouse over the spell.\n Once your ready click on"
+			+ " the button \"Ready !\".";
+
 	private static final int ROW_HEIGHT = 100;
-
-	private static final int WIDTH_DIALOG = 600;
-
-	private static final int HEIGHT_DIALOG = 220;
 
 	private Stage stage = new Stage();
 	
-	private HonoursGame game;
 	private Array<Spell> spells;
 	
 	private static final int NBR_SPELLS_AVAILABLE = 5;
@@ -62,7 +63,7 @@ public class SpellSelectionScene implements Disposable {
 	
 	private boolean isTutorial;
 	
-	public SpellSelectionScene(SpriteBatch batch, HonoursGame honoursGame, boolean isTutorial) {
+	public SpellSelectionScene(HonoursGame game, boolean isTutorial) {
 		this.isTutorial = isTutorial;
 		
 		spellsBonus.add(new SpellBonus(0, 0, 0));
@@ -71,9 +72,8 @@ public class SpellSelectionScene implements Disposable {
 		spellsBonus.add(new SpellBonus(0.3f, 0.3f, 0.2f));
 		spellsBonus.add(new SpellBonus(0.5f, 0.5f, 0.5f));
 		
-		spells = honoursGame.getListOfSpellsAvailable();
+		spells = game.getListOfSpellsAvailable();
 		spellPlayer.add(spells.get(0));
-		this.game = honoursGame;
 		
 		skin = new Skin();
         skin.addRegions(new TextureAtlas("defaultSkin/uiskin.atlas"));
@@ -83,11 +83,14 @@ public class SpellSelectionScene implements Disposable {
         int heightScreen = Gdx.graphics.getHeight();
         int widthScreen = Gdx.graphics.getWidth();
         
-        dialog = new Dialog("Spell description", skin);
-		dialog.setBounds(0, heightScreen-HEIGHT_DIALOG,WIDTH_DIALOG,HEIGHT_DIALOG);
-        dialog.setTouchable(Touchable.disabled);
+        dialog = DialogCreator.createDialog("Spell description", 0, heightScreen-DialogCreator.HEIGHT_DIALOG);
         stage.addActor(dialog);
         
+		if (isTutorial) {
+			stage.addActor(DialogCreator.createDialogWithText("Tutorial indications", widthScreen - DialogCreator.WIDTH_DIALOG, 
+					heightScreen-DialogCreator.HEIGHT_DIALOG, INFO_TUTORIAL));
+		}
+		
 		
 		createTitle(heightScreen, widthScreen);
 			
@@ -95,7 +98,7 @@ public class SpellSelectionScene implements Disposable {
 		
 		createSelectedSpellTable(widthScreen);
 		
-		createButtonsReadyAndClear(widthScreen);
+		createButtonsReadyAndClear(widthScreen, game);
 		
 		errorLabel = LabelCreator.createLabel("", 2,Color.RED);
 		stage.addActor(errorLabel);
@@ -129,7 +132,7 @@ public class SpellSelectionScene implements Disposable {
 		spellSelected.add(stack);
 	}
 
-	private void createButtonsReadyAndClear(int widthScreen) {
+	private void createButtonsReadyAndClear(int widthScreen, HonoursGame game) {
 		Table table = TableCreator.setTableConfiguration(Align.bottomRight, ROW_HEIGHT, ROW_HEIGHT);
 		table.setPosition(widthScreen - ROW_HEIGHT, 0);
 		

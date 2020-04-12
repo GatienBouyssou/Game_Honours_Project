@@ -36,12 +36,11 @@ public class ArenaGameManager implements InputProcessor {
 	public static final int SPELL_4_INDEX = 4;
 	
 	private World world;
-	private Box2DDebugRenderer boxRenderer;
 	private Box2DWorldCreator worldCreator;
 	
 	private OrthographicCamera camera;
 	
-	private static List<Team> teams = new ArrayList<Team>();
+	private static List<Team> teams;
 	
 	private ArenaInformations arenaInf;
 	private ManaRefiler manaRefiler;
@@ -55,12 +54,13 @@ public class ArenaGameManager implements InputProcessor {
 	private static AIManager aiManager;
 	
 	public ArenaGameManager(ArenaGameScreen screen, boolean isTutorial) {
+		this.gameOver = false;
+		this.teams = new ArrayList<Team>();
 		this.camera = screen.getCamera();
         // creating the world
         world = new World(new Vector2(0,0), true);
         world.setContactListener(new PlayerContactListener());
         
-        boxRenderer = new Box2DDebugRenderer();       
         worldCreator = new Box2DWorldCreator(world, screen.getMap());
         
         
@@ -78,7 +78,7 @@ public class ArenaGameManager implements InputProcessor {
 		teams.add(teamHuman);
 		teams.add(teamAI);
 		
-		arenaInf = new ArenaInformations(game.getBatch(), Arrays.asList(teamHuman, teamAI), gameTime);
+		arenaInf = new ArenaInformations(game.getBatch(), Arrays.asList(teamHuman, teamAI), gameTime, isTutorial);
 		manaRefiler = new ManaRefiler(ManaRefiler.BASIC_MANA_BONUS);
 		
 		if (game.userHaveInternet()) {			
@@ -114,10 +114,7 @@ public class ArenaGameManager implements InputProcessor {
         batch.begin();
         teams.get(TEAM_HUMAN).draw(batch);
         teams.get(TEAM_AI).drawPlayerAndSpellsIfInLight(batch);
-        batch.end();
-        
-//        boxRenderer.render(world, camera.combined);
-        
+        batch.end();  
         
         batch.setProjectionMatrix(arenaInf.getStage().getCamera().combined);
         arenaInf.getStage().draw();
@@ -189,8 +186,7 @@ public class ArenaGameManager implements InputProcessor {
 		for (Team team : teams) {
 			team.dispose();
 		}
-		boxRenderer.dispose();
-		world.dispose();
+//		world.dispose();
 		arenaInf.dispose();
 		aiManager.dispose();
 	}
@@ -217,6 +213,11 @@ public class ArenaGameManager implements InputProcessor {
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public String toString() {
+		return gameTime + " " + gameOver + " " + teams.get(0).toString() + " " + teams.get(1).toString(); 
 	}
 
 }

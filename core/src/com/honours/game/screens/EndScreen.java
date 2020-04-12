@@ -53,6 +53,7 @@ public class EndScreen extends ScreenAdapter
         	public boolean keyDown(final int keyCode) {
                 if (keyCode == Input.Keys.ENTER) {
                 	game.setScreen(new TitleScreen(game));
+                	dispose();
                 }
                 return true;
             }

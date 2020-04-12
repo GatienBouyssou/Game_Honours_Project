@@ -23,6 +23,7 @@ import com.honours.game.HonoursGame;
 import com.honours.game.manager.ArenaGameManager;
 import com.honours.game.scenes.ui.LabelCreator;
 import com.honours.game.scenes.ui.TableCreator;
+import com.honours.game.screens.SettingsScreen;
 import com.honours.game.screens.TitleScreen;
 
 public class SettingsScene implements Disposable, InputProcessor {
@@ -41,11 +42,13 @@ public class SettingsScene implements Disposable, InputProcessor {
 	private Label labelError;
 	
 	private HonoursGame game;
+	private SettingsScreen settingsScreen;
 	
-	public SettingsScene(SpriteBatch batch, HonoursGame game) {
+	public SettingsScene(HonoursGame game, SettingsScreen settingsScreen) {
 		this.game = game;
+		this.settingsScreen = settingsScreen;
 		viewport = new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
-		stage = new Stage(viewport, batch);
+		stage = new Stage(viewport, game.getBatch());
 		
 		
 		table = TableCreator.setTableConfiguration(Align.left);

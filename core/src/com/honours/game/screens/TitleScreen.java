@@ -37,6 +37,7 @@ public class TitleScreen extends ScreenAdapter
             @Override 
             public void clicked(InputEvent event, float x, float y){
             	game.setScreen(new SpellSelectionScreen(game, false));
+            	dispose();
             }
         });
         TableCreator.createRowWithCell(table, Arrays.asList(startTheGame));
@@ -48,6 +49,7 @@ public class TitleScreen extends ScreenAdapter
             @Override 
             public void clicked(InputEvent event, float x, float y){
             	game.setScreen(new SettingsScreen(game));
+            	dispose();
             }
         });
         TableCreator.createRowWithCell(table, Arrays.asList(settings));
@@ -59,6 +61,7 @@ public class TitleScreen extends ScreenAdapter
             @Override 
             public void clicked(InputEvent event, float x, float y){
             	game.setScreen(new SpellSelectionScreen(game, true));
+            	dispose();
             }
         });
         TableCreator.createRowWithCell(table, Arrays.asList(tutorial));
