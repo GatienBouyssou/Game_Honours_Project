@@ -40,6 +40,7 @@ public class ArenaGameScreen extends ScreenAdapter
     
     public ArenaGameScreen(final HonoursGame game, boolean isTutorial) {
         this.game = game;
+        this.isTutorial = isTutorial;
         //loading the map
         TmxMapLoader maploader = new TmxMapLoader();
         map = maploader.load("RogueLikeMap.tmx");

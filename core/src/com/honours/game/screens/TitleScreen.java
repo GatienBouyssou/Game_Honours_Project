@@ -99,7 +99,7 @@ public class TitleScreen extends ScreenAdapter
         
         if (!game.userHaveInternet()) {
 			table = TableCreator.setTableConfiguration(Align.bottom);
-			table.add(LabelCreator.createLabel("Beware. You are going to play against a lower intelligence", 2, Color.RED));
+			table.add(LabelCreator.createLabel("Enjoy ;) !", 2, Color.RED));
 			stage.addActor(table);
 		}
     }

@@ -41,12 +41,12 @@ import com.honours.game.tools.Matrix;
 
 public class ArenaInformations implements Disposable {
 	
-	private static final String TUTO_INFO = "To move right-click on your destination. The player will move straight to\n"
+	private static final String TUTO_INFO = "\nTo move right-click on your destination. The player will move straight to\n"
 			+ "the destination. If he encounters a wall, he will stop were he is. \n"
 			+ "You can trigger spells using the keys given on the bottom of the screen.\n"
 			+ "Be aware that the fire spells cancel the plant spells that cancel water ...\n"
 			+ "A spell uses mana (energy).The amount of energy you have is the blue bar.\n"
-			+ " Your Health is the red. The last player alive wins\n";
+			+ "Your Health is the red. The last player alive wins\n";
 	
 	public static final int HEALTH_POINT_INDEX = 0;
 	public static final int MANA_POINT_INDEX = 1;
