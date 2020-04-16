@@ -60,18 +60,13 @@ public class Agent {
 		Array<Spell> spells;
 		averageDirecton = new Vector2(0,0);
 		spells = opponentPlayer.getListOfSpells();
-		Vector2 runInDirection;
 		for (int i = 0; i < spells.size; i++) {
 			if (spells.get(i).getCouldown() == 0) {
 				dangerosityLvL+=10;
 			}
 			Array<SpellGraphicBehaviour> activeSpells = spells.get(i).getListActiveSpells();
 			for (int j = 0; j< activeSpells.size; j++) {
-				runInDirection = new Vector2(activeSpells.get(j).getBodyPosition());
-				runInDirection.add(-playerPosition.x, -playerPosition.y);
-				dangerosityLvL += 10 - runInDirection.len();
-				runInDirection.nor().rotate90(r.nextInt(2)-1);
-				averageDirecton.add(runInDirection);
+				dangerosityLvL = computeDodgeDirection(playerPosition, dangerosityLvL, activeSpells, j);
 			}
 		}
 			
@@ -84,6 +79,16 @@ public class Agent {
 				dangerosityLvL-=2 * spell.getBasicDamage();
 			}
 		}
+		return dangerosityLvL;
+	}
+
+	protected float computeDodgeDirection(Vector2 playerPosition, float dangerosityLvL,
+			Array<SpellGraphicBehaviour> activeSpells, int j) {
+		Vector2 runInDirection = new Vector2(activeSpells.get(j).getBodyPosition());
+		runInDirection.add(-playerPosition.x, -playerPosition.y);
+		dangerosityLvL += 10 - runInDirection.len();
+		runInDirection.nor().rotate90(r.nextInt(2)-1);
+		averageDirecton.add(runInDirection);
 		return dangerosityLvL;
 	}
 	
