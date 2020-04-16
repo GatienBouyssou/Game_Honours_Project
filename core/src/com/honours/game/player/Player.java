@@ -287,6 +287,12 @@ public class Player extends Sprite {
 		ArenaInformations.updatePlayerMana(teamId, playerId, amountOfMana);
 		manaBar.setWidthDisplayed(amountMana/MAX_MANA_AMOUNT);
 	}
+	
+	public void dispose() {
+		for (int i = 0; i < listOfSpellId.size; i++) {
+			mapIdSpell.get(listOfSpellId.get(i)).dispose();
+		}
+	}
 
 	public Array<Spell> getListOfSpells() {
 		return mapIdSpell.values().toArray();

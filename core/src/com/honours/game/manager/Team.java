@@ -144,7 +144,8 @@ public class Team {
 
 	public void dispose() {
 		rayHandler.dispose();
-
+		for (Map.Entry<Integer, Player> entry : mapOfPlayers.entrySet())  
+            entry.getValue().dispose();
 	}
 
 	public void removePlayer(Integer playerId) {

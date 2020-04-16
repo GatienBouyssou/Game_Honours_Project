@@ -18,6 +18,7 @@ import com.honours.game.screens.TitleScreen;
 
 public class HonoursGame extends Game 
 {
+	
     private SpriteBatch batch;
     public final static short WORLD_BIT = 1;
     public final static short PLAYER_BIT = 2;
@@ -28,6 +29,9 @@ public class HonoursGame extends Game
     public static final int VIRTUAL_HEIGHT = 16;
     public static final int FRAME_WIDTH = 32;
     
+    public static final int WINDOW_WIDTH = 1720; 
+	public static final int WINDOW_HEIGHT = 980; 
+	
     private Array<Spell> listOfSpellsAvailable;
     private Array<Spell> spellHumans;
     private Array<Spell> spellAI = new Array<>();

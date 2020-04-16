@@ -11,6 +11,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -28,7 +30,7 @@ public class TitleScreen extends ScreenAdapter
 	private Stage stage;
     
     public TitleScreen(final HonoursGame game) {
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
+        viewport = new FitViewport(HonoursGame.WINDOW_WIDTH, HonoursGame.WINDOW_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.getBatch());
         
         Table table = TableCreator.setTableConfiguration(Align.right);
@@ -39,6 +41,15 @@ public class TitleScreen extends ScreenAdapter
             	game.setScreen(new SpellSelectionScreen(game, false));
             	dispose();
             }
+			@Override
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Hand);
+			}
+			
+			@Override
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
+			}
         });
         TableCreator.createRowWithCell(table, Arrays.asList(startTheGame));
       
@@ -51,6 +62,15 @@ public class TitleScreen extends ScreenAdapter
             	game.setScreen(new SettingsScreen(game));
             	dispose();
             }
+			@Override
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Hand);
+			}
+			
+			@Override
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
+			}
         });
         TableCreator.createRowWithCell(table, Arrays.asList(settings));
 
@@ -63,6 +83,15 @@ public class TitleScreen extends ScreenAdapter
             	game.setScreen(new SpellSelectionScreen(game, true));
             	dispose();
             }
+			@Override
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Hand);
+			}
+			
+			@Override
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
+			}
         });
         TableCreator.createRowWithCell(table, Arrays.asList(tutorial));
         

@@ -6,11 +6,14 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.honours.game.HonoursGame;
 
 public class DesktopLauncher {
+		
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        int width = Lwjgl3ApplicationConfiguration.getDisplayMode().width;
-        int height = Lwjgl3ApplicationConfiguration.getDisplayMode().height-60;
+        int width = Lwjgl3ApplicationConfiguration.getDisplayMode().width -200;
+        int height = Lwjgl3ApplicationConfiguration.getDisplayMode().height-100;
         
+        System.out.println(width);
+        System.out.println(height);
         config.setResizable(false);
     	config.setWindowedMode(width, height);
     	config.setDecorated(true);

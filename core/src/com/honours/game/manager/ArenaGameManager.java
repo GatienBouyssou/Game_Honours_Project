@@ -78,7 +78,7 @@ public class ArenaGameManager implements InputProcessor {
 		teams.add(teamHuman);
 		teams.add(teamAI);
 		
-		arenaInf = new ArenaInformations(game.getBatch(), Arrays.asList(teamHuman, teamAI), gameTime, isTutorial);
+		arenaInf = new ArenaInformations(game.getBatch(), game.getSpellHumans(),Arrays.asList(teamHuman, teamAI), gameTime, isTutorial);
 		manaRefiler = new ManaRefiler(ManaRefiler.BASIC_MANA_BONUS);
 		
 		if (game.userHaveInternet()) {			
@@ -213,6 +213,10 @@ public class ArenaGameManager implements InputProcessor {
 			}
 		}
 		return null;
+	}
+	
+	public float getGameTime() {
+		return gameTime;
 	}
 	
 	@Override

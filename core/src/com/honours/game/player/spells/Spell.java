@@ -264,4 +264,11 @@ public class Spell {
 		sb.append("Couldown : ").append(couldown).append("s").append("\n");
 		return sb.toString();
 	}
+
+	public void dispose() {
+		for (int i = 0; i < listActiveSpells.size; i++) {
+			listActiveSpells.get(i).destroySpell();
+		}
+		
+	}
 }

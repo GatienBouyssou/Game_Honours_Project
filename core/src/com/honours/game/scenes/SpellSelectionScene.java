@@ -6,13 +6,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -25,6 +24,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.honours.game.HonoursGame;
 import com.honours.game.manager.ArenaGameManager;
 import com.honours.game.player.spells.Spell;
@@ -34,7 +36,6 @@ import com.honours.game.scenes.ui.LabelCreator;
 import com.honours.game.scenes.ui.TableCreator;
 import com.honours.game.scenes.ui.UIObjectCreator;
 import com.honours.game.screens.ArenaGameScreen;
-import com.honours.game.screens.SpellSelectionScreen;
 import com.honours.game.screens.TitleScreen;
 
 public class SpellSelectionScene implements Disposable {
@@ -44,7 +45,7 @@ public class SpellSelectionScene implements Disposable {
 
 	private static final int ROW_HEIGHT = 100;
 
-	private Stage stage = new Stage();
+	private Stage stage;
 	
 	private Array<Spell> spells;
 	
@@ -65,6 +66,8 @@ public class SpellSelectionScene implements Disposable {
 	private boolean isTutorial;
 	
 	public SpellSelectionScene(HonoursGame game, boolean isTutorial) {
+		Viewport viewport = new StretchViewport(HonoursGame.WINDOW_WIDTH, HonoursGame.WINDOW_HEIGHT);
+		stage = new Stage(viewport, game.getBatch());
 		this.isTutorial = isTutorial;
 		
 		spellsBonus.add(new SpellBonus(0, 0, 0));
@@ -81,8 +84,8 @@ public class SpellSelectionScene implements Disposable {
         skin.add("default-font", new BitmapFont(Gdx.files.internal("defaultSkin/default.fnt")));
         skin.load(Gdx.files.internal("defaultSkin/uiskin.json"));
 		
-        int heightScreen = Gdx.graphics.getHeight();
-        int widthScreen = Gdx.graphics.getWidth();
+        int heightScreen = HonoursGame.WINDOW_HEIGHT;
+        int widthScreen = HonoursGame.WINDOW_WIDTH;
         
         dialog = DialogCreator.createDialog("Spell description", 0, heightScreen-DialogCreator.HEIGHT_DIALOG);
         stage.addActor(dialog);
@@ -146,6 +149,16 @@ public class SpellSelectionScene implements Disposable {
 			public void clicked(InputEvent event, float x, float y) {
 				game.setScreen(new TitleScreen(game));
 			}
+			
+			@Override
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Hand);
+			}
+			
+			@Override
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
+			}
 		});
 		table.add(button).pad(10);
 		stage.addActor(table);
@@ -201,6 +214,16 @@ public class SpellSelectionScene implements Disposable {
 					game.setSpellHumans(newSpells);
 					game.setScreen(new ArenaGameScreen(game, isTutorial));
 				}
+			}
+			
+			@Override
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Hand);
+			}
+			
+			@Override
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+				Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
 			}
 		});
 		table.add(button).pad(10).width(cell.getMinWidth());

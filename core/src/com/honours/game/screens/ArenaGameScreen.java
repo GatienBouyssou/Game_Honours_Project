@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.honours.game.HonoursGame;
 import com.honours.game.manager.ArenaGameManager;
 import com.honours.game.manager.Team;
+import com.honours.game.player.Player;
 import com.honours.game.tools.UnitConverter;
 
 public class ArenaGameScreen extends ScreenAdapter
@@ -76,7 +77,11 @@ public class ArenaGameScreen extends ScreenAdapter
 	public void gameOver() {
 		Team lastTeam = arenaGameManager.getLastTeamStanding();
 		int playerId = lastTeam.getListOfPlayersAlive().get(0);
-		game.setScreen(new EndScreen(game, lastTeam.getId(), lastTeam.getPlayerById(playerId).getPlayerHealing()));
+		
+		Player playerById = lastTeam.getPlayerById(playerId);
+		int gameTime = (int) arenaGameManager.getGameTime();
+		int lifePercentage = (int) playerById.getHealthPoints();
+		game.setScreen(new EndScreen(game, lastTeam.getId(), playerById.getPlayerHealing(), gameTime, lifePercentage));
 		dispose();
 	}
 

@@ -12,22 +12,30 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.honours.game.manager.ArenaGameManager;
 import com.honours.game.manager.Team;
 import com.honours.game.player.Player;
+import com.honours.game.player.spells.Spell;
 import com.honours.game.scenes.ui.DialogCreator;
 import com.honours.game.scenes.ui.LabelCreator;
 import com.honours.game.scenes.ui.TableCreator;
+import com.honours.game.scenes.ui.UIObjectCreator;
 import com.honours.game.screens.ArenaGameScreen;
 import com.honours.game.tools.Matrix;
 
@@ -36,8 +44,10 @@ public class ArenaInformations implements Disposable {
 	private static final String TUTO_INFO = "To move right-click on your destination. The player will move straight to\n"
 			+ "the destination. If he encounters a wall, he will stop were he is. \n"
 			+ "You can trigger spells using the keys given on the bottom of the screen.\n"
+			+ "Be aware that the fire spells cancel the plant spells that cancel water ...\n"
 			+ "A spell uses mana (energy).The amount of energy you have is the blue bar.\n"
 			+ " Your Health is the red. The last player alive wins\n";
+	
 	public static final int HEALTH_POINT_INDEX = 0;
 	public static final int MANA_POINT_INDEX = 1;
 	private Stage stage;
@@ -48,7 +58,7 @@ public class ArenaInformations implements Disposable {
 	
 	private List<Label> listKeyForSpells = new ArrayList<Label>();
 
-	public ArenaInformations(SpriteBatch batch, List<Team> teams, float gameTime, boolean isTutorial) {
+	public ArenaInformations(SpriteBatch batch, Array<Spell> playerSpells, List<Team> teams, float gameTime, boolean isTutorial) {
 		
 			
 		Viewport viewport = new FillViewport(ArenaGameScreen.VIRTUAL_WIDTH, ArenaGameScreen.VIRTUAL_HEIGHT); 
@@ -88,8 +98,13 @@ public class ArenaInformations implements Disposable {
 		
 		table = TableCreator.setTableConfiguration(Align.bottom, stage.getWidth(), stage.getHeight()/10);
 		
-		TableCreator.createRowWithCell(table, listKeyForSpells);
-		
+		for (int i = 0; i < playerSpells.size; i++) {
+			Stack stack = UIObjectCreator.createStack(150,150);
+			UIObjectCreator.positionLabelInStack(stack, listKeyForSpells.get(i), Align.topLeft);
+			UIObjectCreator.addScaledImageToStack(stack, new Image(playerSpells.get(i).getSpellBehaviour().getActiveRegion()));
+			table.add(stack).width(150).height(150).pad(10);;
+		}
+				
 		stage.addActor(table);
 		
 		if (isTutorial) {			
