@@ -35,7 +35,7 @@ public abstract class AIManager {
 	
 	protected abstract void buildMonitorePlayer(Player player);
 	
-	public void run() {
+	public void run(float runInterval) {
 		timer.scheduleTask(new Task() {
 			@Override
 			public void run() {
@@ -46,7 +46,7 @@ public abstract class AIManager {
 				}
 				
 			}
-		}, 0, 0.5f);
+		}, 0, runInterval);
 	}
 	
 	public abstract void update();

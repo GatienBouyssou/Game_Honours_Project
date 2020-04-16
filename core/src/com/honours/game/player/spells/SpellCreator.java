@@ -72,7 +72,7 @@ public class SpellCreator {
 		region = new TextureRegion(textureAtlas.findRegion("fireHalo"));
 		spell = new Spell(listOfSpellCreated.size, Spell.MEDIUM_RANGE, Spell.MEDIUM_COULDOWN,Spell.LOW_MANA_COST);
 		spell.setSpellBehaviour(new DashBehaviour(region));
-		spell.setEffect(new Dash(1));
+		spell.setEffect(new Dash(LinearSpell.CHEETAH_SPEED));
 		spell.setType(mapNameToType.get(FIRE));
 		listOfSpellCreated.add(spell);
 		

@@ -92,7 +92,7 @@ public class ArenaGameManager implements InputProcessor {
 	}
 	
 	public void gameStart() {		
-		aiManager.run();
+		aiManager.run(0.3f);
 	}
 
 	public void update(float deltaTime) {
@@ -186,7 +186,7 @@ public class ArenaGameManager implements InputProcessor {
 		for (Team team : teams) {
 			team.dispose();
 		}
-//		world.dispose();
+		world.dispose();
 		arenaInf.dispose();
 		aiManager.dispose();
 	}

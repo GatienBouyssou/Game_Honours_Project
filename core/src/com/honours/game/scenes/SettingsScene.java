@@ -42,11 +42,9 @@ public class SettingsScene implements Disposable, InputProcessor {
 	private Label labelError;
 	
 	private HonoursGame game;
-	private SettingsScreen settingsScreen;
 	
 	public SettingsScene(HonoursGame game, SettingsScreen settingsScreen) {
 		this.game = game;
-		this.settingsScreen = settingsScreen;
 		viewport = new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
 		stage = new Stage(viewport, game.getBatch());
 		
@@ -65,6 +63,10 @@ public class SettingsScene implements Disposable, InputProcessor {
 		}
 		labelError = LabelCreator.createLabel("", Color.RED);
 		TableCreator.createRowWithCell(table, Arrays.asList(labelError));
+		stage.addActor(table);
+		
+		Table table = TableCreator.setTableConfiguration(Align.bottom);
+		table.add(LabelCreator.createLabel("Press escape to come back to the menu or to cancel the current modification.", 2));
 		stage.addActor(table);
 	}
 	

@@ -261,7 +261,7 @@ public class Spell {
 		sb.append(effect.toString()).append("\n");
 		sb.append(type.toString()).append("\n");
 		sb.append("Range : ").append(range).append("\n");
-		sb.append("Couldown : ").append(couldown).append("\n");
+		sb.append("Couldown : ").append(couldown).append("s").append("\n");
 		return sb.toString();
 	}
 }

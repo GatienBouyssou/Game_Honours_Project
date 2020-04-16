@@ -35,6 +35,7 @@ import com.honours.game.scenes.ui.TableCreator;
 import com.honours.game.scenes.ui.UIObjectCreator;
 import com.honours.game.screens.ArenaGameScreen;
 import com.honours.game.screens.SpellSelectionScreen;
+import com.honours.game.screens.TitleScreen;
 
 public class SpellSelectionScene implements Disposable {
 	private static final String INFO_TUTORIAL = "In this game you can select 4 spells. An additional spell is given and\ncan be considered as an auto-attack. "
@@ -100,9 +101,13 @@ public class SpellSelectionScene implements Disposable {
 		
 		createButtonsReadyAndClear(widthScreen, game);
 		
+		createButtonGoBack(widthScreen, game);
+		
 		errorLabel = LabelCreator.createLabel("", 2,Color.RED);
 		stage.addActor(errorLabel);
 	}
+
+
 
 	private void createSelectedSpellTable(int widthScreen) {
 		Table table = TableCreator.setTableConfiguration(Align.bottom, widthScreen, ROW_HEIGHT);
@@ -132,7 +137,21 @@ public class SpellSelectionScene implements Disposable {
 		spellSelected.add(stack);
 	}
 
-	private void createButtonsReadyAndClear(int widthScreen, HonoursGame game) {
+	private void createButtonGoBack(int widthScreen, final HonoursGame game) {
+		Table table = TableCreator.setTableConfiguration(Align.bottomLeft, ROW_HEIGHT, ROW_HEIGHT);
+		table.setPosition(0, 0);
+		Button button = UIObjectCreator.createButton(skin, "Go back");
+		button.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				game.setScreen(new TitleScreen(game));
+			}
+		});
+		table.add(button).pad(10);
+		stage.addActor(table);
+	}
+	
+	private void createButtonsReadyAndClear(int widthScreen, final HonoursGame game) {
 		Table table = TableCreator.setTableConfiguration(Align.bottomRight, ROW_HEIGHT, ROW_HEIGHT);
 		table.setPosition(widthScreen - ROW_HEIGHT, 0);
 		

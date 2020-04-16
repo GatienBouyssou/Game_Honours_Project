@@ -11,10 +11,14 @@ import com.honours.game.player.spells.Spell;
 import com.honours.game.player.spells.spellBehaviours.SpellGraphicBehaviour;
 
 public class Agent {
+	private static final int IN_RANGE_TO_FIRE_SPELLS = 25;
+
 	private Random r = new Random();
 	
 	private Player monitoredPlayer;
 	private Player opponentPlayer;
+	
+	private Vector2 averageDirecton;
 	
 	Array<Integer> spellAvailablePlayer = new Array<Integer>();
 	private StateAgent stateAgent = StateAgent.AGGRESSIVE;
@@ -49,21 +53,31 @@ public class Agent {
 
 	protected float computeDangerousityLvl(Vector2 playerPosition) {
 		float dangerosityLvL = 0;
-		dangerosityLvL += 1000/playerPosition.dst2(opponentPlayer.getBodyPosition()) 
-				+ 3/getPercentageMana(monitoredPlayer) - 2/getPercentageMana(opponentPlayer)
+		Vector2 oppPosition = opponentPlayer.getBodyPosition();
+		dangerosityLvL += 1000/playerPosition.dst2(oppPosition) 
+				+ 5/getPercentageMana(monitoredPlayer) - 4/getPercentageMana(opponentPlayer)
 				+ 5/getPercentageHealth(monitoredPlayer) - 4/getPercentageHealth(opponentPlayer);
-		Array<Spell> spells = opponentPlayer.getListOfSpells();
+		Array<Spell> spells;
+		averageDirecton = new Vector2(0,0);
+		spells = opponentPlayer.getListOfSpells();
+		Vector2 runInDirection;
 		for (int i = 0; i < spells.size; i++) {
 			if (spells.get(i).getCouldown() == 0) {
 				dangerosityLvL+=10;
 			}
 			Array<SpellGraphicBehaviour> activeSpells = spells.get(i).getListActiveSpells();
 			for (int j = 0; j< activeSpells.size; j++) {
-				dangerosityLvL += 10 - activeSpells.get(j).getBodyPosition().dst(playerPosition);
+				runInDirection = new Vector2(activeSpells.get(j).getBodyPosition());
+				runInDirection.add(-playerPosition.x, -playerPosition.y);
+				dangerosityLvL += 10 - runInDirection.len();
+				runInDirection.nor().rotate90(r.nextInt(2)-1);
+				averageDirecton.add(runInDirection);
 			}
 		}
+			
+		
 		spells = monitoredPlayer.getListOfSpells();
-		for (int i = 0; i < spells.size; i++) {
+		for (int i = 1; i < spells.size; i++) {
 			Spell spell = spells.get(i);
 			if (spell.getTimeRemainingForSpell() == 0) {
 				spellAvailablePlayer.add(spell.getSpellId());
@@ -92,7 +106,7 @@ public class Agent {
 	public void resolveAction() {		
 		if (notUpdated ) return;
 		Vector2 destination = new Vector2(monitoredPlayer.getBodyPosition());
-		Vector2 oppPosition = opponentPlayer.getBodyPosition();
+		Vector2 oppPosition = new Vector2(opponentPlayer.getBodyPosition());
 		switch (stateAgent) {
 		case AGGRESSIVE:
 			if (r.nextFloat() < 0.2) {
@@ -105,9 +119,9 @@ public class Agent {
 			break;
 		case DEFENSIVE:
 			destination.add(retreatDirection(oppPosition, destination).scl(3));
-			if (inRange(oppPosition)) {
-				if (r.nextFloat() < 0.2) monitoredPlayer.castSpellAtIndex(1, destination);
-				if (r.nextFloat() < 0.5) monitoredPlayer.castSpellAtIndex(1, destination);
+			if (inRange(oppPosition, IN_RANGE_TO_FIRE_SPELLS)) {
+				if (r.nextFloat() < 0.2) monitoredPlayer.castSpellAtIndex(1, oppPosition);
+				if (r.nextFloat() < 0.5) monitoredPlayer.castSpellAtIndex(0, oppPosition);
 			}
 			break;
 		case PRUDENT:
@@ -116,6 +130,7 @@ public class Agent {
 			} else {
 				destination.add(retreatDirection(oppPosition, destination).scl(3));
 			}
+			getSpellDestination(oppPosition);
 			launchSpellsWithProba(destination, oppPosition, 0.3f);
 			break;
 		}
@@ -123,8 +138,19 @@ public class Agent {
 		notUpdated = true;
 	}
 
+	private void getSpellDestination(Vector2 oppPosition) {
+		Vector2 velocity = opponentPlayer.getVelocity();
+		if (velocity!= null && r.nextFloat() > 0.5) {
+			if(r.nextFloat() > 0.2)
+				oppPosition.add(velocity);//anticipate movement
+			else 
+				oppPosition.add(-velocity.x, -velocity.y);//anticipate dodged
+		}
+	}
+
 	protected void launchSpellsWithProba(Vector2 destination, Vector2 oppPosition, float proba) {
-		if (inRange(oppPosition)) {
+		if (inRange(oppPosition, IN_RANGE_TO_FIRE_SPELLS)) {
+			monitoredPlayer.castSpellAtIndex(0, oppPosition);
 			for (int i = 0; i < spellAvailablePlayer.size; i++) {
 				if (r.nextFloat() < proba) {
 					monitoredPlayer.castSpellWithId(spellAvailablePlayer.get(i), new Vector2(oppPosition));
@@ -134,13 +160,17 @@ public class Agent {
 		}
 	}
 	
-	private boolean inRange(Vector2 destination) {
-		return monitoredPlayer.getBodyPosition().dst2(destination) < 25;
+	private boolean inRange(Vector2 destination, float range) {
+		return monitoredPlayer.getBodyPosition().dst2(destination) < range;
 	}
 
 	protected Vector2 retreatDirection(Vector2 oppPosition, Vector2 playerPosition) {
-		Vector2 dirVector = new Vector2(playerPosition.x - oppPosition.x, playerPosition.y - oppPosition.y);
-		dirVector.rotateRad((float) Math.asin(r.nextDouble()*2 - 1));
-		return dirVector;
+		if (averageDirecton.x == 0 && averageDirecton.y == 0) {
+			Vector2 oppToPlayer = new Vector2(playerPosition.x - oppPosition.x, playerPosition.y - oppPosition.y);
+			oppToPlayer.rotateRad((float) Math.asin(r.nextDouble()* 2 - 1));
+			return oppToPlayer;
+		}
+		averageDirecton.scl(5);
+		return averageDirecton;
 	}
 }

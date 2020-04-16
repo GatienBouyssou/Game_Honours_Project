@@ -28,7 +28,7 @@ public class EndScreen extends ScreenAdapter
 	private TextureRegion texture;
 	
     
-    public EndScreen(final HonoursGame game, Team lastTeam) {
+    public EndScreen(final HonoursGame game, int teamId, TextureRegion winningPlayer) {
         this.game = game;
         
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
@@ -41,9 +41,10 @@ public class EndScreen extends ScreenAdapter
         table.setFillParent(true);
         table.add(LabelCreator.createLabel("This is the end of the game !"));
         table.row();
-        table.add(LabelCreator.createLabel("Team " + (lastTeam.getId()+1) + " has won !"));
-        int playerId = lastTeam.getListOfPlayersAlive().get(0);
-        texture = lastTeam.getPlayerById(playerId).getPlayerHealing();
+        table.add(LabelCreator.createLabel("Team " + (teamId+1) + " has won !"));
+        table.row();
+        table.add(LabelCreator.createLabel("Press enter to come back to the menu."));
+        texture = winningPlayer;
         stage.addActor(table);
     }
     

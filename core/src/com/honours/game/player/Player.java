@@ -19,6 +19,7 @@ import com.honours.game.HonoursGame;
 import com.honours.game.manager.ArenaGameManager;
 import com.honours.game.manager.Team;
 import com.honours.game.player.spells.Spell;
+import com.honours.game.player.spells.spellBehaviours.LinearSpell;
 import com.honours.game.player.spells.spellEffects.SpellEffect;
 import com.honours.game.scenes.ArenaInformations;
 import com.honours.game.tools.BodyHelper;
@@ -33,7 +34,7 @@ public class Player extends Sprite {
 
 	public static final int MAX_MANA_AMOUNT = 100;
 	public static final int MAX_HEATH_AMOUNT = 100;
-	public static final float MOVEMENT_SPEED = 0.5f;
+	public static final float MOVEMENT_SPEED = LinearSpell.HUMAN_SPEED;
 	private PlayerType playerType;
 	public static final float STATE_ANIMATION_DURATION = 0.5f;	
 	
@@ -369,5 +370,9 @@ public class Player extends Sprite {
 	
 	public TextureRegion getPlayerHealing() {
 		return playerHealing;
+	}
+	
+	public Vector2 getVelocity() {
+		return velocity;
 	}
 }

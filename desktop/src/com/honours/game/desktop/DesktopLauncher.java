@@ -8,8 +8,8 @@ import com.honours.game.HonoursGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        int width = Lwjgl3ApplicationConfiguration.getDisplayMode().width - 200;
-        int height = Lwjgl3ApplicationConfiguration.getDisplayMode().height - 100;
+        int width = Lwjgl3ApplicationConfiguration.getDisplayMode().width;
+        int height = Lwjgl3ApplicationConfiguration.getDisplayMode().height-60;
         
         config.setResizable(false);
     	config.setWindowedMode(width, height);

@@ -55,19 +55,19 @@ public class CBRManager extends AIManager {
 			if (threads.get(i).isDone()) {
 				int indexPlayer = i;
 				Player monitoredPlayer = monitoredPlayers.get(indexPlayer);
-				CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
-					return CBRSytem.retrieve(new State(inGamePlayers), monitoredPlayer.getId());
-				}).thenAccept(retrieveQueryResponse -> {
-					currentState = retrieveQueryResponse.getInitialState();
-					RetrievedCase responseCase = retrieveQueryResponse.getResponseCase();
-					if (responseCase == null) {
-						createAndRetainCase(monitoredPlayer.getId(), retrieveQueryResponse, monitoredPlayer);
-					} else {
-						caseIdQValPlairs.get(indexPlayer).add(new CaseIdQValuePair(responseCase.getqValues(), responseCase.getId()));
-						pendingActions.add(new PlayerActionPair(monitoredPlayer, responseCase.getAction(monitoredPlayer.getId())));					
-					}
-				});
-				threads.set(i, future);
+//				CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+//					return CBRSytem.retrieve(new State(inGamePlayers), monitoredPlayer.getId());
+//				}).thenAccept(retrieveQueryResponse -> {
+//					currentState = retrieveQueryResponse.getInitialState();
+//					RetrievedCase responseCase = retrieveQueryResponse.getResponseCase();
+//					if (responseCase == null) {
+//						createAndRetainCase(monitoredPlayer.getId(), retrieveQueryResponse, monitoredPlayer);
+//					} else {
+//						caseIdQValPlairs.get(indexPlayer).add(new CaseIdQValuePair(responseCase.getqValues(), responseCase.getId()));
+//						pendingActions.add(new PlayerActionPair(monitoredPlayer, responseCase.getAction(monitoredPlayer.getId())));					
+//					}
+//				});
+//				threads.set(i, future);
 				CBRSytem.updateQValue(currentState, oldState, caseIdQValPlairs.get(i), i);
 			} else {
 				System.out.println("thread not finished");

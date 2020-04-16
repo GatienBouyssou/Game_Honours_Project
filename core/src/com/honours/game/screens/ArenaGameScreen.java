@@ -75,7 +75,8 @@ public class ArenaGameScreen extends ScreenAdapter
 
 	public void gameOver() {
 		Team lastTeam = arenaGameManager.getLastTeamStanding();
-		game.setScreen(new EndScreen(game, lastTeam));
+		int playerId = lastTeam.getListOfPlayersAlive().get(0);
+		game.setScreen(new EndScreen(game, lastTeam.getId(), lastTeam.getPlayerById(playerId).getPlayerHealing()));
 		dispose();
 	}
 
