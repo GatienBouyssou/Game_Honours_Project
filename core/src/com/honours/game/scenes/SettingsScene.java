@@ -90,12 +90,7 @@ public class SettingsScene implements Disposable, InputProcessor {
 				game.setScreen(new TitleScreen(game));
 				return true;
 			}
-			int index = this.mapKeyNameIndex.get(MODIFICATION_CHARACTER);
-			String keyName = Input.Keys.toString(ArenaGameManager.keyForSpells.get(index));
-			this.labelModified.setText(keyName);
-			this.labelModified = null;
-			this.mapKeyNameIndex.remove(MODIFICATION_CHARACTER);
-			this.mapKeyNameIndex.put(keyName, index);
+			cancelModif();
 		}
 		if (this.labelModified != null) {
 			String keyName = Input.Keys.toString(keycode);
@@ -129,6 +124,9 @@ public class SettingsScene implements Disposable, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		Vector3 coordinates = viewport.getCamera().unproject(new Vector3(screenX, screenY, 0));
+		if (labelModified != null) {
+			cancelModif();
+		}
 		Label label = (Label)table.hit(coordinates.x, coordinates.y, true);
 				
 		if(label!=null && mapKeyNameIndex.containsKey(label.getText().toString())) {
@@ -141,6 +139,15 @@ public class SettingsScene implements Disposable, InputProcessor {
 		}
 			
 		return false;
+	}
+
+	protected void cancelModif() {
+		int index = this.mapKeyNameIndex.get(MODIFICATION_CHARACTER);
+		String keyName = Input.Keys.toString(ArenaGameManager.keyForSpells.get(index));
+		this.labelModified.setText(keyName);
+		this.labelModified = null;
+		this.mapKeyNameIndex.remove(MODIFICATION_CHARACTER);
+		this.mapKeyNameIndex.put(keyName, index);
 	}
 
 	@Override
