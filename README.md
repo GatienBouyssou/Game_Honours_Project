@@ -1,5 +1,8 @@
 # Welcome to the Game_Honours_Project wiki!
 
+
+**Please fill this questionnaire when your finished playing :** https://docs.google.com/forms/d/e/1FAIpQLSdSrAzlJn2ekbZlIgUYMAkdYdhCnij17XeW38XCNm_CAf5reg/viewform?usp=sf_link
+
 To play this game you first need to download the game by clicking on "Clone or download" and then download zip. 
 Then, you need to extract the game from the .zip.
 
@@ -9,8 +12,6 @@ IF YOU HAVE JAVA installed just double click on the game
 else 
 you can download java here : 
 https://www.java.com/fr/download/
-
-**Please fill this questionnaire when your finished playing :** https://docs.google.com/forms/d/e/1FAIpQLSdSrAzlJn2ekbZlIgUYMAkdYdhCnij17XeW38XCNm_CAf5reg/viewform?usp=sf_link
 
 # How to play the game
 
