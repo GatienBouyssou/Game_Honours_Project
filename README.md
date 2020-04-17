@@ -3,7 +3,7 @@
 
 **Please fill this questionnaire when your finished playing :** https://docs.google.com/forms/d/e/1FAIpQLSdSrAzlJn2ekbZlIgUYMAkdYdhCnij17XeW38XCNm_CAf5reg/viewform?usp=sf_link
 
-During this year I made a little game that you can easily play on your computer. You have two versions available. One for linux and one for windows.  
+During this year I made a little game that you can easily play on your computer. You have two versions available. One for ubuntu and one for windows.  
 
 To play this game you first need to download the game by clicking on "Clone or download" and then download zip. 
 Then, you need to extract the game from the .zip.
