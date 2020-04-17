@@ -1,11 +1,11 @@
 # Welcome to the Game_Honours_Project wiki!
 
-To play this game you first need to download the game by clicking on "Clone or download" and then download to zip. 
+To play this game you first need to download the game by clicking on "Clone or download" and then download zip. 
 Then, you need to extract the game from the .zip.
 
-At this point you should have a directory Game_Honours_project-master. Go in that directory. You will find the game untitled windowsVersionGame.jar.
+At this point you should have a directory named Game_Honours_project-master. Go in that directory. You will find the game untitled windowsVersionGame.jar.
 
-IF YOU HAVE JAVA just double click on the game 
+IF YOU HAVE JAVA installed just double click on the game 
 else 
 you can download java here : 
 https://www.java.com/fr/download/
