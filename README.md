@@ -21,7 +21,7 @@ https://www.java.com/fr/download/
 **Right click to move** The player will move directly to the given position. If he encounters a wall he will stop where he is. 
 You can use the keys SPACE Q W E R to cast a spell. If you have an AZERTY keyboard the keys are SPACE A Z E R you should not need to change your settings. 
 
-# Game specification
+# Game tips
 
 Each spell has a type (FIRE, PLANT OR WATER). Fire spells cancels plant spells that cancels water spells. Autoattack can't be cancelled. 
 
