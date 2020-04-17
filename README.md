@@ -20,4 +20,4 @@ You can use the keys SPACE Q W E R to cast a spell. If you have an AZERTY keyboa
 
 Each spell has a type (FIRE, PLANT OR WATER). Fire spells cancels plant spells that cancels water spells. Autoattack can't be cancelled. 
 
-Depending on the type, the spell may have a special effect. You should discover that by yourself. 
+Depending on the type, the spell may have a special effect.
