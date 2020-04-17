@@ -10,6 +10,8 @@ else
 you can download java here : 
 https://www.java.com/fr/download/
 
+**Please fill this questionnaire when your finished playing :** https://docs.google.com/forms/d/e/1FAIpQLSdSrAzlJn2ekbZlIgUYMAkdYdhCnij17XeW38XCNm_CAf5reg/viewform?usp=sf_link
+
 # How to play the game
 
 **Aim with your mouse**. Often the spells will be casted toward the position of your mouse.
