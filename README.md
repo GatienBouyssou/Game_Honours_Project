@@ -5,8 +5,8 @@
 
 During this year I made a little game that you can easily play on your computer. You have two versions available. One for ubuntu and one for windows.  
 
-To play this game you first need to download the game by clicking on "Clone or download" and then download zip. 
-Then, you need to extract the game from the .zip.
+**To play this game** you first need to download the game by **clicking on "Clone or download"** and **then download zip**. 
+Then, you need to **extract the game from the .zip**.
 
 At this point you should have a directory named Game_Honours_project-master. Go in that directory. You will find the game untitled windowsVersionGame.jar.
 
